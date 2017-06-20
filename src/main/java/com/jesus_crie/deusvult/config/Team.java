@@ -3,6 +3,7 @@ package com.jesus_crie.deusvult.config;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
@@ -73,6 +74,10 @@ public class Team {
     }
 
     public static class TeamSerializer extends StdSerializer<Team> {
+
+        public TeamSerializer() {
+            this(null);
+        }
 
         public TeamSerializer(Class<Team> team) {
             super(team);

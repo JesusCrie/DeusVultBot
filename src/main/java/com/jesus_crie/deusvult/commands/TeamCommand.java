@@ -3,6 +3,7 @@ package com.jesus_crie.deusvult.commands;
 import com.jesus_crie.deusvult.builder.EmbedMessageBuilder;
 import com.jesus_crie.deusvult.config.Config;
 import com.jesus_crie.deusvult.config.Team;
+import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.utils.F;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -62,12 +63,14 @@ public class TeamCommand extends Command {
             topTeams.sort((prev, next) -> prev.getMembers().size() > next.getMembers().size() ? 1 : -1);
             topTeams = topTeams.subList(0, Math.min(topTeams.size(), 10));
 
+            Logger.info(topTeams.size() + "");
+
             builder.addMainList("Team Leaderboard (most members)", StringUtils.ICON_CUP,
                     topTeams.stream()
                             .map(t -> t.getName() + " (" + F.bold(String.valueOf(t.getMembers().size())) + " members)")
                             .collect(Collectors.toList()));
 
-            event.getChannel().sendMessage(builder.build()).queue();
+            //event.getChannel().sendMessage(builder.build()).queue();
         }
     }
 }

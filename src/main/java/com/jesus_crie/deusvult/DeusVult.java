@@ -5,6 +5,7 @@ import com.jesus_crie.deusvult.commands.StopCommand;
 import com.jesus_crie.deusvult.commands.TeamCommand;
 import com.jesus_crie.deusvult.commands.TestCommand;
 import com.jesus_crie.deusvult.config.Config;
+import com.jesus_crie.deusvult.config.Team;
 import com.jesus_crie.deusvult.listener.CommandListener;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
@@ -17,13 +18,16 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
+import java.util.Arrays;
 
 public class DeusVult {
 
     private JDA jda;
+    private String secret;
     private boolean ready = false;
 
     public DeusVult(String token, String secret) {
+        this.secret = secret;
         try {
             jda = new JDABuilder(AccountType.BOT)
                     .setToken(token)
@@ -38,6 +42,9 @@ public class DeusVult {
             // May never happened
             e.printStackTrace();
         }
+    }
+
+    void warmup() {
         Logger.info("[Start] Registering listeners...");
         jda.addEventListener(
                 new CommandListener()
@@ -45,6 +52,12 @@ public class DeusVult {
 
         Logger.info("[Start] Loading config...");
         new Config(secret);
+        Team team = new Team(0, "Les petits penis", "323951853807206401", "182547138729869314",
+                "323950520949800961", "323950657226670081", Arrays.asList("220263485810933760", "200156541746151424"));
+        Team t2 = new Team(1, "Assholes", "323952347740897290", "200156541746151424",
+                "323950568756477973", "323950685567713290", Arrays.asList("220263485810933760", "182547138729869314"));
+        Config.saveTeam(team);
+        Config.saveTeam(t2);
 
         Logger.info("[Start] Registering commands...");
         CommandManager.registerCommands(

@@ -3,7 +3,6 @@ package com.jesus_crie.deusvult.config;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import org.apache.http.client.HttpClient;
