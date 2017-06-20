@@ -63,14 +63,12 @@ public class TeamCommand extends Command {
             topTeams.sort((prev, next) -> prev.getMembers().size() > next.getMembers().size() ? 1 : -1);
             topTeams = topTeams.subList(0, Math.min(topTeams.size(), 10));
 
-            Logger.info(topTeams.size() + "");
-
             builder.addMainList("Team Leaderboard (most members)", StringUtils.ICON_CUP,
                     topTeams.stream()
                             .map(t -> t.getName() + " (" + F.bold(String.valueOf(t.getMembers().size())) + " members)")
                             .collect(Collectors.toList()));
 
-            //event.getChannel().sendMessage(builder.build()).queue();
+            event.getChannel().sendMessage(builder.build()).queue();
         }
     }
 }

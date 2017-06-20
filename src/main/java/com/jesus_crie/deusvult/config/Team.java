@@ -94,7 +94,7 @@ public class Team {
             gen.writeStringField("channelTextId", value.channelText.getId());
             gen.writeStringField("channelVoiceId", value.channelVoice.getId());
 
-            gen.writeArrayFieldStart("members");
+            gen.writeArrayFieldStart("membersId");
             for (User m : value.members)
                 gen.writeString(m.getId());
             gen.writeEndArray();

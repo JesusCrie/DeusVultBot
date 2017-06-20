@@ -42,6 +42,7 @@ public class DeusVult {
             // May never happened
             e.printStackTrace();
         }
+        Logger.info("[Start] JDA initialized !");
     }
 
     void warmup() {
