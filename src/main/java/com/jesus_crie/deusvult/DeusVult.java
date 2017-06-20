@@ -1,5 +1,6 @@
 package com.jesus_crie.deusvult;
 
+import com.jesus_crie.deusvult.commands.DumpCommand;
 import com.jesus_crie.deusvult.commands.StopCommand;
 import com.jesus_crie.deusvult.commands.TestCommand;
 import com.jesus_crie.deusvult.config.Config;
@@ -47,7 +48,8 @@ public class DeusVult {
         Logger.info("[Start] Registering commands...");
         CommandManager.registerCommands(
                 new TestCommand(),
-                new StopCommand()
+                new StopCommand(),
+                new DumpCommand()
         );
 
         Logger.info("[Start] Loading music components...");

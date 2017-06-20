@@ -3,6 +3,7 @@ package com.jesus_crie.deusvult.config;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import org.apache.http.client.HttpClient;
@@ -31,15 +32,17 @@ public class Config {
             ObjectMapper mapper = new ObjectMapper();
             config = mapper.readValue(new URL(StringUtils.CONFIG_URL_GENERAL), new TypeReference<HashMap<String, String>>() {});
 
-            //List<Team> t = mapper.readValue(new URL(StringUtils.CONFIG_URL_TEAMS), new TypeReference<List<Team>>() {});
-            //t.forEach(te -> teams.put(te.getId(), te));
+            List<Team> t = mapper.readValue(new URL(StringUtils.CONFIG_URL_TEAMS), new TypeReference<List<Team>>() {});
+            t.forEach(te -> teams.put(te.getId(), te));
+            Logger.info("[Config] Config loaded !");
         } catch (IOException e) {
-            Logger.error("Can't load config !", e);
+            Logger.error("[Config] Can't load config !", e);
         }
     }
 
     public static void save() {
         ObjectMapper mapper = new ObjectMapper();
+
         try {
             String outCfg = mapper.writeValueAsString(config);
             String outTeam = mapper.writeValueAsString(teams);
@@ -64,6 +67,7 @@ public class Config {
                     case 0:
                     default:
                         Logger.info("[Config] Successfully saved !");
+                        break;
                 }
 
                 return response;

@@ -4,7 +4,8 @@ import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.User;
 
-import java.awt.*;
+import java.awt.Color;
+import java.util.List;
 
 public class EmbedMessageBuilder extends EmbedBuilder {
 
@@ -14,6 +15,11 @@ public class EmbedMessageBuilder extends EmbedBuilder {
     }
 
     public EmbedMessageBuilder addFieldList(String name, String... content) {
+        addField(name, StringUtils.EMOJI_DIAMOND_BLUE + String.join("\n" + StringUtils.EMOJI_DIAMOND_BLUE, content), false);
+        return this;
+    }
+
+    public EmbedMessageBuilder addFieldList(String name, List<String> content) {
         addField(name, StringUtils.EMOJI_DIAMOND_BLUE + String.join("\n" + StringUtils.EMOJI_DIAMOND_BLUE, content), false);
         return this;
     }

@@ -13,7 +13,7 @@ public class StopCommand extends Command {
         super("stop",
                 "stop",
                 AccessLevel.CREATOR,
-                ChannelType.PRIVATE);
+                ChannelType.PRIVATE, ChannelType.TEXT);
     }
 
     @Override
