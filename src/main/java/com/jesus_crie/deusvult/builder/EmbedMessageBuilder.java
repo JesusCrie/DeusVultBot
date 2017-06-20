@@ -29,4 +29,10 @@ public class EmbedMessageBuilder extends EmbedBuilder {
         setDescription(StringUtils.EMOJI_DIAMOND_ORANGE + String.join("\n" + StringUtils.EMOJI_DIAMOND_ORANGE, content));
         return this;
     }
+
+    public EmbedMessageBuilder addMainList(String name, String icon, List<String> content) {
+        setAuthor(name, null, icon);
+        setDescription(StringUtils.EMOJI_DIAMOND_ORANGE + String.join("\n" + StringUtils.EMOJI_DIAMOND_ORANGE, content));
+        return this;
+    }
 }

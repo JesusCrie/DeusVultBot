@@ -15,6 +15,7 @@ public class DumpCommand extends Command {
                 "dump",
                 AccessLevel.CREATOR,
                 ChannelType.TEXT);
+        setShortDescription("Dump roles id.");
     }
 
     @Override

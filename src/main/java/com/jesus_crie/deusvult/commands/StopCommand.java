@@ -14,6 +14,7 @@ public class StopCommand extends Command {
                 "stop",
                 AccessLevel.CREATOR,
                 ChannelType.PRIVATE, ChannelType.TEXT);
+        setShortDescription("Shutdown the bot.");
     }
 
     @Override

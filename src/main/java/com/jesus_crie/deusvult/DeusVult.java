@@ -2,6 +2,7 @@ package com.jesus_crie.deusvult;
 
 import com.jesus_crie.deusvult.commands.DumpCommand;
 import com.jesus_crie.deusvult.commands.StopCommand;
+import com.jesus_crie.deusvult.commands.TeamCommand;
 import com.jesus_crie.deusvult.commands.TestCommand;
 import com.jesus_crie.deusvult.config.Config;
 import com.jesus_crie.deusvult.listener.CommandListener;
@@ -49,7 +50,8 @@ public class DeusVult {
         CommandManager.registerCommands(
                 new TestCommand(),
                 new StopCommand(),
-                new DumpCommand()
+                new DumpCommand(),
+                new TeamCommand()
         );
 
         Logger.info("[Start] Loading music components...");
