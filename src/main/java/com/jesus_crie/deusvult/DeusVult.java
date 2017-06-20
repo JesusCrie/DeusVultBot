@@ -53,12 +53,6 @@ public class DeusVult {
 
         Logger.info("[Start] Loading config...");
         new Config(secret);
-        Team team = new Team(0, "Les petits penis", "323951853807206401", "182547138729869314",
-                "323950520949800961", "323950657226670081", Arrays.asList("220263485810933760", "200156541746151424"));
-        Team t2 = new Team(1, "Assholes", "323952347740897290", "200156541746151424",
-                "323950568756477973", "323950685567713290", Arrays.asList("220263485810933760", "182547138729869314"));
-        Config.saveTeam(team);
-        Config.saveTeam(t2);
 
         Logger.info("[Start] Registering commands...");
         CommandManager.registerCommands(
