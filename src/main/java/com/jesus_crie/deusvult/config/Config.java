@@ -1,17 +1,20 @@
 package com.jesus_crie.deusvult.config;
 
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.json.UTF8JsonGenerator;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 import com.jesus_crie.deusvult.logger.Logger;
+import com.jesus_crie.deusvult.utils.StringUtils;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,13 +23,15 @@ public class Config {
 
     private static HashMap<String, String> config = new HashMap<>();
     private static HashMap<Integer, Team> teams = new HashMap<>();
+    private static String secret;
 
-    public Config() {
+    public Config(String secret) {
+        Config.secret = secret;
         try {
             ObjectMapper mapper = new ObjectMapper();
-            config = mapper.readValue(new URL("http://www.jesus-crie.com/discord/config.json"), new TypeReference<HashMap<String, String>>() {});
+            config = mapper.readValue(new URL(StringUtils.CONFIG_URL_GENERAL), new TypeReference<HashMap<String, String>>() {});
 
-            //List<Team> t = mapper.readValue(new URL("http://www.jesus-crie.com/discord/teams.json"), new TypeReference<List<Team>>() {});
+            //List<Team> t = mapper.readValue(new URL(StringUtils.CONFIG_URL_TEAMS), new TypeReference<List<Team>>() {});
             //t.forEach(te -> teams.put(te.getId(), te));
         } catch (IOException e) {
             Logger.error("Can't load config !", e);
@@ -35,10 +40,34 @@ public class Config {
 
     public static void save() {
         ObjectMapper mapper = new ObjectMapper();
-        mapper.enable(SerializationFeature.INDENT_OUTPUT);
         try {
-            String out = mapper.writeValueAsString(config);
-            System.out.println(out);
+            String outCfg = mapper.writeValueAsString(config);
+            String outTeam = mapper.writeValueAsString(teams);
+
+            // Send post request
+            HttpClient client = HttpClientBuilder.create().build();
+            HttpPost post = new HttpPost(StringUtils.CONFIG_URL_SAVE);
+
+            post.setEntity(new UrlEncodedFormEntity(Arrays.asList(
+                    new BasicNameValuePair("_secret", secret),
+                    new BasicNameValuePair("config", outCfg),
+                    new BasicNameValuePair("teams", outTeam)
+            )));
+
+            client.execute(post, response -> {
+                JsonNode res = mapper.readValue(response.getEntity().getContent(), JsonNode.class);
+                switch (res.get("code").asInt()) {
+                    case 1:
+                        throw new IOException("Wrong method !");
+                    case 2:
+                        throw new IOException("Missing datas !");
+                    case 0:
+                    default:
+                        Logger.info("[Config] Successfully saved !");
+                }
+
+                return response;
+            });
         } catch (IOException e) {
             e.printStackTrace();
         }

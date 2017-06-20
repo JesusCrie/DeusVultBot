@@ -1,5 +1,6 @@
 package com.jesus_crie.deusvult;
 
+import com.jesus_crie.deusvult.commands.StopCommand;
 import com.jesus_crie.deusvult.commands.TestCommand;
 import com.jesus_crie.deusvult.config.Config;
 import com.jesus_crie.deusvult.listener.CommandListener;
@@ -20,7 +21,7 @@ public class DeusVult {
     private JDA jda;
     private boolean ready = false;
 
-    public DeusVult(String token) {
+    public DeusVult(String token, String secret) {
         try {
             jda = new JDABuilder(AccountType.BOT)
                     .setToken(token)
@@ -41,11 +42,12 @@ public class DeusVult {
         );
 
         Logger.info("[Start] Loading config...");
-        new Config();
+        new Config(secret);
 
         Logger.info("[Start] Registering commands...");
         CommandManager.registerCommands(
-                new TestCommand()
+                new TestCommand(),
+                new StopCommand()
         );
 
         Logger.info("[Start] Loading music components...");

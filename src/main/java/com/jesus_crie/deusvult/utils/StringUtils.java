@@ -26,6 +26,10 @@ public class StringUtils {
 
     public static final String USER_CREATOR = "182547138729869314";
 
+    public static final String CONFIG_URL_GENERAL = "http://www.jesus-crie.com/discord/config.json";
+    public static final String CONFIG_URL_TEAMS = "http://www.jesus-crie.com/discord/teams.json";
+    public static final String CONFIG_URL_SAVE = "http://www.jesus-crie.com/discord/update_config.php";
+
     public static String stringifyUser(User u) {
         return u.getName() + "#" + u.getDiscriminator();
     }

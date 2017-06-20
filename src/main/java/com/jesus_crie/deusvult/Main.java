@@ -5,14 +5,14 @@ public class Main {
     private static DeusVult bot;
 
     public static void main(String[] args) {
-        if (args.length <= 0) {
-            System.out.println("You need to provide a token !");
+        if (args.length <= 1) {
+            System.out.println("You need to provide a token and a secret !");
             return;
         }
 
         System.out.println("Token provided: " + args[0]);
         System.out.println("Starting...");
-        bot = new DeusVult(args[0]);
+        bot = new DeusVult(args[0], args[1]);
     }
 
     static DeusVult getBot() {
