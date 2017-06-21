@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.jesus_crie.deusvult.DeusVult;
+import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.*;
 
 import java.io.IOException;
@@ -26,23 +27,41 @@ public class Team {
     private List<User> members;
 
     @JsonCreator
-    public Team(@JsonProperty("id") int id,
+    private Team(@JsonProperty("id") int id,
                 @JsonProperty("name") String name,
                 @JsonProperty("roleId") String roleId,
                 @JsonProperty("ownerId") String ownerId,
                 @JsonProperty("channelTextId") String channelTextId,
-                @JsonProperty("channelVoiceId") String channelVoiceId,
-                @JsonProperty("membersId")List<String> membersId) {
+                @JsonProperty("channelVoiceId") String channelVoiceId) {
         this.id = id;
         this.name = name;
         role = DeusVult.instance().getJda().getRoleById(roleId);
         owner = DeusVult.instance().getJda().getUserById(ownerId);
         channelText = DeusVult.instance().getJda().getTextChannelById(channelTextId);
         channelVoice = DeusVult.instance().getJda().getVoiceChannelById(channelVoiceId);
-        members = membersId
-                .stream()
-                .map(m -> DeusVult.instance().getJda().getUserById(m))
+        members = role.getGuild().getMembersWithRoles(role).stream()
+                .map(Member::getUser)
                 .collect(Collectors.toList());
+    }
+
+    public Team(int id, String name, Role role, User owner, TextChannel channelText, VoiceChannel channelVoice) {
+        this.id = id;
+        this.name = name;
+        this.role = role;
+        this.owner = owner;
+        this.channelText = channelText;
+        this.channelVoice = channelVoice;
+        members = role.getGuild().getMembersWithRoles(role).stream()
+                .map(Member::getUser)
+                .collect(Collectors.toList());
+    }
+
+    public boolean isMember(User u) {
+        return members.contains(u);
+    }
+
+    public boolean isOwner(User u) {
+        return owner.equals(u);
     }
 
     public int getId() {
@@ -73,6 +92,11 @@ public class Team {
         return members;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        return ((Team) obj).getId() == id;
+    }
+
     public static class TeamSerializer extends StdSerializer<Team> {
 
         public TeamSerializer() {
@@ -93,11 +117,6 @@ public class Team {
             gen.writeStringField("ownerId", value.owner.getId());
             gen.writeStringField("channelTextId", value.channelText.getId());
             gen.writeStringField("channelVoiceId", value.channelVoice.getId());
-
-            gen.writeArrayFieldStart("membersId");
-            for (User m : value.members)
-                gen.writeString(m.getId());
-            gen.writeEndArray();
 
             gen.writeEndObject();
         }

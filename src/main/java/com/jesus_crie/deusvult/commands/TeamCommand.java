@@ -4,6 +4,7 @@ import com.jesus_crie.deusvult.builder.EmbedMessageBuilder;
 import com.jesus_crie.deusvult.config.Config;
 import com.jesus_crie.deusvult.config.Team;
 import com.jesus_crie.deusvult.logger.Logger;
+import com.jesus_crie.deusvult.manager.TeamManager;
 import com.jesus_crie.deusvult.utils.F;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.ChannelType;
@@ -59,7 +60,7 @@ public class TeamCommand extends Command {
         public void execute(MessageReceivedEvent event, String[] args) throws PermissionException {
             EmbedMessageBuilder builder = new EmbedMessageBuilder(event.getAuthor());
 
-            java.util.List<Team> topTeams = Config.getTeams();
+            java.util.List<Team> topTeams = TeamManager.getTeams();
             topTeams.sort((prev, next) -> prev.getMembers().size() > next.getMembers().size() ? 1 : -1);
             topTeams = topTeams.subList(0, Math.min(topTeams.size(), 10));
 

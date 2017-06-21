@@ -1,20 +1,41 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Test {
 
     public static void main(String[] args) {
-        String shortD;
-        String longD;
+        Tester a = new Tester(0, 42);
+        Tester b = new Tester(0, 666);
+        Tester c = new Tester(1, 42);
+        Tester d = new Tester(0, 42);
 
-        shortD = "Yolo";
-        longD = shortD;
+        List<Tester> ttt = new ArrayList<>();
+        ttt.add(a);
+        ttt.add(c);
 
-        System.out.println(shortD + " ,, " + longD);
+        print(ttt.size());
+        print(ttt.contains(b));
+        print(ttt.contains(a));
+        ttt.remove(b);
+        print(ttt.size());
+    }
 
-        shortD = "Lol";
+    private static void print(Object o) {
+        System.out.println(o);
+    }
 
-        System.out.println(shortD + " ,, " + longD);
+    private static class Tester {
+        int id;
+        int bite;
 
-        longD = "lol mdr ptdr";
+        public Tester(int id, int bite) {
+            this.id = id;
+            this.bite = bite;
+        }
 
-        System.out.println(shortD + " ,, " + longD);
+        @Override
+        public boolean equals(Object obj) {
+            return ((Tester) obj).id == id;
+        }
     }
 }

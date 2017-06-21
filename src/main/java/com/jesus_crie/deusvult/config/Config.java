@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jesus_crie.deusvult.logger.Logger;
+import com.jesus_crie.deusvult.manager.TeamManager;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -13,16 +14,13 @@ import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Config {
 
     private static HashMap<String, String> config = new HashMap<>();
-    private static HashMap<Integer, Team> teams = new HashMap<>();
     private static String secret;
 
     public Config(String secret) {
@@ -32,7 +30,7 @@ public class Config {
             config = mapper.readValue(new URL(StringUtils.CONFIG_URL_GENERAL), new TypeReference<HashMap<String, String>>() {});
 
             List<Team> t = mapper.readValue(new URL(StringUtils.CONFIG_URL_TEAMS), new TypeReference<List<Team>>() {});
-            t.forEach(te -> teams.put(te.getId(), te));
+            TeamManager.registerTeams(t);
             Logger.info("[Config] Config loaded !");
         } catch (IOException e) {
             Logger.error("[Config] Can't load config !", e);
@@ -44,7 +42,7 @@ public class Config {
 
         try {
             String outCfg = mapper.writeValueAsString(config);
-            String outTeam = mapper.writeValueAsString(teams);
+            String outTeam = mapper.writeValueAsString(TeamManager.getTeams());
 
             // Send post request
             HttpClient client = HttpClientBuilder.create().build();
@@ -82,32 +80,5 @@ public class Config {
 
     public static String setSetting(String key, String val) {
         return config.put(key, val);
-    }
-
-    public static List<Team> getTeams() {
-        return new ArrayList<>(teams.values());
-    }
-
-    public static Team getTeamById(Integer id) {
-        return teams.get(id);
-    }
-
-    public static List<Team> getTeamByName(String name) {
-        return teams.values()
-                .stream()
-                .filter(t -> t.getName().equalsIgnoreCase(name))
-                .collect(Collectors.toList());
-    }
-
-    public static int getNextTeamId() {
-        List<Integer> ks = new ArrayList<>(teams.keySet());
-        ks.sort((prev, next) -> prev > next ? 1 : -1);
-
-        return ks.get(ks.size() - 1);
-    }
-
-    public static Team saveTeam(Team team) {
-        teams.put(team.getId(), team);
-        return teams.get(team.getId());
     }
 }

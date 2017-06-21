@@ -1,11 +1,7 @@
 package com.jesus_crie.deusvult;
 
-import com.jesus_crie.deusvult.commands.DumpCommand;
-import com.jesus_crie.deusvult.commands.StopCommand;
-import com.jesus_crie.deusvult.commands.TeamCommand;
-import com.jesus_crie.deusvult.commands.TestCommand;
+import com.jesus_crie.deusvult.commands.*;
 import com.jesus_crie.deusvult.config.Config;
-import com.jesus_crie.deusvult.config.Team;
 import com.jesus_crie.deusvult.listener.CommandListener;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
@@ -15,16 +11,17 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
+import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
-import java.util.Arrays;
 
 public class DeusVult {
 
     private JDA jda;
     private String secret;
     private boolean ready = false;
+    private Guild main;
 
     public DeusVult(String token, String secret) {
         this.secret = secret;
@@ -59,7 +56,8 @@ public class DeusVult {
                 new TestCommand(),
                 new StopCommand(),
                 new DumpCommand(),
-                new TeamCommand()
+                new TeamCommand(),
+                new EvalCommand()
         );
 
         Logger.info("[Start] Loading music components...");
@@ -83,6 +81,12 @@ public class DeusVult {
 
     public boolean isReady() {
         return ready;
+    }
+
+    public Guild getMainGuild() {
+        if (main == null)
+            main = jda.getGuildById(Config.getSetting("guildId"));
+        return main;
     }
 
     public static DeusVult instance() {
