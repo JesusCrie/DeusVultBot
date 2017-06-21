@@ -64,6 +64,7 @@ public class TeamManager {
                 .createTextChannel("group-" + name.replaceAll(" ", "_"))
                 .addPermissionOverride(g.getPublicRole(), new ArrayList<>(), Collections.singletonList(Permission.MESSAGE_READ))
                 .addPermissionOverride(role, Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
+                .addPermissionOverride(g.getRoleById("323952614892896261"), Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
                 .setTopic("Private channel for the team " + name)
                 .complete();
 
@@ -71,31 +72,36 @@ public class TeamManager {
                 .createVoiceChannel("\uD83C\uDF0F Groupe - " + name)
                 .addPermissionOverride(g.getPublicRole(), new ArrayList<>(), Collections.singletonList(Permission.VOICE_CONNECT))
                 .addPermissionOverride(role, Collections.singletonList(Permission.VOICE_CONNECT), new ArrayList<>())
+                .addPermissionOverride(g.getRoleById("323952614892896261"), Collections.singletonList(Permission.VOICE_CONNECT), new ArrayList<>())
                 .setUserlimit(10)
                 .complete();
 
         Team team = new Team(getNextId(), name, role, owner, chanT, chanV);
         registerTeam(team);
-        rearrangeChannels();
+        sortChannels();
 
         return team;
     }
 
+    /**
+     * TODO
+     * @param team
+     */
     public static void deleteTeam(Team team) {
         Logger.info("[Team] Deleting team " + team.getName());
 
-        team.getChannelVoice().delete().complete();
+        team.getChannelText().delete().queue();
         Logger.info("[Team] ChannelT deleted !");
-        team.getChannelText().delete().complete();
+        team.getChannelVoice().delete().queue();
         Logger.info("[Team] ChannelV deleted !");
-        team.getRole().delete().complete();
+        team.getRole().delete().queue();
         Logger.info("[Team] Role deleted !");
 
-        teams.remove(team);
-        rearrangeChannels();
+        //teams.remove(team);
+        sortChannels();
     }
 
-    public static void rearrangeChannels() {
+    public static void sortChannels() {
         Guild g = DeusVult.instance().getMainGuild();
 
         // Text Channels

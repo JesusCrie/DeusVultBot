@@ -26,6 +26,7 @@ public class StringUtils {
     public static final String EMOJI_DIAMOND_ORANGE = "\uD83D\uDD38";
 
     public static final String USER_CREATOR = "182547138729869314";
+    public static final String ROLE_BOT = "323952614892896261";
 
     public static final String CONFIG_URL_GENERAL = "http://www.jesus-crie.com/discord/config.json";
     public static final String CONFIG_URL_TEAMS = "http://www.jesus-crie.com/discord/teams.json";
