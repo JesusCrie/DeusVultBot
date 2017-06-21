@@ -3,6 +3,7 @@ package com.jesus_crie.deusvult;
 import com.jesus_crie.deusvult.commands.*;
 import com.jesus_crie.deusvult.config.Config;
 import com.jesus_crie.deusvult.listener.CommandListener;
+import com.jesus_crie.deusvult.logger.DiscordLog;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
 import com.jesus_crie.deusvult.utils.StringUtils;
@@ -64,6 +65,8 @@ public class DeusVult {
 
         Logger.info("[Start] READY !");
         jda.getPresence().setGame(Game.of(StringUtils.PREFIX + "help - " + StringUtils.VERSION, "https://twitch.tv/discordapp"));
+
+        DiscordLog.init(jda.getTextChannelById(Config.getSetting("channelLogs")));
         ready = true;
     }
 

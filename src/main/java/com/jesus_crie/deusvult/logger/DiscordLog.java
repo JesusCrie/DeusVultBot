@@ -23,7 +23,7 @@ public class DiscordLog {
         builder.setAuthor("Info", null, StringUtils.ICON_CHECK);
         builder.setColor(Color.GREEN);
         builder.setTimestamp(Instant.ofEpochMilli(timestamp));
-        builder.setTitle(message);
+        builder.setDescription(message);
 
         send(builder.build());
     }

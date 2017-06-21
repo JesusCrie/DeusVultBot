@@ -2,6 +2,7 @@ package com.jesus_crie.deusvult.commands;
 
 import com.jesus_crie.deusvult.DeusVult;
 import com.jesus_crie.deusvult.builder.EmbedMessageBuilder;
+import com.jesus_crie.deusvult.manager.TeamManager;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -32,8 +33,10 @@ public class EvalCommand extends Command {
         engine.put("bot", DeusVult.instance());
         engine.put("event", event);
         engine.put("jda", event.getJDA());
+        engine.put("tManager", new TeamManager());
 
         String code = String.join(" ", args);
+        code = code.replaceAll("TeamManager", "com.jesus_crie.deusvult.manager.TeamManager");
 
         EmbedMessageBuilder builder = new EmbedMessageBuilder(event.getAuthor());
         builder.setAuthor("Evaluation", null, StringUtils.ICON_TERMINAL);
