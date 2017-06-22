@@ -56,6 +56,12 @@ public class Team {
                 .collect(Collectors.toList());
     }
 
+    public void delete() {
+        channelText.delete().complete();
+        channelVoice.delete().complete();
+        role.delete().complete();
+    }
+
     public boolean isMember(User u) {
         return members.contains(u);
     }

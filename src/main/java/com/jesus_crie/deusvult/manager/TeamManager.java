@@ -90,15 +90,9 @@ public class TeamManager {
     public static void deleteTeam(Team team) {
         Logger.info("[Team] Deleting team " + team.getName());
 
-        team.getChannelText().delete().queue();
-        Logger.info("[Team] ChannelT deleted !");
-        team.getChannelVoice().delete().queue();
-        Logger.info("[Team] ChannelV deleted !");
-        team.getRole().delete().queue();
-        Logger.info("[Team] Role deleted !");
+        team.delete();
 
-        //teams.remove(team);
-        sortChannels();
+        teams.remove(team);
     }
 
     public static void sortChannels() {
