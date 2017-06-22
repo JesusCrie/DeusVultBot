@@ -24,6 +24,8 @@ public class StringUtils {
 
     public static final String EMOJI_DIAMOND_BLUE = "\uD83D\uDD39";
     public static final String EMOJI_DIAMOND_ORANGE = "\uD83D\uDD38";
+    public static final String EMOJI_PREVIOUS = "\u23EA";
+    public static final String EMOJI_NEXT = "\u23E9";
 
     public static final String USER_CREATOR = "182547138729869314";
     public static final String ROLE_BOT = "323952614892896261";

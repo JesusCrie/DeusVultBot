@@ -3,9 +3,11 @@ package com.jesus_crie.deusvult;
 import com.jesus_crie.deusvult.commands.*;
 import com.jesus_crie.deusvult.config.Config;
 import com.jesus_crie.deusvult.listener.CommandListener;
+import com.jesus_crie.deusvult.listener.TestListener;
 import com.jesus_crie.deusvult.logger.DiscordLog;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
+import com.jesus_crie.deusvult.manager.TimerManager;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -46,7 +48,8 @@ public class DeusVult {
     void warmup() {
         Logger.info("[Start] Registering listeners...");
         jda.addEventListener(
-                new CommandListener()
+                new CommandListener(),
+                new TestListener()
         );
 
         Logger.info("[Start] Loading config...");
@@ -75,6 +78,7 @@ public class DeusVult {
         Logger.info("[Start] Shutting down...");
         // TODO music stop
         Config.save();
+        TimerManager.cleanup();
         jda.shutdown(true);
     }
 

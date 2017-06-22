@@ -10,7 +10,7 @@ import java.util.List;
 public class EmbedMessageBuilder extends EmbedBuilder {
 
     public EmbedMessageBuilder(User u) {
-        setFooter("Requested by " + StringUtils.stringifyUser(u), u.getEffectiveAvatarUrl());
+        super.setFooter("Requested by " + StringUtils.stringifyUser(u), u.getEffectiveAvatarUrl());
         setColor(Color.WHITE);
     }
 
@@ -34,5 +34,11 @@ public class EmbedMessageBuilder extends EmbedBuilder {
         setAuthor(name, null, icon);
         setDescription(StringUtils.EMOJI_DIAMOND_ORANGE + String.join("\n" + StringUtils.EMOJI_DIAMOND_ORANGE, content));
         return this;
+    }
+
+    @Deprecated
+    @Override
+    public EmbedBuilder setFooter(String text, String iconUrl) {
+        return null;
     }
 }

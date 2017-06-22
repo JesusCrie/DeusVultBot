@@ -1,41 +1,35 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class Test {
 
     public static void main(String[] args) {
-        Tester a = new Tester(0, 42);
-        Tester b = new Tester(0, 666);
-        Tester c = new Tester(1, 42);
-        Tester d = new Tester(0, 42);
+        Timer timer = new Timer();
 
-        List<Tester> ttt = new ArrayList<>();
-        ttt.add(a);
-        ttt.add(c);
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                print("First call");
+            }
+        }, 3000);
 
-        print(ttt.size());
-        print(ttt.contains(b));
-        print(ttt.contains(a));
-        ttt.remove(b);
-        print(ttt.size());
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                print("Second call");
+            }
+        }, 4000);
+
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                print("Cleanup");
+                timer.cancel();
+            }
+        }, 2000);
     }
 
     private static void print(Object o) {
         System.out.println(o);
-    }
-
-    private static class Tester {
-        int id;
-        int bite;
-
-        public Tester(int id, int bite) {
-            this.id = id;
-            this.bite = bite;
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            return ((Tester) obj).id == id;
-        }
     }
 }

@@ -9,6 +9,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.jesus_crie.deusvult.DeusVult;
 import com.jesus_crie.deusvult.utils.StringUtils;
+import jdk.nashorn.internal.objects.annotations.Getter;
+import jdk.nashorn.internal.objects.annotations.Setter;
 import net.dv8tion.jda.core.entities.*;
 
 import java.io.IOException;

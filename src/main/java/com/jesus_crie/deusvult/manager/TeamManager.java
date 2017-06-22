@@ -83,10 +83,6 @@ public class TeamManager {
         return team;
     }
 
-    /**
-     * TODO
-     * @param team
-     */
     public static void deleteTeam(Team team) {
         Logger.info("[Team] Deleting team " + team.getName());
 
