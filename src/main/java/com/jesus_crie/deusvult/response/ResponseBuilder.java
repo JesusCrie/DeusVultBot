@@ -74,6 +74,11 @@ public class ResponseBuilder {
         return this;
     }
 
+    public ResponseBuilder addField(String title, String content, boolean inline) {
+        builder.addField(title, content, inline);
+        return this;
+    }
+
     public ResponseBuilder clearLists() {
         builder.clearFields();
         return this;

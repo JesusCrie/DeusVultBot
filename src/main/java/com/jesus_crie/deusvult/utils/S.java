@@ -18,6 +18,8 @@ public enum S {
     COMMAND_STOP_HELP("Stoppe le bot, utilisable uniquement par le créateur."),
     COMMAND_STOP_SHUTTING_DOWN("Shutting down..."),
 
+    COMMAND_EVAL_HELP("Execute du code en JS. Uniquement utilisable par le créateur."),
+
     TEAM_ROLE_PATTERN("Team - %s"),
     TEAM_CHANNEL_TEXT_NAME("group-%s"),
     TEAM_CHANNEL_TEXT_TOPIC("Channel de la team %s"),

@@ -1,5 +1,6 @@
 package com.jesus_crie.deusvult;
 
+import com.jesus_crie.deusvult.command.commands.EvalCommand;
 import com.jesus_crie.deusvult.command.commands.StopCommand;
 import com.jesus_crie.deusvult.command.commands.TestCommand;
 import com.jesus_crie.deusvult.config.Config;
@@ -29,6 +30,8 @@ public class DeusVult {
     private Guild main;
 
     public DeusVult(String token, String secret) {
+        Thread.setDefaultUncaughtExceptionHandler((tread, exception) -> Logger.UNKNOW.get().log(exception));
+
         this.secret = secret;
         try {
             jda = new JDABuilder(AccountType.BOT)
@@ -59,7 +62,8 @@ public class DeusVult {
         Logger.START.get().info("Registering commands...");
         CommandManager.registerCommands(
                 new TestCommand(),
-                new StopCommand()
+                new StopCommand(),
+                new EvalCommand()
         );
 
         Logger.START.get().info("Loading music components...");

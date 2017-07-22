@@ -29,7 +29,6 @@ public class CommandListener extends ListenerAdapter {
 
         String[] fullCmd = event.getMessage().getRawContent().substring(StringUtils.PREFIX.length()).split(" ");
         Command command = CommandManager.getCommand(fullCmd[0]);
-        Logger.COMMAND.get().debug(String.join(" // ", Arrays.copyOfRange(fullCmd, 1, fullCmd.length)));
 
         // Check if command exist
         if (command == null) {
@@ -70,9 +69,9 @@ public class CommandListener extends ListenerAdapter {
         }
 
         if (event.getGuild() == null)
-            Logger.COMMAND.get().info("[" + StringUtils.stringifyUser(event.getAuthor()) + "] Executing: " + F.codeBlock(event.getMessage().getRawContent()));
+            Logger.COMMAND.get().info("[" + StringUtils.stringifyUser(event.getAuthor()) + "] Executing: " + F.codeBlock("yaml", event.getMessage().getRawContent()));
         else
-            Logger.COMMAND.get().info(F.bold("[" + event.getGuild().getName() + "] ") + StringUtils.stringifyUser(event.getAuthor()) + " execute " + F.codeBlock(event.getMessage().getRawContent()));
+            Logger.COMMAND.get().info(F.bold("[" + event.getGuild().getName() + "] ") + StringUtils.stringifyUser(event.getAuthor()) + " execute " + F.codeBlock("yaml", event.getMessage().getRawContent()));
 
         new Thread(() -> {
             try {
