@@ -1,11 +1,13 @@
 import net.dv8tion.jda.core.utils.SimpleLog;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Test {
 
     public static void main(String[] args) throws Exception {
 
-        // 0011
-        // 0101
+        List<Object> a = Arrays.asList(null);
     }
 
     public static class DiscordLogListner implements SimpleLog.LogListener {

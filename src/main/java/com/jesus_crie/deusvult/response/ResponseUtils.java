@@ -1,6 +1,6 @@
 package com.jesus_crie.deusvult.response;
 
-import com.jesus_crie.deusvult.utils.CommandException;
+import com.jesus_crie.deusvult.exception.CommandException;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Message;
 

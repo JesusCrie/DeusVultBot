@@ -1,11 +1,21 @@
 package com.jesus_crie.deusvult.config;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jesus_crie.deusvult.exception.ConfigException;
+import com.jesus_crie.deusvult.logger.Logger;
+import com.jesus_crie.deusvult.manager.TeamManager;
 import com.jesus_crie.deusvult.utils.StringUtils;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -22,13 +32,13 @@ public class Config {
 
             List<Team> t = mapper.readValue(new URL(StringUtils.CONFIG_URL_TEAMS), new TypeReference<List<Team>>() {});
             //TeamManager.registerTeams(t);
-            Logger.info("[Config] Config loaded !");
+            Logger.CONFIG.get().info("Config loaded !");
         } catch (IOException e) {
-            Logger.error("[Config] Can't load config !", e);
+            Logger.CONFIG.get().log(new ConfigException("Can't load config !"));
         }
     }
 
-    public static void save() {/*
+    public static void save() {
         ObjectMapper mapper = new ObjectMapper();
 
         try {
@@ -54,16 +64,16 @@ public class Config {
                         throw new IOException("Missing datas !");
                     case 0:
                     default:
-                        Logger.info("[Config] Successfully saved !");
+                        Logger.CONFIG.get().info("Successfully saved !");
                         break;
                 }
 
                 return response;
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.CONFIG.get().log(e);
         }
-    */}
+    }
 
     public static String getSetting(String s) {
         return config.get(s);

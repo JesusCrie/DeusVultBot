@@ -3,9 +3,7 @@ package com.jesus_crie.deusvult.response;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.requests.RestAction;
 
 import java.awt.*;

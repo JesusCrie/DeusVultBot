@@ -3,6 +3,8 @@ package com.jesus_crie.deusvult.command;
 import com.jesus_crie.deusvult.DeusVult;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,11 +19,21 @@ public class CommandPattern {
     private BiPredicate<MessageReceivedEvent, List<Object>> action;
 
     public CommandPattern(Argument[] args, BiPredicate<MessageReceivedEvent, List<Object>> action) {
-        arguments = Arrays.asList(args);
+        if (args != null && args.length > 0)
+            arguments = Arrays.asList(args);
+        else
+            arguments = new ArrayList<>();
         this.action = action;
     }
 
+    public boolean hasArgument() {
+        return !arguments.isEmpty();
+    }
+
     public boolean matchArgs(String[] args) {
+        if (!hasArgument())
+            return true;
+
         if (args.length < arguments.size())
             return false;
 
@@ -47,6 +59,9 @@ public class CommandPattern {
      */
     private List<Object> collectArgs(String[] args) {
         List<Object> out = new ArrayList<>();
+
+        if (!hasArgument())
+            return out;
 
         for (int i = 0; i < args.length; i++) {
             if (i >= arguments.size()) {
@@ -79,8 +94,15 @@ public class CommandPattern {
         public static final Argument WORD_ONLY_LETTERS = new Argument("(?<value>[\\w]+)",
                 matcher -> matcher.group("value"));
 
-        public static final Argument URL = new Argument("(?<url>(?:https?:\\/\\/)+[a-z\\d.-]+(?:\\/[a-z\\d.-]*)*)",
+        public static final Argument URL_AS_STRING = new Argument("(?<url>(?:https?:\\/\\/){1}[a-z\\d.-]+(?:\\/[a-z\\d.-]*)*)",
                 matcher -> matcher.group("url"));
+
+        public static final Argument URL = new Argument("(?<url>(?:https?:\\/\\/){1}[a-z\\d.-]+(?:\\/[a-z\\d.-]*)*)",
+                matcher -> {
+                    try {
+                        return new URL(matcher.group("url"));
+                    } catch (MalformedURLException ignore) { return null; } // Will never happen (if i m good)
+                });
 
         public static final Argument MAIL = new Argument("(?<mail>[a-z\\d.\\-\\+]+@[a-z\\d-.]+\\.[a-z]{2,6})",
                 matcher -> matcher.group("mail"));

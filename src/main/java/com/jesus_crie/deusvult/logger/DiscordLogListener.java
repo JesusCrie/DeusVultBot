@@ -19,6 +19,9 @@ public class DiscordLogListener implements SimpleLog.LogListener {
 
     @Override
     public void onLog(SimpleLog log, SimpleLog.Level logLevel, Object message) {
+        if (!Logger.loggerRegistered(log.name))
+            return;
+
         logToDiscord(F.bold("[" + log.name + "] ") + message, logLevel);
     }
 

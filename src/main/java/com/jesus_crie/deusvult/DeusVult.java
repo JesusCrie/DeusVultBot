@@ -1,8 +1,13 @@
 package com.jesus_crie.deusvult;
 
+import com.jesus_crie.deusvult.command.commands.StopCommand;
+import com.jesus_crie.deusvult.command.commands.TestCommand;
 import com.jesus_crie.deusvult.config.Config;
+import com.jesus_crie.deusvult.listener.CommandListener;
 import com.jesus_crie.deusvult.logger.DiscordLogListener;
 import com.jesus_crie.deusvult.logger.Logger;
+import com.jesus_crie.deusvult.manager.CommandManager;
+import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -44,29 +49,27 @@ public class DeusVult {
 
     void warmup() {
         Logger.START.get().info("Registering listeners...");
-        /*jda.addEventListener(
-                new CommandListener(),
-                new TestListener()
-        );*/
+        jda.addEventListener(
+                new CommandListener()
+        );
 
         Logger.START.get().info("Loading config...");
         new Config(secret);
 
         Logger.START.get().info("Registering commands...");
-        /*CommandManager.registerCommands(
+        CommandManager.registerCommands(
                 new TestCommand(),
-                new StopCommand(),
-                new DumpCommand(),
-                new TeamCommand(),
-                new EvalCommand()
-        );*/
+                new StopCommand()
+        );
 
         Logger.START.get().info("Loading music components...");
 
         Logger.START.get().info("READY !");
-        jda.getPresence().setGame(Game.of(StringUtils.PREFIX + "help - " + StringUtils.VERSION, "https://twitch.tv/discordapp"));
+        jda.getPresence().setGame(Game.of(S.GENERAL_GAME_PATTERN.format(StringUtils.PREFIX, StringUtils.VERSION), "https://twitch.tv/discordapp"));
 
         SimpleLog.addListener(new DiscordLogListener(jda.getTextChannelById(Config.getSetting("channelLogs"))));
+        Logger.START.get().info("Discord logging set !");
+
         ready = true;
     }
 
