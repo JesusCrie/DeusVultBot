@@ -16,13 +16,14 @@ import java.util.List;
 public class EvalCommand extends Command {
 
     private ScriptEngine engine;
-    private String imports = "import java.util.*;" +
-            "import java.lang.*;" +
-            "import com.jesus_crie.deusvult.*;" +
-            "import com.jesus_crie.deusvult.utils.*;" +
-            "import com.jesus_crie.deusvult.manager.*;" +
-            "import com.jesus_crie.deusvult.config.*;" +
-            "import com.jesus_crie.deusvult.response.*;";
+    private String imports = "var imports = new JavaImporter(" +
+            "java.util," +
+            "java.lang," +
+            "com.jesus_crie.deusvult," +
+            "com.jesus_crie.deusvult.utils," +
+            "com.jesus_crie.deusvult.manager," +
+            "com.jesus_crie.deusvult.config," +
+            "com.jesus_crie.deusvult.response);";
 
     public EvalCommand() {
         super("eval",
@@ -50,16 +51,16 @@ public class EvalCommand extends Command {
         Object result;
 
         try {
-            result = engine.eval(imports + code);
+            result = engine.eval(imports + "with (imports) {\n" + code + "\n}");
         } catch (ScriptException ee) {
             result = ee;
         }
 
         ResponseBuilder.create(e.getMessage())
-                .setTitle("Evaluation")
+                .setTitle(S.COMMAND_EVAL_TITLE.get())
                 .setIcon(StringUtils.ICON_TERMINAL)
-                .addField("To evaluate", F.codeBlock("js", code), false)
-                .addField("Result", F.codeBlock("bash", result.toString()), false)
+                .addField(S.COMMAND_EVAL_TO_EVALUATE.get(), F.codeBlock("js", code), false)
+                .addField(S.COMMAND_EVAL_RESULT.get(), F.codeBlock("bash", result == null ? "null" : result.toString()), false)
                 .send(e.getChannel()).queue();
 
         return true;

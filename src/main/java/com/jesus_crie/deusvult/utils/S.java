@@ -19,6 +19,14 @@ public enum S {
     COMMAND_STOP_SHUTTING_DOWN("Shutting down..."),
 
     COMMAND_EVAL_HELP("Execute du code en JS. Uniquement utilisable par le créateur."),
+    COMMAND_EVAL_TITLE("Evaluation (JS nashorn)"),
+    COMMAND_EVAL_TO_EVALUATE("Code à éxécuté"),
+    COMMAND_EVAL_RESULT("Resultat"),
+
+    COMMAND_MATH_HELP("Calcule le resultat d'un calcul donné."),
+    COMMAND_MATH_TITLE("Math"),
+    COMMAND_MATH_EXPRESSION("Expression (math)"),
+    COMMAND_MATH_RESULT("Resultat"),
 
     TEAM_ROLE_PATTERN("Team - %s"),
     TEAM_CHANNEL_TEXT_NAME("group-%s"),
