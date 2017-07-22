@@ -1,10 +1,6 @@
 package com.jesus_crie.deusvult.utils;
 
-import com.jesus_crie.deusvult.builder.EmbedMessageBuilder;
-import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.User;
-
-import java.awt.*;
 
 public class StringUtils {
 
@@ -27,8 +23,8 @@ public class StringUtils {
     public static final String EMOJI_PREVIOUS = "\u23EA";
     public static final String EMOJI_NEXT = "\u23E9";
 
-    public static final String USER_CREATOR = "182547138729869314";
-    public static final String ROLE_BOT = "323952614892896261";
+    public static final long USER_CREATOR = 182547138729869314l;
+    public static final long ROLE_BOT = 323952614892896261l;
 
     public static final String CONFIG_URL_GENERAL = "http://www.jesus-crie.com/discord/config.json";
     public static final String CONFIG_URL_TEAMS = "http://www.jesus-crie.com/discord/teams.json";
@@ -36,14 +32,5 @@ public class StringUtils {
 
     public static String stringifyUser(User u) {
         return u.getName() + "#" + u.getDiscriminator();
-    }
-
-    public static MessageEmbed getErrorMessage(User author, String reason) {
-        EmbedMessageBuilder builder = new EmbedMessageBuilder(author);
-        builder.setColor(Color.RED);
-        builder.setAuthor("ERROR", null, ICON_ERROR);
-        builder.setDescription(reason);
-
-        return builder.build();
     }
 }

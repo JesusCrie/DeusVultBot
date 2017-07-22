@@ -1,32 +1,24 @@
-import java.util.Timer;
-import java.util.TimerTask;
+import net.dv8tion.jda.core.utils.SimpleLog;
 
 public class Test {
 
-    public static void main(String[] args) {
-        Timer timer = new Timer();
+    public static void main(String[] args) throws Exception {
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                print("First call");
-            }
-        }, 3000);
+        // 0011
+        // 0101
+    }
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                print("Second call");
-            }
-        }, 4000);
+    public static class DiscordLogListner implements SimpleLog.LogListener {
 
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                print("Cleanup");
-                timer.cancel();
-            }
-        }, 2000);
+        @Override
+        public void onLog(SimpleLog log, SimpleLog.Level logLevel, Object message) {
+            print(String.format("-> %1$s || %2$s", message, logLevel.getTag()));
+        }
+
+        @Override
+        public void onError(SimpleLog log, Throwable err) {
+            print("=>> ERROR " + err);
+        }
     }
 
     private static void print(Object o) {

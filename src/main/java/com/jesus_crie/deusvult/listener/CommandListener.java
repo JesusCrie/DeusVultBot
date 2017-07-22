@@ -1,12 +1,14 @@
 package com.jesus_crie.deusvult.listener;
 
 import com.jesus_crie.deusvult.DeusVult;
-import com.jesus_crie.deusvult.commands.Command;
+import com.jesus_crie.deusvult.command.Command;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
+import com.jesus_crie.deusvult.response.ResponseUtils;
+import com.jesus_crie.deusvult.utils.CommandException;
 import com.jesus_crie.deusvult.utils.F;
+import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
-import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.PermissionException;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
@@ -17,58 +19,68 @@ public class CommandListener extends ListenerAdapter {
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
-        if (event.getAuthor().getId() == DeusVult.instance().getJda().getSelfUser().getId())
+        // Check if is a command
+        if (event.getMessage().getRawContent().startsWith(StringUtils.PREFIX))
             return;
 
-        if (!event.getMessage().getRawContent().startsWith(StringUtils.PREFIX))
+        // Check if is self
+        if (event.getAuthor().getIdLong() == DeusVult.instance().getJda().getSelfUser().getIdLong())
             return;
 
-        String[] args = event.getMessage().getRawContent().substring(StringUtils.PREFIX.length()).split(" ");
-        Command c = CommandManager.getCommand(args[0]);
+        String[] fullCmd = event.getMessage().getRawContent().split(" ");
+        Command command = CommandManager.getCommand(fullCmd[0]);
 
-        // Multiple checks (channel type & guild only)
-        if (c != null && c.isAllowedHere(event.getChannelType())) {
-            if (c.isGuildOnly() && !(event.getChannelType() == ChannelType.TEXT && c.getGuildOnly().contains(event.getGuild().getId())))
-                return;
+        // Check if command exist
+        if (command == null) {
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_NOT_FOUND.get()))
+                    .send(event.getChannel()).queue();
+            return;
+        }
 
-            // Final check (permission)
-            boolean haveAccess;
-            switch (c.getAccessLevel()) {
-                case CREATOR:
-                    haveAccess = event.getAuthor().getId().equals(StringUtils.USER_CREATOR);
-                    break;
-                case SERVER_OWNER:
-                    haveAccess = event.getAuthor().getId().equals(event.getGuild().getOwner().getUser().getId());
-                    break;
-                case SERVER_OWNER_CREATOR:
-                    haveAccess = (event.getAuthor().getId().equals(StringUtils.USER_CREATOR)
-                            || event.getAuthor().getId().equals(event.getGuild().getOwner().getUser().getId()));
-                    break;
-                case EVERYONE:
-                    haveAccess = true;
-                    break;
-                default:
-                    haveAccess = false;
-                    break;
+        // Check if context is allowed
+        if ((command.getContext() & Command.Context.fromChannel(event.getChannel())) == 0) {
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_WRONG_CONTEXT.get()))
+                    .send(event.getChannel()).queue();
+            return;
+        }
+
+        // If in a guild
+        if (event.getGuild() != null) {
+            // Check context main guild
+            if (!((command.getContext() & Command.Context.OTHER_GUILD.b) == Command.Context.OTHER_GUILD.b)
+                    && event.getGuild().getIdLong() != DeusVult.instance().getMainGuild().getIdLong()) {
+                ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_GUILD_ONLY.get()))
+                        .send(event.getChannel()).queue();
             }
 
-            if (!haveAccess)
+            // Check access level
+            if (!command.getAccessLevel().superiorOrEqual(Command.AccessLevel.fromMember(event.getMember()))) {
+                ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_ACCESS_LEVEL.get()))
+                        .send(event.getChannel()).queue();
                 return;
+            }
 
-            Logger.info("[Command] " + StringUtils.stringifyUser(event.getAuthor()) + " issued " + F.code(event.getMessage().getRawContent())
-                + " from " + (event.getChannelType() == ChannelType.TEXT ? event.getGuild().getName() : "Private Channel"));
-            try {
-                event.getMessage().delete().complete();
-            } catch (IllegalStateException ignore) {}
-
-            new Thread(() -> {
-                try {
-                    c.execute(event, Arrays.copyOfRange(args, 1, args.length));
-                } catch (PermissionException e) {
-                    Logger.error("[Command] Missing permision !", e);
-                    event.getChannel().sendMessage(StringUtils.getErrorMessage(event.getAuthor(), "Missing permission: " + e.getPermission().getName())).queue();
-                }
-            }).start();
+            // Check guild only
+            if (!command.isGuildAuthorized(event.getGuild())) {
+                ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_GUILD_ONLY.get()))
+                        .send(event.getChannel()).queue();
+                return;
+            }
         }
+
+        if (event.getGuild() == null)
+            Logger.COMMAND.get().info(F.bold("[" + StringUtils.stringifyUser(event.getAuthor()) + "]") + " Executing: " + F.codeBlock(event.getMessage().getRawContent()));
+        else
+            Logger.COMMAND.get().info(F.bold("[" + event.getGuild().getName() + "] ") + StringUtils.stringifyUser(event.getAuthor()) + " execute " + F.codeBlock(event.getMessage().getRawContent()));
+
+        new Thread(() -> {
+            try {
+                command.execute(event, Arrays.copyOfRange(fullCmd, 1, fullCmd.length));
+            } catch (PermissionException e) {
+                Logger.COMMAND.get().log(e);
+                ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_MISSING_PERMISSION.format(e.getPermission())))
+                        .send(event.getChannel()).queue();
+            }
+        }).start();
     }
 }
