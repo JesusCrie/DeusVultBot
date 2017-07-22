@@ -27,7 +27,7 @@ public class CommandListener extends ListenerAdapter {
         if (event.getAuthor().getIdLong() == DeusVult.instance().getJda().getSelfUser().getIdLong())
             return;
 
-        String[] fullCmd = event.getMessage().getRawContent().split(" ");
+        String[] fullCmd = event.getMessage().getRawContent().substring(StringUtils.PREFIX.length()).split(" ");
         Command command = CommandManager.getCommand(fullCmd[0]);
 
         // Check if command exist
