@@ -17,6 +17,7 @@ public class StringUtils {
     public static final String ICON_DOOR = "https://cdn.discordapp.com/attachments/302785106802638848/317280450811002880/door-icon.png";
     public static final String ICON_GIPHY = "https://cdn.discordapp.com/attachments/302785106802638848/319467975080149003/giphy-logo-6611.png";
     public static final String ICON_CUP = "https://cdn.discordapp.com/attachments/302785106802638848/326739524975722496/cup-512.png";
+    public static final String ICON_8BALL = "https://discordapp.com/assets/f73a8294c3ac519665af224d98bf411e.svg";
 
     public static final String EMOJI_DIAMOND_BLUE = "\uD83D\uDD39";
     public static final String EMOJI_DIAMOND_ORANGE = "\uD83D\uDD38";

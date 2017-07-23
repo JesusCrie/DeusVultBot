@@ -19,6 +19,10 @@ public enum S {
     TEAM_CHANNEL_TEXT_TOPIC("Channel de la team %s"),
     TEAM_CHANNEL_VOICE_NAME("\uD83C\uDF0F Groupe - %s"),
 
+    EIGHT_BALL_DATA("Oui.//Je pense que oui.//Ca me parait evident.//Bien sur.//Effectivement.//A mon avis, oui.//A l'évidence oui.//" +
+            "Je suis mitigé.//J'hésite.//Tu m'en demande beaucoup tu sais.//Je me tate encore.//Pas la moindre idée !//J'ai même pas envie de répondre.//Un peu oui mais un peu non.//" +
+            "Non.//Vraiment ? Non.//Tu plaisante j'espère ?//HEHO, redescend sur terre !//42.//Sans doute pas.//Mdr nope."),
+
     COMMAND_TEST_HELP("Une commande de test, aucune utilitée."),
 
     COMMAND_STOP_HELP("Stoppe le bot, utilisable uniquement par le créateur."),
@@ -55,7 +59,9 @@ public enum S {
     COMMAND_QUOTE_ERROR("Le message n'existe pas ou est trop vieux."),
     COMMAND_QUOTE_TITLE("%s a écrit le %s à %s :"),
 
-    COMMAND_WR_HELP("Ecrit un mot avec des réactions sur le dernier message.");
+    COMMAND_WR_HELP("Ecrit un mot avec des réactions sur le dernier message."),
+
+    COMMAND_8BALL_HELP("Pose une question et recois une réponse claire et précise.");
 
     private String value;
     S(String value) {
