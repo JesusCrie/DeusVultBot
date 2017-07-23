@@ -64,7 +64,8 @@ public class DeusVult {
                 new EvalCommand(),
                 new MathCommand(),
                 new ClearCommand(),
-                new UserInfoCommand()
+                new UserInfoCommand(),
+                new PingCommand()
         );
 
         Logger.START.get().info("Loading music components...");

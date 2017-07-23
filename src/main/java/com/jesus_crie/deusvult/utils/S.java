@@ -39,7 +39,11 @@ public enum S {
     COMMAND_CLEAR_ERROR_NOT_ENOUGH("%s n'est pas un nombre de message correct."),
 
     COMMAND_USERINFO_HELP("Donne des informations sur un utilisateur."),
-    COMMAND_USERINFO_NICK(" (%s)");
+    COMMAND_USERINFO_NICK(" (%s)"),
+
+    COMMAND_PING_HELP("Calcul le ping du bot entre l'envoie de la commande et l'envoi de la réponse."),
+    COMMAND_PING_AWAIT("Calcul en cours..."),
+    COMMAND_PING_PING("Ping: %s ms");
 
     private String value;
     S(String value) {

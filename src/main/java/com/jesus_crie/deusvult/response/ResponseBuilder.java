@@ -102,4 +102,8 @@ public class ResponseBuilder {
     public RestAction<Message> send(MessageChannel channel) {
         return channel.sendMessage(builder.build());
     }
+
+    public MessageEmbed build() {
+        return builder.build();
+    }
 }
