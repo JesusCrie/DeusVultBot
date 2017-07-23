@@ -3,7 +3,10 @@ package com.jesus_crie.deusvult.response;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.*;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.MessageEmbed;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.requests.RestAction;
 
 import java.awt.*;
@@ -55,27 +58,19 @@ public class ResponseBuilder {
 
     public ResponseBuilder setMainList(String title, List<Object> content) {
         builder.setTitle(title);
-        builder.setDescription(StringUtils.EMOJI_DIAMOND_ORANGE + String.join("\n" + StringUtils.EMOJI_DIAMOND_ORANGE,
+        if (content != null || !content.isEmpty())
+            builder.setDescription(StringUtils.EMOJI_DIAMOND_ORANGE + String.join("\n" + StringUtils.EMOJI_DIAMOND_ORANGE,
                 content.stream().map(Object::toString).collect(Collectors.toList())));
-        return this;
-    }
-
-    public ResponseBuilder addList(String title, boolean inline, String... content) {
-        return addList(title, inline, Arrays.asList(content));
-    }
-
-    public ResponseBuilder addList(String title, boolean inline, List<String> content) {
-        if (content.isEmpty())
-            builder.addField(title, null, inline);
-        else
-            builder.addField(title,
-                    StringUtils.EMOJI_DIAMOND_BLUE + String.join("\n" + StringUtils.EMOJI_DIAMOND_BLUE, content),
-                    inline);
         return this;
     }
 
     public ResponseBuilder addField(String title, String content, boolean inline) {
         builder.addField(title, content, inline);
+        return this;
+    }
+
+    public ResponseBuilder addField(MessageEmbed.Field field) {
+        builder.addField(field);
         return this;
     }
 
@@ -97,6 +92,10 @@ public class ResponseBuilder {
     public ResponseBuilder setColor(Color c) {
         builder.setColor(c);
         return this;
+    }
+
+    EmbedBuilder getBuilder() {
+        return builder;
     }
 
     public RestAction<Message> send(MessageChannel channel) {

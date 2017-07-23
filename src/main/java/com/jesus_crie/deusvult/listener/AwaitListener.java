@@ -28,8 +28,9 @@ public class AwaitListener<T extends Event> extends ListenerAdapter {
         if (!active)
             return;
 
-        if (event.getClass().getName().equals(clazz.getName()))
+        if (event.getClass().getName().equals(clazz.getName())) {
             if (onTrigger.test((T) event))
                 DeusVult.instance().getJda().removeEventListener(this);
+        }
     }
 }

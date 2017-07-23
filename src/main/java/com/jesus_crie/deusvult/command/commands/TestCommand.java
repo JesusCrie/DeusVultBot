@@ -3,8 +3,10 @@ package com.jesus_crie.deusvult.command.commands;
 import com.jesus_crie.deusvult.command.Command;
 import com.jesus_crie.deusvult.command.CommandPattern;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
-import com.jesus_crie.deusvult.utils.Awaiter;
+import com.jesus_crie.deusvult.response.ResponsePage;
+import com.jesus_crie.deusvult.response.ResponsePaginable;
 import com.jesus_crie.deusvult.utils.S;
+import com.jesus_crie.deusvult.utils.StringUtils;
 import com.jesus_crie.deusvult.utils.T;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -44,11 +46,13 @@ public class TestCommand extends Command {
     }
 
     private boolean onCommandTest(MessageReceivedEvent event) {
-        Awaiter.awaitMessageFromUser(event.getChannel(),
-                event.getAuthor(),
-                e -> event.getChannel().sendMessage("It work !").queue(),
-                () -> event.getChannel().sendMessage("Timeout !").queue(),
-                T.calc(10));
+        ResponsePaginable.create(event.getMessage(), "Test Paginable")
+                .setTimeout(T.calc(30))
+                .setIcon(StringUtils.ICON_CUP)
+                .addPages(
+                        new ResponsePage("Page 1").setDescription("Je suis une peche"),
+                        new ResponsePage("Page 2").setDescription("Témoch"))
+                .send(event.getChannel(), event.getAuthor());
 
         return true;
     }

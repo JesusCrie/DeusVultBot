@@ -5,6 +5,7 @@ public enum S {
     GENERAL_GAME_PATTERN("%shelp - v%s"),
 
     RESPONSE_FOOTER("%s"),
+    RESPONSE_PAGINABLE_TITLE("%s (%s/%s)"),
     RESPONSE_ERROR_COMMAND_EXCEPTION("Une erreur est survenue"),
     RESPONSE_ERROR_COMMAND_CRASH("La commande a crashée, veuillez réessayez plus tard."),
     RESPONSE_ERROR_COMMAND_SYNTAX("Erreur de syntaxe, aucun pattern ne correspond."),
@@ -15,9 +16,9 @@ public enum S {
     RESPONSE_ERROR_COMMAND_MISSING_PERMISSION("Erreur: Il manque la permission %s"),
 
     TEAM_ROLE_PATTERN("Team - %s"),
-    TEAM_CHANNEL_TEXT_NAME("group-%s"),
+    TEAM_CHANNEL_TEXT_NAME("team-%s"),
     TEAM_CHANNEL_TEXT_TOPIC("Channel de la team %s"),
-    TEAM_CHANNEL_VOICE_NAME("\uD83C\uDF0F Groupe - %s"),
+    TEAM_CHANNEL_VOICE_NAME("\uD83C\uDF0F Team - %s"),
 
     EIGHT_BALL_DATA("Oui.//Je pense que oui.//Ca me parait evident.//Bien sur.//Effectivement.//A mon avis, oui.//A l'évidence oui.//" +
             "Je suis mitigé.//J'hésite.//Tu m'en demande beaucoup tu sais.//Je me tate encore.//Pas la moindre idée !//J'ai même pas envie de répondre.//Un peu oui mais un peu non.//" +

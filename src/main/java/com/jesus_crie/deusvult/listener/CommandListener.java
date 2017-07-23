@@ -71,7 +71,7 @@ public class CommandListener extends ListenerAdapter {
         if (event.getGuild() == null)
             Logger.COMMAND.get().info("[" + StringUtils.stringifyUser(event.getAuthor()) + "] Executing: " + F.codeBlock("yaml", event.getMessage().getRawContent()));
         else
-            Logger.COMMAND.get().info(F.bold("[" + event.getGuild().getName() + "] ") + StringUtils.stringifyUser(event.getAuthor()) + " execute " + F.codeBlock("yaml", event.getMessage().getRawContent()));
+            Logger.COMMAND.get().info(F.bold("[" + event.getGuild().getName() + "]") + " " + StringUtils.stringifyUser(event.getAuthor()) + " execute " + F.codeBlock("yaml", event.getMessage().getRawContent()));
 
         new Thread(() -> {
             try {

@@ -35,7 +35,7 @@ public class EightBallCommand extends Command {
         String answer = answers.get(random.nextInt(answers.size()));
 
         ResponseBuilder.create(event.getMessage())
-                .addField("\u2754 " + question, "\uD83C\uDFB1 " + answer, false)
+                .addField(StringUtils.EMOJI_EXCLAMATION + " " + question, StringUtils.EMOJI_8BALL + " " + answer, false)
                 .send(event.getChannel()).queue();
 
         return true;

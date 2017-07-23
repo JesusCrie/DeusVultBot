@@ -6,6 +6,7 @@ import com.jesus_crie.deusvult.listener.CommandListener;
 import com.jesus_crie.deusvult.logger.DiscordLogListener;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
+import com.jesus_crie.deusvult.manager.TimerManager;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.AccountType;
@@ -87,8 +88,9 @@ public class DeusVult {
         ready = false;
         Logger.START.get().info("Shutting down...");
         // TODO music stop
+        TimerManager.cleanUp();
         Config.save();
-        jda.shutdownNow();
+        jda.shutdown();
     }
 
     public JDA getJda() {

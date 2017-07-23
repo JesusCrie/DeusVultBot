@@ -23,6 +23,8 @@ public class StringUtils {
     public static final String EMOJI_DIAMOND_ORANGE = "\uD83D\uDD38";
     public static final String EMOJI_PREVIOUS = "\u23EA";
     public static final String EMOJI_NEXT = "\u23E9";
+    public static final String EMOJI_EXCLAMATION = "\u2754";
+    public static final String EMOJI_8BALL = "\uD83C\uDFB1";
 
     public static final long USER_CREATOR = 182547138729869314L;
     public static final long ROLE_BOT = 323952614892896261L;

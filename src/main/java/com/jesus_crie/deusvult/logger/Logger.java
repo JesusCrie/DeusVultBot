@@ -9,7 +9,8 @@ public enum Logger {
     MUSIC(SimpleLog.getLog("Music")),
     CONFIG(SimpleLog.getLog("Config")),
     TEAM(SimpleLog.getLog("Team")),
-    UNKNOW(SimpleLog.getLog("UNKNOW"));
+    UNKNOW(SimpleLog.getLog("UNKNOW")),
+    DEBUG(SimpleLog.getLog("Debug"));
 
     private SimpleLog logger;
     Logger(SimpleLog logger) {

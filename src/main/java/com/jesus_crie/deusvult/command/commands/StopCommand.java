@@ -26,9 +26,10 @@ public class StopCommand extends Command {
         ResponseBuilder.create(e.getMessage())
                 .setTitle(S.COMMAND_STOP_SHUTTING_DOWN.get())
                 .setIcon(StringUtils.ICON_BED)
-                .send(e.getChannel()).queue();
+                .send(e.getChannel()).complete();
 
         DeusVult.instance().shutdown();
         return true;
+
     }
 }
