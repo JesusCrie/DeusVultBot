@@ -4,31 +4,45 @@ import com.jesus_crie.deusvult.DeusVult;
 import com.jesus_crie.deusvult.listener.AwaitListener;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public class Awaiter {
 
-    public static void awaitMessageFromUser(MessageChannel channel, User user, Consumer<MessageReceivedEvent> success, Runnable fail, long timeout) {
+    public static void awaitMessageFromUser(MessageChannel channel, User user, Consumer<MessageReceivedEvent> onSuccess, Runnable onTimeout, long timeout) {
+        awaitEvent(MessageReceivedEvent.class,
+                e -> e.getChannel().equals(channel) && e.getAuthor().equals(user),
+                onSuccess,
+                onTimeout,
+                true,
+                timeout);
+    }
+
+    public static <T extends Event> void awaitEvent(Class<T> clazz, Predicate<T> checker, Consumer<T> onSuccess, Runnable onTimeout, boolean singleTrigger, long timeout) {
         Timer timer = new Timer();
 
-        AwaitListener<MessageReceivedEvent> listener = new AwaitListener<>(e -> {
-            if (e.getChannel().equals(channel) && e.getAuthor().equals(user)) {
-                timer.cancel();
-                success.accept(e);
-                return true;
+        AwaitListener<T> listener = new AwaitListener<>(e -> {
+            if (checker.test(e)) {
+                onSuccess.accept(e);
+
+                if (singleTrigger) {
+                    timer.cancel();
+                    return true;
+                }
             }
             return false;
-        }, MessageReceivedEvent.class);
+        }, clazz);
 
         TimerTask task = new TimerTask() {
             @Override
             public void run() {
                 DeusVult.instance().getJda().removeEventListener(listener);
-                fail.run();
+                onTimeout.run();
             }
         };
 
