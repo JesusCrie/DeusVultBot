@@ -10,7 +10,6 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.util.List;
 
 public class EvalCommand extends Command {
@@ -52,7 +51,7 @@ public class EvalCommand extends Command {
 
         try {
             result = engine.eval(imports + "with (imports) {\n" + code + "\n}");
-        } catch (ScriptException ee) {
+        } catch (Exception ee) {
             result = ee;
         }
 

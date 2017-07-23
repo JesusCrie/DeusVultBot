@@ -53,7 +53,9 @@ public enum S {
 
     COMMAND_QUOTE_HELP("Cite le message de quelqu'un."),
     COMMAND_QUOTE_ERROR("Le message n'existe pas ou est trop vieux."),
-    COMMAND_QUOTE_TITLE("%s a écrit le %s à %s :");
+    COMMAND_QUOTE_TITLE("%s a écrit le %s à %s :"),
+
+    COMMAND_WR_HELP("Ecrit un mot avec des réactions sur le dernier message.");
 
     private String value;
     S(String value) {

@@ -2,10 +2,10 @@ package com.jesus_crie.deusvult.listener;
 
 import com.jesus_crie.deusvult.DeusVult;
 import com.jesus_crie.deusvult.command.Command;
+import com.jesus_crie.deusvult.exception.CommandException;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
 import com.jesus_crie.deusvult.response.ResponseUtils;
-import com.jesus_crie.deusvult.exception.CommandException;
 import com.jesus_crie.deusvult.utils.F;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
@@ -27,7 +27,7 @@ public class CommandListener extends ListenerAdapter {
         if (event.getAuthor().getIdLong() == DeusVult.instance().getJda().getSelfUser().getIdLong())
             return;
 
-        String[] fullCmd = event.getMessage().getRawContent().replace("\n", " ").substring(StringUtils.PREFIX.length()).split(" ");
+        String[] fullCmd = event.getMessage().getRawContent().trim().replace("\n", " ").substring(StringUtils.PREFIX.length()).split(" ");
         Command command = CommandManager.getCommand(fullCmd[0]);
 
         // Check if command exist
