@@ -66,7 +66,8 @@ public class DeusVult {
                 new ClearCommand(),
                 new UserInfoCommand(),
                 new PingCommand(),
-                new GifCommand()
+                new GifCommand(),
+                new QuoteCommand()
         );
 
         Logger.START.get().info("Loading music components...");

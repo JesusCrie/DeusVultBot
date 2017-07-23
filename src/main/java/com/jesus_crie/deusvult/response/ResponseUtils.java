@@ -1,6 +1,7 @@
 package com.jesus_crie.deusvult.response;
 
 import com.jesus_crie.deusvult.exception.CommandException;
+import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Message;
 
@@ -12,7 +13,7 @@ public class ResponseUtils {
         return ResponseBuilder.create(m)
                 .setColor(Color.RED)
                 .setIcon(StringUtils.ICON_ERROR)
-                .setTitle("An error occured !")
+                .setTitle(S.RESPONSE_ERROR_COMMAND_EXCEPTION.get())
                 .setDescription(e.toString());
     }
 }

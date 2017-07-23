@@ -5,6 +5,7 @@ public enum S {
     GENERAL_GAME_PATTERN("%shelp - v%s"),
 
     RESPONSE_FOOTER("%s"),
+    RESPONSE_ERROR_COMMAND_EXCEPTION("Une erreur est survenue"),
     RESPONSE_ERROR_COMMAND_CRASH("La commande a crashée, veuillez réessayez plus tard."),
     RESPONSE_ERROR_COMMAND_SYNTAX("Erreur de syntaxe, aucun pattern ne correspond."),
     RESPONSE_ERROR_COMMAND_NOT_FOUND("Cette commande n'éxiste pas."),
@@ -48,7 +49,11 @@ public enum S {
     COMMAND_GIF_HELP("Affiche un gif."),
     COMMAND_GIF_FAIL("Impossible de récupérer des infos depuis Giphy."),
     COMMAND_GIF_RANDOM("Gif aléatoire"),
-    COMMAND_GIF_SEARCH("Résultat pour: %s");
+    COMMAND_GIF_SEARCH("Résultat pour: %s"),
+
+    COMMAND_QUOTE_HELP("Cite le message de quelqu'un."),
+    COMMAND_QUOTE_ERROR("Le message n'existe pas ou est trop vieux."),
+    COMMAND_QUOTE_TITLE("%s a écrit le %s à %s :");
 
     private String value;
     S(String value) {
