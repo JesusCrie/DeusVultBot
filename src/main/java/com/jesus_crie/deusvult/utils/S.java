@@ -2,9 +2,9 @@ package com.jesus_crie.deusvult.utils;
 
 public enum S {
 
-    GENERAL_GAME_PATTERN("%shelp - %s"),
+    GENERAL_GAME_PATTERN("%shelp - v%s"),
 
-    RESPONSE_FOOTER("Requester: %1$s"),
+    RESPONSE_FOOTER("%s"),
     RESPONSE_ERROR_COMMAND_CRASH("La commande a crashée, veuillez réessayez plus tard."),
     RESPONSE_ERROR_COMMAND_SYNTAX("Erreur de syntaxe, aucun pattern ne correspond."),
     RESPONSE_ERROR_COMMAND_NOT_FOUND("Cette commande n'éxiste pas."),
@@ -13,14 +13,19 @@ public enum S {
     RESPONSE_ERROR_COMMAND_ACCESS_LEVEL("Vous n'avez pas les permissions requises pour cette commande."),
     RESPONSE_ERROR_COMMAND_MISSING_PERMISSION("Erreur: Il manque la permission %s"),
 
+    TEAM_ROLE_PATTERN("Team - %s"),
+    TEAM_CHANNEL_TEXT_NAME("group-%s"),
+    TEAM_CHANNEL_TEXT_TOPIC("Channel de la team %s"),
+    TEAM_CHANNEL_VOICE_NAME("\uD83C\uDF0F Groupe - %s"),
+
     COMMAND_TEST_HELP("Une commande de test, aucune utilitée."),
 
     COMMAND_STOP_HELP("Stoppe le bot, utilisable uniquement par le créateur."),
     COMMAND_STOP_SHUTTING_DOWN("Shutting down..."),
 
     COMMAND_EVAL_HELP("Execute du code en JS. Uniquement utilisable par le créateur."),
-    COMMAND_EVAL_TITLE("Evaluation (JS nashorn)"),
-    COMMAND_EVAL_TO_EVALUATE("Code à éxécuté"),
+    COMMAND_EVAL_TITLE("Evaluation (JS / Nashorn)"),
+    COMMAND_EVAL_TO_EVALUATE("Code à exécuter"),
     COMMAND_EVAL_RESULT("Resultat"),
 
     COMMAND_MATH_HELP("Calcule le resultat d'un calcul donné."),
@@ -28,10 +33,9 @@ public enum S {
     COMMAND_MATH_EXPRESSION("Expression (math)"),
     COMMAND_MATH_RESULT("Resultat"),
 
-    TEAM_ROLE_PATTERN("Team - %s"),
-    TEAM_CHANNEL_TEXT_NAME("group-%s"),
-    TEAM_CHANNEL_TEXT_TOPIC("Channel de la team %s"),
-    TEAM_CHANNEL_VOICE_NAME("\uD83C\uDF0F Groupe - %s");
+    COMMAND_CLEAR_HELP("Efface un certain nombre de messages dans le channel."),
+    COMMAND_CLEAR_TITLE("%s messages ont été éffacés."),
+    COMMAND_CLEAR_TITLE_USER("%s messages de %s sont en train d'être supprimés");
 
     private String value;
     S(String value) {

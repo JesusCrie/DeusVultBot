@@ -5,6 +5,7 @@ import com.jesus_crie.deusvult.config.Config;
 import com.jesus_crie.deusvult.config.Team;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.utils.S;
+import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.requests.restaction.order.ChannelOrderAction;
@@ -57,7 +58,7 @@ public class TeamManager {
 
         Role role = g.getController()
                 .createRole()
-                .setName("Team - " + name)
+                .setName(S.TEAM_ROLE_PATTERN.format(name))
                 .complete();
         g.getController().addRolesToMember(g.getMember(owner), role).complete();
 
@@ -65,7 +66,7 @@ public class TeamManager {
                 .createTextChannel(S.TEAM_CHANNEL_TEXT_NAME.format(name.replaceAll(" ", "_")))
                 .addPermissionOverride(g.getPublicRole(), new ArrayList<>(), Collections.singletonList(Permission.MESSAGE_READ))
                 .addPermissionOverride(role, Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
-                .addPermissionOverride(g.getRoleById("323952614892896261"), Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
+                .addPermissionOverride(g.getRoleById(StringUtils.ROLE_BOT), Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
                 .setTopic(S.TEAM_CHANNEL_TEXT_TOPIC.format(name))
                 .complete();
 
@@ -73,7 +74,7 @@ public class TeamManager {
                 .createVoiceChannel(S.TEAM_CHANNEL_VOICE_NAME.format(name))
                 .addPermissionOverride(g.getPublicRole(), new ArrayList<>(), Collections.singletonList(Permission.VOICE_CONNECT))
                 .addPermissionOverride(role, Collections.singletonList(Permission.VOICE_CONNECT), new ArrayList<>())
-                .addPermissionOverride(g.getRoleById("323952614892896261"), Collections.singletonList(Permission.VOICE_CONNECT), new ArrayList<>())
+                .addPermissionOverride(g.getRoleById(StringUtils.ROLE_BOT), Collections.singletonList(Permission.VOICE_CONNECT), new ArrayList<>())
                 .setUserlimit(10)
                 .complete();
 
@@ -128,6 +129,9 @@ public class TeamManager {
     }
 
     private static int getNextId() {
+        if (teams.isEmpty())
+            return 0;
+
         teams.sort((prev, next) -> prev.getId() > next.getId() ? 1 : -1);
 
         return teams.get(teams.size() - 1).getId() + 1;

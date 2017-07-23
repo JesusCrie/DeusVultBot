@@ -1,9 +1,6 @@
 package com.jesus_crie.deusvult;
 
-import com.jesus_crie.deusvult.command.commands.EvalCommand;
-import com.jesus_crie.deusvult.command.commands.MathCommand;
-import com.jesus_crie.deusvult.command.commands.StopCommand;
-import com.jesus_crie.deusvult.command.commands.TestCommand;
+import com.jesus_crie.deusvult.command.commands.*;
 import com.jesus_crie.deusvult.config.Config;
 import com.jesus_crie.deusvult.listener.CommandListener;
 import com.jesus_crie.deusvult.logger.DiscordLogListener;
@@ -65,7 +62,8 @@ public class DeusVult {
                 new TestCommand(),
                 new StopCommand(),
                 new EvalCommand(),
-                new MathCommand()
+                new MathCommand(),
+                new ClearCommand()
         );
 
         Logger.START.get().info("Loading music components...");
@@ -84,7 +82,7 @@ public class DeusVult {
         Logger.START.get().info("Shutting down...");
         // TODO music stop
         Config.save();
-        jda.shutdown(true);
+        jda.shutdownNow();
     }
 
     public JDA getJda() {

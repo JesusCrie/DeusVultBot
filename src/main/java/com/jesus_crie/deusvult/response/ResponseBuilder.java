@@ -27,7 +27,7 @@ public class ResponseBuilder {
     }
 
     protected ResponseBuilder(User author, Instant timestamp) {
-        builder.setAuthor(S.RESPONSE_FOOTER.format(StringUtils.stringifyUser(author)), null, author.getEffectiveAvatarUrl());
+        builder.setFooter(S.RESPONSE_FOOTER.format(StringUtils.stringifyUser(author)), author.getEffectiveAvatarUrl());
         builder.setTimestamp(timestamp);
         builder.setColor(Color.WHITE);
     }

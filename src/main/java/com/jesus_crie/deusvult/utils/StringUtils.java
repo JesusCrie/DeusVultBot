@@ -23,8 +23,8 @@ public class StringUtils {
     public static final String EMOJI_PREVIOUS = "\u23EA";
     public static final String EMOJI_NEXT = "\u23E9";
 
-    public static final long USER_CREATOR = 182547138729869314l;
-    public static final long ROLE_BOT = 323952614892896261l;
+    public static final long USER_CREATOR = 182547138729869314L;
+    public static final long ROLE_BOT = 323952614892896261L;
 
     public static final String CONFIG_URL_GENERAL = "http://www.jesus-crie.com/discord/config.json";
     public static final String CONFIG_URL_TEAMS = "http://www.jesus-crie.com/discord/teams.json";

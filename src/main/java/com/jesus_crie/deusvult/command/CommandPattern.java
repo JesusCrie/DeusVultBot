@@ -85,8 +85,11 @@ public class CommandPattern {
     public static class Argument implements Cloneable {
 
         // Static content
-        public static final Argument NUMBER = new Argument("(?<value>[0-9]{0,18})",
+        public static final Argument LONG = new Argument("(?<value>[0-9]{1,18})",
                 matcher -> Long.valueOf(matcher.group("value")));
+
+        public static final Argument INTEGER = new Argument("(?<value>[0-9]{1,9})",
+                matcher -> Integer.valueOf(matcher.group("value")));
 
         public static final Argument STRING = new Argument("(?<value>[\\S]+)",
                 matcher -> matcher.group("value"));
