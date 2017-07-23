@@ -3,11 +3,11 @@ package com.jesus_crie.deusvult.command.commands;
 import com.jesus_crie.deusvult.command.Command;
 import com.jesus_crie.deusvult.command.CommandPattern;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
+import com.jesus_crie.deusvult.utils.Awaiter;
 import com.jesus_crie.deusvult.utils.S;
-import com.jesus_crie.deusvult.utils.StringUtils;
+import com.jesus_crie.deusvult.utils.T;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.awt.*;
 import java.util.List;
 
 public class TestCommand extends Command {
@@ -26,9 +26,7 @@ public class TestCommand extends Command {
                         CommandPattern.Argument.URL_AS_STRING,
                         CommandPattern.Argument.STRING.clone().setRepeatable(true)
                 }, this::onCommandEmbed),
-                new CommandPattern(new CommandPattern.Argument[] {
-                        CommandPattern.Argument.forString("test")
-                }, (e, a) -> onCommandTest(e))
+                new CommandPattern(null, (e, a) -> onCommandTest(e))
         );
     }
 
@@ -46,15 +44,11 @@ public class TestCommand extends Command {
     }
 
     private boolean onCommandTest(MessageReceivedEvent event) {
-        ResponseBuilder.create(event.getMessage())
-                .setTitle("Some title")
-                .setIcon(StringUtils.ICON_DOOR)
-                .setMainList("Best fast foods", "Burger King", "KFC", "McDonald")
-                .addList("Owner", true, "me lol")
-                .addList("Scum", true, "you lol")
-                .addList("You suck", true, "I know")
-                .setColor(Color.GREEN)
-                .send(event.getChannel()).queue();
+        Awaiter.awaitMessageFromUser(event.getChannel(),
+                event.getAuthor(),
+                e -> event.getChannel().sendMessage("It work !").queue(),
+                () -> event.getChannel().sendMessage("Timeout !").queue(),
+                T.calc(10));
 
         return true;
     }
