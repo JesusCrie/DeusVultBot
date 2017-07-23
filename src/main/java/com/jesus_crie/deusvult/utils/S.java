@@ -43,7 +43,12 @@ public enum S {
 
     COMMAND_PING_HELP("Calcul le ping du bot entre l'envoie de la commande et l'envoi de la réponse."),
     COMMAND_PING_AWAIT("Calcul en cours..."),
-    COMMAND_PING_PING("Ping: %s ms");
+    COMMAND_PING_PING("Ping: %s ms"),
+
+    COMMAND_GIF_HELP("Affiche un gif."),
+    COMMAND_GIF_FAIL("Impossible de récupérer des infos depuis Giphy."),
+    COMMAND_GIF_RANDOM("Gif aléatoire"),
+    COMMAND_GIF_SEARCH("Résultat pour: %s");
 
     private String value;
     S(String value) {

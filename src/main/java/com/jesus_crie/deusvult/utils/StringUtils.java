@@ -26,6 +26,11 @@ public class StringUtils {
     public static final long USER_CREATOR = 182547138729869314L;
     public static final long ROLE_BOT = 323952614892896261L;
 
+    public static final String GIPHY_KEY = "dc6zaTOxFJmzC";
+    public static final String GIPHY_BASE = "http://api.giphy.com/v1/gifs/";
+    public static final String GIPHY_RANDOM = GIPHY_BASE + "random";
+    public static final String GIPHY_SEARCH = GIPHY_BASE + "search";
+
     public static final String CONFIG_URL_GENERAL = "http://www.jesus-crie.com/discord/config.json";
     public static final String CONFIG_URL_TEAMS = "http://www.jesus-crie.com/discord/teams.json";
     public static final String CONFIG_URL_SAVE = "http://www.jesus-crie.com/discord/update_config.php";
