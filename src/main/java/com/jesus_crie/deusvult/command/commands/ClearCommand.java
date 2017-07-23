@@ -2,7 +2,9 @@ package com.jesus_crie.deusvult.command.commands;
 
 import com.jesus_crie.deusvult.command.Command;
 import com.jesus_crie.deusvult.command.CommandPattern;
+import com.jesus_crie.deusvult.exception.CommandException;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
+import com.jesus_crie.deusvult.response.ResponseUtils;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Member;
@@ -39,6 +41,11 @@ public class ClearCommand extends Command {
     }
 
     private boolean onCommandGlobal(MessageReceivedEvent event, List<Object> args) {
+        if ((int) args.get(0) <= 1) {
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.COMMAND_CLEAR_ERROR_NOT_ENOUGH.format(args.get(0))))
+                    .send(event.getChannel()).queue();
+            return true;
+        }
 
         for (int howMany = (int) args.get(0); howMany > 0; howMany -= 100) {
             List<Message> toDelete = event.getTextChannel().getHistory().retrievePast(howMany > 100 ? 100 : howMany).complete();
@@ -82,7 +89,7 @@ public class ClearCommand extends Command {
         }
 
         ResponseBuilder.create(event.getMessage())
-                .setTitle(S.COMMAND_CLEAR_TITLE.format((int) args.get(0)))
+                .setTitle(S.COMMAND_CLEAR_TITLE.format((int) args.get(1)))
                 .setIcon(StringUtils.ICON_INFO)
                 .send(event.getChannel()).queue();
 

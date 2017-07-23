@@ -35,7 +35,11 @@ public enum S {
 
     COMMAND_CLEAR_HELP("Efface un certain nombre de messages dans le channel."),
     COMMAND_CLEAR_TITLE("%s messages ont été éffacés."),
-    COMMAND_CLEAR_TITLE_USER("%s messages de %s sont en train d'être supprimés");
+    COMMAND_CLEAR_TITLE_USER("%s messages de %s sont en train d'être supprimés"),
+    COMMAND_CLEAR_ERROR_NOT_ENOUGH("%s n'est pas un nombre de message correct."),
+
+    COMMAND_USERINFO_HELP("Donne des informations sur un utilisateur."),
+    COMMAND_USERINFO_NICK(" (%s)");
 
     private String value;
     S(String value) {
