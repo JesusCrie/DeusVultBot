@@ -31,7 +31,7 @@ public class Config {
             config = mapper.readValue(new URL(StringUtils.CONFIG_URL_GENERAL), new TypeReference<HashMap<String, String>>() {});
 
             List<Team> t = mapper.readValue(new URL(StringUtils.CONFIG_URL_TEAMS), new TypeReference<List<Team>>() {});
-            //TeamManager.registerTeams(t);
+            TeamManager.registerTeams(t);
             Logger.CONFIG.get().info("Config loaded !");
         } catch (IOException e) {
             Logger.CONFIG.get().log(new ConfigException("Can't load config !"));

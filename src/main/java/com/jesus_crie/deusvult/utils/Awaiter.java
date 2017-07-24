@@ -35,6 +35,15 @@ public class Awaiter {
                 timeout);
     }
 
+    public static void awaitReactNotification(Message target, User user, Consumer<MessageReactionAddEvent> onSuccess) {
+        awaitEvent(MessageReactionAddEvent.class,
+                e -> e.getMessageIdLong() == target.getIdLong() && e.getUser().equals(user),
+                onSuccess,
+                null,
+                true,
+                -1);
+    }
+
     public static <T extends Event> void awaitEvent(Class<T> clazz, Predicate<T> checker, Consumer<T> onSuccess, Runnable onTimeout, boolean singleTrigger, long timeout) {
         Timer timer = TimerManager.create();
 
@@ -54,7 +63,8 @@ public class Awaiter {
             @Override
             public void run() {
                 DeusVult.instance().getJda().removeEventListener(listener);
-                onTimeout.run();
+                if (onTimeout != null)
+                    onTimeout.run();
             }
         };
         DeusVult.instance().getJda().addEventListener(listener);

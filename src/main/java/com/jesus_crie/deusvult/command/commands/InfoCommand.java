@@ -7,6 +7,7 @@ import com.jesus_crie.deusvult.response.ResponseUtils;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import com.jesus_crie.deusvult.utils.T;
+import net.dv8tion.jda.core.JDAInfo;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 public class InfoCommand extends Command {
@@ -32,7 +33,7 @@ public class InfoCommand extends Command {
                 .addField(S.COMMAND_INFO_VERSION.get(), StringUtils.VERSION, true)
                 .addField(S.COMMAND_INFO_UPTIME.get(), T.getUptime(), true)
                 .addField(ResponseUtils.createList(S.COMMAND_INFO_LIBS.get(), false,
-                        "[JDA 3.2.0_237](https://github.com/DV8FromTheWorld/JDA)",
+                        "[JDA " + JDAInfo.VERSION + "](" + JDAInfo.GITHUB + ")",
                         "[LavaPlayer 1.2.42](https://github.com/sedmelluq/lavaplayer)",
                         "[Jaskson Databind 2.8.8](https://github.com/FasterXML/jackson-databind)"))
                 .send(event.getChannel()).queue();

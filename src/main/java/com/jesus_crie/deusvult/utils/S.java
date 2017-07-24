@@ -16,6 +16,8 @@ public enum S {
     RESPONSE_ERROR_COMMAND_ACCESS_LEVEL("Vous n'avez pas les permissions requises pour cette commande."),
     RESPONSE_ERROR_COMMAND_MISSING_PERMISSION("Erreur: Il manque la permission %s"),
     RESPONSE_ERROR_UNKNOW("FATAL ERROR: %s"),
+    RESPONSE_NOTIFICATION_TITLE("Notification"),
+    RESPONSE_NOTIFICATION_FOOTER("Clique sur " + StringUtils.EMOJI_CACTUS + " pour effacer"),
 
     TEAM_ROLE_PATTERN("Team - %s"),
     TEAM_CHANNEL_TEXT_NAME("team-%s"),
@@ -83,7 +85,15 @@ public enum S {
     COMMAND_INFO_VERSION("Version"),
 
     COMMAND_TEAM_HELP("Permet de faire toutes les actions possible avec les teams."),
-    COMMAND_TEAM_LIST_TITLE("Les 10 premières teams (Total: %s)");
+    COMMAND_TEAM_HELP_HELP("Aide sur les teams"),
+    COMMAND_TEAM_HELP_DESC("Une team est un groupe de joueurs (minimum 2) ayant un channel textuel et vocal dédié sur ce serveur." +
+            "\nLe leader de la team peut inviter/exclure des membres, renommer la team, la supprimer et donner son titre à un autre membre. Il dispose également d'un rang exclusif." +
+            "\nLes membres de la team peuvent uniquement la quitter et possedent un rang indiquant le nom de la team." +
+            "\nQuand une team atteint 1 membre elle est automatiquement supprimée." +
+            "\nA cause du système de permissions de Discord les admins (uniquement) ont accès aux channels de team."),
+    COMMAND_TEAM_LIST_TITLE("Top 10 des plus grosses teams (Total: %s)"),
+    COMMAND_TEAM_LIST_NONE("Aucune team n'a été trouver !"),
+    COMMAND_TEAM_LIST_PATTERN("%s (%s)");
 
     private String value;
     S(String value) {

@@ -60,6 +60,22 @@ public class Team implements Comparable<Team> {
         role.delete().complete();
     }
 
+    public void addMember(User u) {
+        if (isMember(u))
+            return;
+        members.add(u);
+        role.getGuild().getController()
+                .addRolesToMember(role.getGuild().getMember(u), role).complete();
+    }
+
+    public void removeMember(User u) {
+        if (!isMember(u))
+            return;
+        members.remove(u);
+        role.getGuild().getController()
+                .removeRolesFromMember(role.getGuild().getMember(u), role).complete();
+    }
+
     public boolean isMember(User u) {
         return members.contains(u);
     }
