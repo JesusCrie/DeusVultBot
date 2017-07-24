@@ -1,5 +1,6 @@
 package com.jesus_crie.deusvult.utils;
 
+import com.jesus_crie.deusvult.command.Command;
 import net.dv8tion.jda.core.entities.User;
 
 public class StringUtils {
@@ -17,7 +18,6 @@ public class StringUtils {
     public static final String ICON_DOOR = "https://cdn.discordapp.com/attachments/302785106802638848/317280450811002880/door-icon.png";
     public static final String ICON_GIPHY = "https://cdn.discordapp.com/attachments/302785106802638848/319467975080149003/giphy-logo-6611.png";
     public static final String ICON_CUP = "https://cdn.discordapp.com/attachments/302785106802638848/326739524975722496/cup-512.png";
-    public static final String ICON_8BALL = "https://discordapp.com/assets/f73a8294c3ac519665af224d98bf411e.svg";
 
     public static final String EMOJI_DIAMOND_BLUE = "\uD83D\uDD39";
     public static final String EMOJI_DIAMOND_ORANGE = "\uD83D\uDD38";
@@ -40,5 +40,20 @@ public class StringUtils {
 
     public static String stringifyUser(User u) {
         return u.getName() + "#" + u.getDiscriminator();
+    }
+
+    public static String capitalize(String s) {
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
+
+    public static String stringifyContext(int context) {
+        if ((context & Command.Context.EVERYWHERE.b) == Command.Context.EVERYWHERE.b)
+            return Command.Context.EVERYWHERE.name();
+        else if ((context & Command.Context.ALL_GUILD.b) == Command.Context.ALL_GUILD.b)
+            return Command.Context.ALL_GUILD.name();
+        else if ((context & Command.Context.MAIN_GUILD.b) == Command.Context.MAIN_GUILD.b)
+            return Command.Context.MAIN_GUILD.name();
+        else
+            return Command.Context.PRIVATE.name();
     }
 }

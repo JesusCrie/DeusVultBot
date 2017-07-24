@@ -26,7 +26,7 @@ public class EightBallCommand extends Command {
         registerPatterns(
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.STRING.clone().setRepeatable(true)
-                }, this::onCommand)
+                }, this::onCommand, "<question>")
         );
     }
 

@@ -17,13 +17,19 @@ public class CommandPattern {
 
     private List<Argument> arguments;
     private BiPredicate<MessageReceivedEvent, List<Object>> action;
+    private String notice;
 
-    public CommandPattern(Argument[] args, BiPredicate<MessageReceivedEvent, List<Object>> action) {
+    public CommandPattern(Argument[] args, BiPredicate<MessageReceivedEvent, List<Object>> action, String notice) {
         if (args != null && args.length > 0)
             arguments = Arrays.asList(args);
         else
             arguments = new ArrayList<>();
         this.action = action;
+        this.notice = notice;
+    }
+
+    public String getNotice() {
+        return notice;
     }
 
     public boolean hasArgument() {
@@ -94,7 +100,7 @@ public class CommandPattern {
         public static final Argument STRING = new Argument("(?<value>[\\S]+)",
                 matcher -> matcher.group("value"));
 
-        public static final Argument WORD_ONLY_LETTERS = new Argument("(?<value>[\\w]+)",
+        public static final Argument WORD_ONLY = new Argument("(?<value>[\\w]+)",
                 matcher -> matcher.group("value"));
 
         public static final Argument URL_AS_STRING = new Argument("(?<url>(?:https?:\\/\\/){1}[a-z\\d.-]+(?:\\/[a-z\\d.-]*)*)",

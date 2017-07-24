@@ -18,7 +18,7 @@ public class StopCommand extends Command {
                 Context.calculate(Context.PRIVATE, Context.MAIN_GUILD));
 
         registerPatterns(
-                new CommandPattern(null, (e, a) -> onCommand(e))
+                new CommandPattern(null, (e, a) -> onCommand(e), "")
         );
     }
 
@@ -30,6 +30,5 @@ public class StopCommand extends Command {
 
         DeusVult.instance().shutdown();
         return true;
-
     }
 }

@@ -62,7 +62,14 @@ public enum S {
 
     COMMAND_WR_HELP("Ecrit un mot avec des réactions sur le dernier message."),
 
-    COMMAND_8BALL_HELP("Pose une question et recois une réponse claire et précise.");
+    COMMAND_8BALL_HELP("Pose une question et recois une réponse claire et précise."),
+
+    COMMAND_HELP_HELP("Affiche l'aide des commandes."),
+    COMMAND_HELP_TITLE("Aide"),
+    COMMAND_HELP_COMMAND_TITLE("Command %s"),
+    COMMAND_HELP_ACCESS_LEVEL("Rang requis"),
+    COMMAND_HELP_CONTEXT("Contexte requis"),
+    COMMAND_HELP_USAGE("Usage");
 
     private String value;
     S(String value) {

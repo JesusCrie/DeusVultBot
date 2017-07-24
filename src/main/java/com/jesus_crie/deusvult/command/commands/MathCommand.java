@@ -28,11 +28,11 @@ public class MathCommand extends Command {
         registerPatterns(
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.STRING.clone().setRepeatable(true)
-                }, this::onCommand)
+                }, this::onCommand, "<expression>")
         );
     }
 
-    private boolean onCommand(MessageReceivedEvent event, List<Object> args) {
+    private boolean onCommand(MessageReceivedEvent event, List<Object> args) { //TODO restrict usable packages
         String expression = String.join(" ", args.stream()
                 .map(Object::toString)
                 .toArray(String[]::new));

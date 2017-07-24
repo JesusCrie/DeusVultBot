@@ -31,9 +31,11 @@ public class EvalCommand extends Command {
                 AccessLevel.ADMIN,
                 Context.calculate(Context.EVERYWHERE));
 
-        registerPatterns(new CommandPattern(new CommandPattern.Argument[] {
-                CommandPattern.Argument.STRING.clone().setRepeatable(true)
-        }, this::onCommand));
+        registerPatterns(
+                new CommandPattern(new CommandPattern.Argument[] {
+                    CommandPattern.Argument.STRING.clone().setRepeatable(true)
+                }, this::onCommand, "<code>")
+        );
 
         engine = new ScriptEngineManager().getEngineByExtension("js");
     }

@@ -9,7 +9,6 @@ import com.jesus_crie.deusvult.response.ResponseUtils;
 import com.jesus_crie.deusvult.utils.S;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.core.requests.ErrorResponse;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -26,11 +25,11 @@ public class QuoteCommand extends Command {
         registerPatterns(
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.LONG
-                }, this::onCommandQuoteId),
+                }, this::onCommandQuoteId, "<id>"),
 
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.STRING.clone().setRepeatable(true)
-                }, this::onCommandSearch)
+                }, this::onCommandSearch, "<recherche>")
         );
     }
 

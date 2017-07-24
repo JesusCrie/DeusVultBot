@@ -22,12 +22,12 @@ public class DiscordLogListener implements SimpleLog.LogListener {
         if (!Logger.loggerRegistered(log.name))
             return;
 
-        logToDiscord(F.bold("[" + log.name + "] ") + message, logLevel);
+        logToDiscord(F.bold("[" + log.name + "]") + " " + message, logLevel);
     }
 
     @Override
     public void onError(SimpleLog log, Throwable err) {
-        logToDiscord(F.bold("[" + log.name + "] ") + err, SimpleLog.Level.FATAL);
+        logToDiscord(F.bold("[" + log.name + "]") + " " + err, SimpleLog.Level.FATAL);
     }
 
     public void logToDiscord(String message, SimpleLog.Level level) {

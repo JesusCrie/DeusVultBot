@@ -60,6 +60,7 @@ public class DeusVult {
 
         Logger.START.get().info("Registering commands...");
         CommandManager.registerCommands(
+                new HelpCommand(),
                 new TestCommand(),
                 new StopCommand(),
                 new EvalCommand(),

@@ -1,8 +1,8 @@
 package com.jesus_crie.deusvult.command;
 
 import com.jesus_crie.deusvult.DeusVult;
-import com.jesus_crie.deusvult.response.ResponseUtils;
 import com.jesus_crie.deusvult.exception.CommandException;
+import com.jesus_crie.deusvult.response.ResponseUtils;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.Permission;
@@ -67,6 +67,13 @@ public abstract class Command {
         return context;
     }
 
+    public List<String> collectNotices() {
+        List<String> out = new ArrayList<>();
+        patterns.forEach(p -> out.add(StringUtils.PREFIX + name + " " + p.getNotice()));
+
+        return out;
+    }
+
     protected void registerPatterns(CommandPattern... patterns) {
         this.patterns.addAll(Arrays.asList(patterns));
     }
@@ -116,7 +123,7 @@ public abstract class Command {
 
     public enum Context {
         MAIN_GUILD(0b0001),
-        ALL_GUILD(0b0010),
+        ALL_GUILD(0b0011),
         PRIVATE(0b0100),
         EVERYWHERE(0b0111);
 

@@ -19,4 +19,8 @@ public class CommandManager {
                 .findAny()
                 .orElse(null);
     }
+
+    public static List<Command> getCommands() {
+        return commands;
+    }
 }

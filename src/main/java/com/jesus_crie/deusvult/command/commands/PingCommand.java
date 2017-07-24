@@ -19,7 +19,7 @@ public class PingCommand extends Command {
                 Context.calculate(Context.EVERYWHERE));
 
         registerPatterns(
-                new CommandPattern(null, this::onCommand)
+                new CommandPattern(null, this::onCommand, "")
         );
     }
 

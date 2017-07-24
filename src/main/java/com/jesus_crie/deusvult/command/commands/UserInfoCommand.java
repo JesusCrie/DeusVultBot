@@ -7,7 +7,6 @@ import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
-import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -26,9 +25,9 @@ public class UserInfoCommand extends Command {
         registerPatterns(
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.USER
-                }, this::onCommandGeneric),
+                }, this::onCommandGeneric, "<membre>"),
 
-                new CommandPattern(null, (e, a) -> onCommandSelf(e))
+                new CommandPattern(null, (e, a) -> onCommandSelf(e), "")
         );
     }
 

@@ -27,8 +27,9 @@ public class TestCommand extends Command {
                         CommandPattern.Argument.STRING,
                         CommandPattern.Argument.URL_AS_STRING,
                         CommandPattern.Argument.STRING.clone().setRepeatable(true)
-                }, this::onCommandEmbed),
-                new CommandPattern(null, (e, a) -> onCommandTest(e))
+                }, this::onCommandEmbed, "embed <titre> <url icone> <contenu>"),
+
+                new CommandPattern(null, (e, a) -> onCommandTest(e), "")
         );
     }
 

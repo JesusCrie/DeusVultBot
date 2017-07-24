@@ -41,6 +41,11 @@ public class ResponsePaginable {
         return this;
     }
 
+    public ResponsePaginable addPage(ResponsePage page) {
+        pages.add(page);
+        return this;
+    }
+
     public ResponsePaginable addPages(ResponsePage... pages) {
         this.pages.addAll(Arrays.asList(pages));
         return this;
@@ -55,6 +60,7 @@ public class ResponsePaginable {
         currentPage = index;
 
         ResponsePage page = pages.get(index);
+        builder.clearLists();
         builder.setTitle(S.RESPONSE_PAGINABLE_TITLE.format(title, currentPage + 1, pages.size()))
             .setMainList(page.getTitle(), Collections.emptyList())
             .setColor(page.getColor())

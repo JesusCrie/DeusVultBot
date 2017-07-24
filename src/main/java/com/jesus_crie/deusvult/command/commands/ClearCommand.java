@@ -7,7 +7,6 @@ import com.jesus_crie.deusvult.response.ResponseBuilder;
 import com.jesus_crie.deusvult.response.ResponseUtils;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
-import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -26,17 +25,17 @@ public class ClearCommand extends Command {
         registerPatterns(
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.INTEGER
-                }, this::onCommandGlobal),
+                }, this::onCommandGlobal, "<nombre>"),
 
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.USER,
                         CommandPattern.Argument.INTEGER
-                }, this::onCommandUser),
+                }, this::onCommandUser, "<membre> <nombre>"),
 
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.forString("old"),
                         CommandPattern.Argument.INTEGER
-                }, this::onCommandOld)
+                }, this::onCommandOld, "old <nombre>")
         );
     }
 
