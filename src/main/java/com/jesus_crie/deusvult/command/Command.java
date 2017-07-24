@@ -9,6 +9,7 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.MessageChannel;
+import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.PermissionException;
 
@@ -144,7 +145,7 @@ public abstract class Command {
 
         public static int fromChannel(MessageChannel channel) {
             int i = 0;
-            if (channel.getIdLong() == DeusVult.instance().getMainGuild().getIdLong())
+            if ((channel instanceof TextChannel) && ((TextChannel) channel).getGuild().getIdLong() == DeusVult.instance().getMainGuild().getIdLong())
                 i |= MAIN_GUILD.b;
             switch (channel.getType()) {
                 case TEXT:

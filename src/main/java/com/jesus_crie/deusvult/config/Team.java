@@ -3,14 +3,10 @@ package com.jesus_crie.deusvult.config;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.jesus_crie.deusvult.DeusVult;
-import com.jesus_crie.deusvult.utils.StringUtils;
-import jdk.nashorn.internal.objects.annotations.Getter;
-import jdk.nashorn.internal.objects.annotations.Setter;
 import net.dv8tion.jda.core.entities.*;
 
 import java.io.IOException;
@@ -102,7 +98,7 @@ public class Team {
 
     @Override
     public boolean equals(Object obj) {
-        return ((Team) obj).getId() == id;
+        return (obj instanceof Team) && ((Team) obj).getId() == id;
     }
 
     public static class TeamSerializer extends StdSerializer<Team> {
