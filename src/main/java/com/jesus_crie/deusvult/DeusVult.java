@@ -61,17 +61,20 @@ public class DeusVult {
         Logger.START.get().info("Registering commands...");
         CommandManager.registerCommands(
                 new HelpCommand(),
-                new TestCommand(),
-                new StopCommand(),
-                new EvalCommand(),
-                new MathCommand(),
-                new ClearCommand(),
-                new UserInfoCommand(),
                 new PingCommand(),
-                new GifCommand(),
+
                 new QuoteCommand(),
                 new WordReactCommand(),
-                new EightBallCommand()
+                new EightBallCommand(),
+                new GifCommand(),
+                new MathCommand(),
+
+                new ClearCommand(),
+                new StopCommand(),
+                new UserInfoCommand(),
+                new EvalCommand(),
+                new AdminCommand(),
+                new TestCommand()
         );
 
         Logger.START.get().info("Loading music components...");

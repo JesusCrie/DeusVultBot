@@ -70,7 +70,9 @@ public enum S {
     COMMAND_HELP_COMMAND_LIST("List des commandes"),
     COMMAND_HELP_ACCESS_LEVEL("Rang requis"),
     COMMAND_HELP_CONTEXT("Contexte requis"),
-    COMMAND_HELP_USAGE("Usage");
+    COMMAND_HELP_USAGE("Usage"),
+
+    COMMAND_ADMIN_HELP("Commande reservée aux admins.");
 
     private String value;
     S(String value) {
