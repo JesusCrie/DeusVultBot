@@ -86,6 +86,10 @@ public class CommandListener extends ListenerAdapter {
                 Logger.COMMAND.get().log(e);
                 ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_MISSING_PERMISSION.format(e.getPermission())))
                         .send(event.getChannel()).queue();
+            } catch (Exception e) {
+                Logger.COMMAND.get().log(e);
+                ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_UNKNOW.format(e)))
+                        .send(event.getChannel()).queue();
             }
         }).start();
     }

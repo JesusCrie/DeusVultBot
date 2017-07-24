@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonSerialize(using = Team.TeamSerializer.class)
-public class Team {
+public class Team implements Comparable<Team> {
 
     private int id;
     private String name;
@@ -99,6 +99,13 @@ public class Team {
     @Override
     public boolean equals(Object obj) {
         return (obj instanceof Team) && ((Team) obj).getId() == id;
+    }
+
+    @Override
+    public int compareTo(Team o) {
+        if (equals(o))
+            return id > o.id ? 1 : -1;
+        return members.size() > o.members.size() ? 1 : -1;
     }
 
     public static class TeamSerializer extends StdSerializer<Team> {

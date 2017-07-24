@@ -9,7 +9,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="Gradle: net.dv8tion:JDA:3.2.0_234" level="project" />
+    <orderEntry type="library" name="Gradle: net.dv8tion:JDA:3.2.0_237" level="project" />
     <orderEntry type="library" name="Gradle: com.sedmelluq:lavaplayer:1.2.42" level="project" />
     <orderEntry type="library" name="Gradle: com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.8.8" level="project" />
     <orderEntry type="library" name="Gradle: org.slf4j:slf4j-nop:1.7.21" level="project" />

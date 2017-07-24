@@ -1,5 +1,12 @@
 package com.jesus_crie.deusvult.utils;
 
+import com.jesus_crie.deusvult.DeusVult;
+
+import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 public class T {
 
     public static final long SECOND = 1000L;
@@ -30,5 +37,12 @@ public class T {
 
     public static long calc(long second, long minute, long hour, long day) {
         return calc(second, minute, hour, day, 0);
+    }
+
+    public static String getUptime() {
+        String[] data = OffsetDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis() - DeusVult.instance().getStart()), ZoneId.of("+0"))
+                .format(DateTimeFormatter.ofPattern("DD/HH/mm")).split("/");
+        data[0] = String.valueOf(Integer.parseInt(data[0]) - 1);
+        return S.GENERAL_UPTIME_PATTERN.format(data);
     }
 }

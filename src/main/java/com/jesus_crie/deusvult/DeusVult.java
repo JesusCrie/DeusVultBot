@@ -27,8 +27,10 @@ public class DeusVult {
     private String secret;
     private boolean ready = false;
     private Guild main;
+    private long start;
 
     public DeusVult(String token, String secret) {
+        start = System.currentTimeMillis();
         Thread.setDefaultUncaughtExceptionHandler((tread, exception) -> Logger.UNKNOW.get().log(exception));
 
         this.secret = secret;
@@ -60,21 +62,28 @@ public class DeusVult {
 
         Logger.START.get().info("Registering commands...");
         CommandManager.registerCommands(
+                // Global
                 new HelpCommand(),
                 new PingCommand(),
 
+                // General
                 new QuoteCommand(),
                 new WordReactCommand(),
                 new EightBallCommand(),
                 new GifCommand(),
                 new MathCommand(),
+                new InfoCommand(),
 
+                // Moderation
                 new ClearCommand(),
                 new StopCommand(),
                 new UserInfoCommand(),
                 new EvalCommand(),
                 new AdminCommand(),
-                new TestCommand()
+                new TestCommand(),
+
+                // Experimental
+                new TeamCommand()
         );
 
         Logger.START.get().info("Loading music components...");
@@ -116,6 +125,10 @@ public class DeusVult {
                 .filter(u -> u.getDiscriminator().equals(discriminator))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public long getStart() {
+        return start;
     }
 
     public static DeusVult instance() {

@@ -3,6 +3,7 @@ package com.jesus_crie.deusvult.utils;
 public enum S {
 
     GENERAL_GAME_PATTERN("%shelp - v%s"),
+    GENERAL_UPTIME_PATTERN("%sd %sh %sm"),
 
     RESPONSE_FOOTER("%s"),
     RESPONSE_PAGINABLE_TITLE("%s (%s/%s)"),
@@ -14,6 +15,7 @@ public enum S {
     RESPONSE_ERROR_COMMAND_WRONG_CONTEXT("Cette commande n'est pas autorisée dans ce contexte."),
     RESPONSE_ERROR_COMMAND_ACCESS_LEVEL("Vous n'avez pas les permissions requises pour cette commande."),
     RESPONSE_ERROR_COMMAND_MISSING_PERMISSION("Erreur: Il manque la permission %s"),
+    RESPONSE_ERROR_UNKNOW("FATAL ERROR: %s"),
 
     TEAM_ROLE_PATTERN("Team - %s"),
     TEAM_CHANNEL_TEXT_NAME("team-%s"),
@@ -72,7 +74,16 @@ public enum S {
     COMMAND_HELP_CONTEXT("Contexte requis"),
     COMMAND_HELP_USAGE("Usage"),
 
-    COMMAND_ADMIN_HELP("Commande reservée aux admins.");
+    COMMAND_ADMIN_HELP("Commande reservée aux admins."),
+
+    COMMAND_INFO_HELP("Affiche des infos sur le bot."),
+    COMMAND_INFO_CREATED_BY("Créé par"),
+    COMMAND_INFO_LIBS("Library utilisés"),
+    COMMAND_INFO_UPTIME("Uptime"),
+    COMMAND_INFO_VERSION("Version"),
+
+    COMMAND_TEAM_HELP("Permet de faire toutes les actions possible avec les teams."),
+    COMMAND_TEAM_LIST_TITLE("Les 10 premières teams (Total: %s)");
 
     private String value;
     S(String value) {
