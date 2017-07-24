@@ -66,6 +66,8 @@ public class HelpCommand extends Command {
                 .setIcon(StringUtils.ICON_HELP)
                 .setTimeout(T.calc(0, 1));
 
+
+
         CommandManager.getCommands().forEach(c ->
             help.addPage(new ResponsePage(S.COMMAND_HELP_COMMAND_TITLE.format(c.getName()))
                     .setDescription(c.getDescription())

@@ -14,6 +14,7 @@ import net.dv8tion.jda.core.exceptions.PermissionException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class Command {
@@ -70,6 +71,7 @@ public abstract class Command {
     public List<String> collectNotices() {
         List<String> out = new ArrayList<>();
         patterns.forEach(p -> out.add(StringUtils.PREFIX + name + " " + p.getNotice()));
+        Collections.reverse(out);
 
         return out;
     }

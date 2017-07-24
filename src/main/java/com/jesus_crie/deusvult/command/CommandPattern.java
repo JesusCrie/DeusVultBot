@@ -50,7 +50,7 @@ public class CommandPattern {
                         return false;
                     continue;
                 } else
-                    return true;
+                    return false;
             }
 
             if (!arguments.get(i).match(args[i]))

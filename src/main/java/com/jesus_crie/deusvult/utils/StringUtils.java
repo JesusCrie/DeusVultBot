@@ -25,6 +25,7 @@ public class StringUtils {
     public static final String EMOJI_NEXT = "\u23E9";
     public static final String EMOJI_EXCLAMATION = "\u2754";
     public static final String EMOJI_8BALL = "\uD83C\uDFB1";
+    public static final String EMOJI_REVERSE = "\uD83D\uDD04";
 
     public static final long USER_CREATOR = 182547138729869314L;
     public static final long ROLE_BOT = 323952614892896261L;

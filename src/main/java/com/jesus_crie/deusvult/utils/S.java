@@ -67,6 +67,7 @@ public enum S {
     COMMAND_HELP_HELP("Affiche l'aide des commandes."),
     COMMAND_HELP_TITLE("Aide"),
     COMMAND_HELP_COMMAND_TITLE("Command %s"),
+    COMMAND_HELP_COMMAND_LIST("List des commandes"),
     COMMAND_HELP_ACCESS_LEVEL("Rang requis"),
     COMMAND_HELP_CONTEXT("Contexte requis"),
     COMMAND_HELP_USAGE("Usage");

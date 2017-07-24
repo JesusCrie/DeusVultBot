@@ -75,6 +75,7 @@ public class ResponsePaginable {
 
         current = channel.sendMessage(builder.build()).complete();
         current.addReaction(StringUtils.EMOJI_PREVIOUS).complete();
+        current.addReaction(StringUtils.EMOJI_REVERSE).complete();
         current.addReaction(StringUtils.EMOJI_NEXT).complete();
 
         Awaiter.awaitReactionFromUser(current, u,
@@ -92,6 +93,11 @@ public class ResponsePaginable {
                             setPage(++currentPage);
                             current.editMessage(builder.build()).queue();
                             break;
+                        case StringUtils.EMOJI_REVERSE:
+                            if (event.getTextChannel() != null)
+                                event.getReaction().removeReaction(u).queue();
+                            setPage(0);
+                            current.editMessage(builder.build()).queue();
                         default:
                             if (event.getTextChannel() != null)
                                 event.getReaction().removeReaction(u).queue();

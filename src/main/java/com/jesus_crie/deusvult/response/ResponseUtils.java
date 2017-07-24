@@ -7,6 +7,7 @@ import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
 import java.awt.*;
+import java.util.Arrays;
 import java.util.List;
 
 public class ResponseUtils {
@@ -17,6 +18,10 @@ public class ResponseUtils {
                 .setIcon(StringUtils.ICON_ERROR)
                 .setTitle(S.RESPONSE_ERROR_COMMAND_EXCEPTION.get())
                 .setDescription(e.toString());
+    }
+
+    public static MessageEmbed.Field createList(String title, boolean inline, String... content) {
+        return createList(title, inline, Arrays.asList(content));
     }
 
     public static MessageEmbed.Field createList(String title, boolean inline, List<String> content) {
