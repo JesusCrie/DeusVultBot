@@ -19,7 +19,7 @@ public class ClearCommand extends Command {
         super("clear",
                 S.COMMAND_CLEAR_HELP.get(),
                 null,
-                AccessLevel.CREATOR,
+                AccessLevel.ADMIN,
                 Context.calculate(Context.ALL_GUILD));
 
         registerPatterns(

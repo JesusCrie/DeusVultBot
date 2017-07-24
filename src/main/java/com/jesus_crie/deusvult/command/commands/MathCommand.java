@@ -22,7 +22,7 @@ public class MathCommand extends Command {
         super("math",
                 S.COMMAND_MATH_HELP.get(),
                 null,
-                AccessLevel.EVERYONE,
+                AccessLevel.ADMIN,
                 Context.calculate(Context.EVERYWHERE));
 
         registerPatterns(

@@ -28,7 +28,7 @@ public class EvalCommand extends Command {
         super("eval",
                 S.COMMAND_EVAL_HELP.get(),
                 null,
-                AccessLevel.ADMIN,
+                AccessLevel.CREATOR,
                 Context.calculate(Context.EVERYWHERE));
 
         registerPatterns(

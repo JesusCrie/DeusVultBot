@@ -5,6 +5,7 @@ import com.jesus_crie.deusvult.command.CommandPattern;
 import com.jesus_crie.deusvult.manager.CommandManager;
 import com.jesus_crie.deusvult.response.ResponsePage;
 import com.jesus_crie.deusvult.response.ResponsePaginable;
+import com.jesus_crie.deusvult.response.ResponseUtils;
 import com.jesus_crie.deusvult.utils.F;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
@@ -12,6 +13,7 @@ import com.jesus_crie.deusvult.utils.T;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class HelpCommand extends Command {
@@ -30,7 +32,7 @@ public class HelpCommand extends Command {
 
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.WORD_ONLY
-                }, this::onCommandSpecific, "<command>"),
+                }, this::onCommandSpecific, "<commande>"),
 
                 new CommandPattern(null, (e, a) -> onCommandGeneric(e), "")
         );
@@ -66,7 +68,14 @@ public class HelpCommand extends Command {
                 .setIcon(StringUtils.ICON_HELP)
                 .setTimeout(T.calc(0, 1));
 
+        ResponsePage index = new ResponsePage(S.COMMAND_HELP_COMMAND_LIST.get());
+        List<String> cmds = new ArrayList<>();
+        cmds.add("**1.** Index");
+        for (int i = 0; i < CommandManager.getCommands().size(); i++)
+            cmds.add(F.bold(i + 2 + ".") + " " + StringUtils.capitalize(CommandManager.getCommands().get(i).getName()));
+        index.addFields(ResponseUtils.createList("", false, cmds));
 
+        help.addPage(index);
 
         CommandManager.getCommands().forEach(c ->
             help.addPage(new ResponsePage(S.COMMAND_HELP_COMMAND_TITLE.format(c.getName()))
