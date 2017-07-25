@@ -1,8 +1,8 @@
 package com.jesus_crie.deusvult.response;
 
-import com.jesus_crie.deusvult.utils.Awaiter;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
+import com.jesus_crie.deusvult.utils.Waiter;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
@@ -31,10 +31,8 @@ public class NotificationBuilder {
         Message m = toSendTo.openPrivateChannel().complete().sendMessage(builder.build()).complete();
         m.addReaction(StringUtils.EMOJI_CACTUS).complete();
 
-        Awaiter.awaitReactNotification(m, toSendTo, e -> {
-            if (!e.getReactionEmote().getName().equals(StringUtils.EMOJI_CACTUS))
-                return;
-            m.delete().queue();
-        });
+        Waiter.awaitReactionFromUser(m, toSendTo,
+                StringUtils.EMOJI_CACTUS,
+                e -> m.delete().queue());
     }
 }

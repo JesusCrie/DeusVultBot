@@ -1,9 +1,9 @@
 package com.jesus_crie.deusvult.response;
 
-import com.jesus_crie.deusvult.utils.Awaiter;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import com.jesus_crie.deusvult.utils.T;
+import com.jesus_crie.deusvult.utils.Waiter;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
 import net.dv8tion.jda.core.entities.User;
@@ -79,7 +79,7 @@ public class ResponsePaginable {
         current.addReaction(StringUtils.EMOJI_REVERSE).complete();
         current.addReaction(StringUtils.EMOJI_NEXT).complete();
 
-        Awaiter.awaitReactionFromUser(current, u,
+        Waiter.awaitReactionsFromUser(current, u,
                 event -> {
                     switch (event.getReactionEmote().getName()) {
                         case StringUtils.EMOJI_PREVIOUS:

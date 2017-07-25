@@ -16,18 +16,16 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public class Awaiter {
+public class Waiter {
 
-    public static void awaitMessageFromUser(MessageChannel channel, User user, Consumer<MessageReceivedEvent> onSuccess, Runnable onTimeout, long timeout) {
-        awaitEvent(MessageReceivedEvent.class,
+    public static MessageReceivedEvent getNextMessageFromUser(MessageChannel channel, User user, Runnable onTimeout, long timeout) {
+        return getNextEvent(MessageReceivedEvent.class,
                 e -> e.getChannel().equals(channel) && e.getAuthor().equals(user),
-                onSuccess,
                 onTimeout,
-                true,
                 timeout);
     }
 
-    public static void awaitReactionFromUser(Message targetMessage, User user, Consumer<MessageReactionAddEvent> onSuccess, Runnable onTimeout, long timeout) {
+    public static void awaitReactionsFromUser(Message targetMessage, User user, Consumer<MessageReactionAddEvent> onSuccess, Runnable onTimeout, long timeout) {
         awaitEvent(MessageReactionAddEvent.class,
                 e -> e.getMessageIdLong() == targetMessage.getIdLong() && e.getUser().equals(user),
                 onSuccess,
@@ -36,9 +34,9 @@ public class Awaiter {
                 timeout);
     }
 
-    public static void awaitReactNotification(Message target, User user, Consumer<MessageReactionAddEvent> onSuccess) {
+    public static void awaitReactionFromUser(Message target, User user, String emote, Consumer<MessageReactionAddEvent> onSuccess) {
         awaitEvent(MessageReactionAddEvent.class,
-                e -> e.getMessageIdLong() == target.getIdLong() && e.getUser().equals(user),
+                e -> e.getMessageIdLong() == target.getIdLong() && e.getUser().equals(user) && e.getReactionEmote().getName().equals(emote),
                 onSuccess,
                 null,
                 true,
@@ -67,13 +65,13 @@ public class Awaiter {
             return false;
         });
 
-        DeusVult.instance().getJda().addEventListener(listener);
+        DeusVult.instance().getJDA().addEventListener(listener);
 
         if (timeout > 0)
             future.cancel(true);
     }
 
-    public static <T extends Event> T getNextEvent(Class<T> clazz, Predicate<T> checker, Consumer<T> onSuccess, Runnable onTimeout, long timeout) {
+    public static <T extends Event> T getNextEvent(Class<T> clazz, Predicate<T> checker, Runnable onTimeout, long timeout) {
         final AwaitListener<T> listener = new AwaitListener<>(clazz);
 
         Runnable timeoutTask = () -> {
@@ -85,7 +83,6 @@ public class Awaiter {
 
         listener.setOnTrigger(e -> {
             if (checker.test(e)) {
-                onSuccess.accept(e);
                 timeoutFuture.cancel(true);
                 ThreadManager.getTimerPool().execute(timeoutTask);
 
@@ -94,7 +91,7 @@ public class Awaiter {
             return false;
         });
 
-        DeusVult.instance().getJda().addEventListener(listener);
+        DeusVult.instance().getJDA().addEventListener(listener);
 
         try {
             return listener.get();

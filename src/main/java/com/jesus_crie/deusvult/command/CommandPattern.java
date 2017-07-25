@@ -119,19 +119,19 @@ public class CommandPattern {
         public static final Argument USER = new Argument("(?:<@!?(?<id>[0-9]*)>|(?<name>\\p{Graph}*)#(?<discriminator>[0-9]{4}))",
                 matcher -> {
                     if (matcher.group("id") != null && !matcher.group("id").isEmpty())
-                        return DeusVult.instance().getJda().getUserById(matcher.group("id"));
+                        return DeusVult.instance().getJDA().getUserById(matcher.group("id"));
                     else
                         return DeusVult.instance().getUserByNameDiscriminator(matcher.group("name"), matcher.group("discriminator"));
                 });
 
         public static final Argument CHANNEL = new Argument("<#(?<id>[0-9]*)>",
-                matcher -> DeusVult.instance().getJda().getTextChannelById(matcher.group("id")));
+                matcher -> DeusVult.instance().getJDA().getTextChannelById(matcher.group("id")));
 
         public static final Argument ROLE = new Argument("<@&(?<id>[0-9]*)>",
-                matcher -> DeusVult.instance().getJda().getRoleById(matcher.group("id")));
+                matcher -> DeusVult.instance().getJDA().getRoleById(matcher.group("id")));
 
         public static final Argument EMOJI_CUSTOM = new Argument("<:[a-z_]*:(?<id>[0-9]*)>",
-                matcher -> DeusVult.instance().getJda().getEmoteById(matcher.group("id")));
+                matcher -> DeusVult.instance().getJDA().getEmoteById(matcher.group("id")));
 
         /**
          * Build an argument for a specific {@link java.lang.String String}

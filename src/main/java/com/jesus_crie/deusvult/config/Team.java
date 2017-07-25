@@ -34,10 +34,10 @@ public class Team implements Comparable<Team> {
                 @JsonProperty("channelVoiceId") String channelVoiceId) {
         this.id = id;
         this.name = name;
-        role = DeusVult.instance().getJda().getRoleById(roleId);
-        owner = DeusVult.instance().getJda().getUserById(ownerId);
-        channelText = DeusVult.instance().getJda().getTextChannelById(channelTextId);
-        channelVoice = DeusVult.instance().getJda().getVoiceChannelById(channelVoiceId);
+        role = DeusVult.instance().getJDA().getRoleById(roleId);
+        owner = DeusVult.instance().getJDA().getUserById(ownerId);
+        channelText = DeusVult.instance().getJDA().getTextChannelById(channelTextId);
+        channelVoice = DeusVult.instance().getJDA().getVoiceChannelById(channelVoiceId);
         members = role.getGuild().getMembersWithRoles(role).stream()
                 .map(Member::getUser)
                 .collect(Collectors.toList());

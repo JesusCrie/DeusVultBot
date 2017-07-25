@@ -27,7 +27,7 @@ public class CommandListener extends ListenerAdapter {
             return;
 
         // Check if is self
-        if (event.getAuthor().getIdLong() == DeusVult.instance().getJda().getSelfUser().getIdLong())
+        if (event.getAuthor().getIdLong() == DeusVult.instance().getJDA().getSelfUser().getIdLong())
             return;
 
         String[] fullCmd = event.getMessage().getRawContent().trim().replace("\n", " ").substring(StringUtils.PREFIX.length()).split(" ");

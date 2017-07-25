@@ -113,7 +113,7 @@ public class DeusVult {
         System.exit(1);
     }
 
-    public JDA getJda() {
+    public JDA getJDA() {
         return jda;
     }
 
