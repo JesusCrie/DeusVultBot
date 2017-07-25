@@ -2,16 +2,15 @@ package com.jesus_crie.deusvult.listener;
 
 import com.jesus_crie.deusvult.DeusVult;
 import net.dv8tion.jda.core.events.Event;
-import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.hooks.EventListener;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
-public class AwaitListener<T extends Event> extends ListenerAdapter {
+public class AwaitListener<T extends Event> extends CompletableFuture<T> implements EventListener {
 
     private final Class<T> clazz;
     private Predicate<T> onTrigger;
-
-    private boolean active = true;
 
     public AwaitListener(Class<T> clazz) {
         onTrigger = (e) -> false;
@@ -22,19 +21,20 @@ public class AwaitListener<T extends Event> extends ListenerAdapter {
         this.onTrigger = onTrigger;
     }
 
-    public void disable() {
-        active = false;
+    @Override
+    @SuppressWarnings("unchecked")
+    public void onEvent(Event event) {
+        if (event.getClass().getName().equals(clazz.getName())) {
+            if (onTrigger.test((T) event)) {
+                event.getJDA().removeEventListener(this);
+                complete((T) event);
+            }
+        }
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public void onGenericEvent(Event event) {
-        if (!active)
-            return;
-
-        if (event.getClass().getName().equals(clazz.getName())) {
-            if (onTrigger.test((T) event))
-                DeusVult.instance().getJda().removeEventListener(this);
-        }
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        DeusVult.instance().getJda().removeEventListener(this);
+        return super.cancel(mayInterruptIfRunning);
     }
 }

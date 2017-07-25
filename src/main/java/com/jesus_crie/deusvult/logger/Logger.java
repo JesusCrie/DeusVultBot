@@ -13,7 +13,8 @@ public enum Logger {
     CONFIG(SimpleLogger.getLog("Config")),
     TEAM(SimpleLogger.getLog("Team")),
     UNKNOWN(SimpleLogger.getLog("UNKNOWN")),
-    DEV(SimpleLogger.getLog("DEV"));
+    DEV(SimpleLogger.getLog("DEV")),
+    WAITER(SimpleLogger.getLog("Waiter"));
 
     private final SimpleLogger logger;
     Logger(SimpleLogger logger) {

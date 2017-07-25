@@ -2,6 +2,7 @@ package com.jesus_crie.deusvult.utils;
 
 import com.jesus_crie.deusvult.DeusVult;
 import com.jesus_crie.deusvult.listener.AwaitListener;
+import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.ThreadManager;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageChannel;
@@ -45,10 +46,10 @@ public class Awaiter {
     }
 
     public static <T extends Event> void awaitEvent(Class<T> clazz, Predicate<T> checker, Consumer<T> onSuccess, Runnable onTimeout, boolean singleTrigger, long timeout) {
-        AwaitListener<T> listener = new AwaitListener<>(clazz);
+        final AwaitListener<T> listener = new AwaitListener<>(clazz);
 
         Runnable task = () -> {
-            DeusVult.instance().getJda().removeEventListener(listener);
+            listener.cancel(true);
             if (onTimeout != null)
                 onTimeout.run();
         };
@@ -70,5 +71,36 @@ public class Awaiter {
 
         if (timeout > 0)
             future.cancel(true);
+    }
+
+    public static <T extends Event> T getNextEvent(Class<T> clazz, Predicate<T> checker, Consumer<T> onSuccess, Runnable onTimeout, long timeout) {
+        final AwaitListener<T> listener = new AwaitListener<>(clazz);
+
+        Runnable timeoutTask = () -> {
+            listener.cancel(true);
+            if (onTimeout != null)
+                onTimeout.run();
+        };
+        final ScheduledFuture timeoutFuture = ThreadManager.getTimerPool().schedule(timeoutTask, timeout, TimeUnit.MILLISECONDS);
+
+        listener.setOnTrigger(e -> {
+            if (checker.test(e)) {
+                onSuccess.accept(e);
+                timeoutFuture.cancel(true);
+                ThreadManager.getTimerPool().execute(timeoutTask);
+
+                return true;
+            }
+            return false;
+        });
+
+        DeusVult.instance().getJda().addEventListener(listener);
+
+        try {
+            return listener.get();
+        } catch (Exception e) {
+            Logger.WAITER.get().trace(e);
+            return null;
+        }
     }
 }

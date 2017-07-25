@@ -76,7 +76,7 @@ public class CommandListener extends ListenerAdapter {
                 Logger.COMMAND.get().info(CMD_PRIVATE.replace("%user%", StringUtils.stringifyUser(event.getAuthor()))
                         .replace("%content%", event.getMessage().getRawContent()));
             else
-                Logger.COMMAND.get().info(CMD_GUILD.replace("%guild%", event.getGuild().getName() + " || " + event.getGuild().getIdLong())
+                Logger.COMMAND.get().info(CMD_GUILD.replace("%guild%", event.getGuild().getName())
                         .replace("%user%", StringUtils.stringifyUser(event.getAuthor()))
                         .replace("%content%", event.getMessage().getRawContent()));
             try {

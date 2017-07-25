@@ -38,8 +38,12 @@ public class TeamCommand extends Command {
                 .setTitle(S.COMMAND_TEAM_HELP_HELP.get())
                 .setIcon(StringUtils.ICON_CUP)
                 .setDescription(S.COMMAND_TEAM_HELP_DESC.get())
+                .addField(">team", "Affiche cette aide", false)
                 .addField(">team list", "Affiche les 10 plus grosses teams.", false)
-                .addField(">team create", "Initialise le créateur de team, les autres étape ce font en MP", false);
+                .addField(">team create", "Initialise le créateur de team, les autres étape ce font en MP", false)
+                .addField(">team edit", "Reservé au leader, permet d'éditer la team. (renommer, supprimer, inviter/renvoyer des personnes)", false)
+                .addField(">team leave", "Reservé aux membres. Permet de quitter une team. Quitter le serveur a pour effet de vous faire quitter toutes vos teams.", false)
+                .send(event.getChannel()).queue();
 
         return true;
     }

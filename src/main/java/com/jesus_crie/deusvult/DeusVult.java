@@ -102,6 +102,15 @@ public class DeusVult {
         ThreadManager.cleanUp();
         Config.save();
         jda.shutdown();
+        System.exit(0);
+    }
+
+    // Shutdown as fast as it can
+    public void forceShutdown() {
+        ready = false;
+        Logger.START.get().warning("Force shutting down !");
+        jda.shutdownNow();
+        System.exit(1);
     }
 
     public JDA getJda() {
