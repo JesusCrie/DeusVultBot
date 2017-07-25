@@ -1,12 +1,11 @@
 package com.jesus_crie.deusvult.response;
 
 import com.jesus_crie.deusvult.exception.CommandException;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.MessageEmbed;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Arrays;
 import java.util.List;
 
@@ -16,7 +15,7 @@ public class ResponseUtils {
         return ResponseBuilder.create(m)
                 .setColor(Color.RED)
                 .setIcon(StringUtils.ICON_ERROR)
-                .setTitle(S.RESPONSE_ERROR_COMMAND_EXCEPTION.get())
+                .setTitle("Une erreur est survenue")
                 .setDescription(e.toString());
     }
 
@@ -29,7 +28,7 @@ public class ResponseUtils {
             return new MessageEmbed.Field(title, null, inline);
         else
             return new MessageEmbed.Field(title,
-                    StringUtils.EMOJI_DIAMOND_BLUE + String.join("\n" + StringUtils.EMOJI_DIAMOND_BLUE, content),
+                    StringUtils.EMOTE_DIAMOND_BLUE + String.join("\n" + StringUtils.EMOTE_DIAMOND_BLUE, content),
                     inline);
     }
 }

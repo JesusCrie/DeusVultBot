@@ -1,6 +1,5 @@
 package com.jesus_crie.deusvult.response;
 
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import com.jesus_crie.deusvult.utils.T;
 import com.jesus_crie.deusvult.utils.Waiter;
@@ -13,6 +12,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static com.jesus_crie.deusvult.utils.S.*;
 
 public class ResponsePaginable {
 
@@ -52,6 +53,11 @@ public class ResponsePaginable {
         return this;
     }
 
+    public ResponsePaginable addPages(List<ResponsePage> pages) {
+        this.pages.addAll(pages);
+        return this;
+    }
+
     public ResponsePaginable setPage(int index) {
         if (index >= pages.size())
             index = pages.size() - 1;
@@ -62,10 +68,11 @@ public class ResponsePaginable {
 
         ResponsePage page = pages.get(index);
         builder.clearLists();
-        builder.setTitle(S.RESPONSE_PAGINABLE_TITLE.format(title, currentPage + 1, pages.size()))
-            .setMainList(page.getTitle(), Collections.emptyList())
+        builder.setTitle(f("%s (%s/%s)", title, currentPage + 1, pages.size()))
             .setColor(page.getColor())
             .setDescription(page.getDescription());
+        if (page.getTitle() != null && !page.getTitle().isEmpty())
+            builder.setMainList(page.getTitle(), Collections.emptyList());
         page.getFields().forEach(builder::addField);
 
         return this;
@@ -75,26 +82,26 @@ public class ResponsePaginable {
         setPage(currentPage);
 
         current = channel.sendMessage(builder.build()).complete();
-        current.addReaction(StringUtils.EMOJI_PREVIOUS).complete();
-        current.addReaction(StringUtils.EMOJI_REVERSE).complete();
-        current.addReaction(StringUtils.EMOJI_NEXT).complete();
+        current.addReaction(StringUtils.EMOTE_PREVIOUS).complete();
+        current.addReaction(StringUtils.EMOTE_REVERSE).complete();
+        current.addReaction(StringUtils.EMOTE_NEXT).complete();
 
         Waiter.awaitReactionsFromUser(current, u,
                 event -> {
                     switch (event.getReactionEmote().getName()) {
-                        case StringUtils.EMOJI_PREVIOUS:
+                        case StringUtils.EMOTE_PREVIOUS:
                             if (event.getTextChannel() != null)
                                 event.getReaction().removeReaction(u).queue();
                             setPage(--currentPage);
                             current.editMessage(builder.build()).queue();
                             break;
-                        case StringUtils.EMOJI_NEXT:
+                        case StringUtils.EMOTE_NEXT:
                             if (event.getTextChannel() != null)
                                 event.getReaction().removeReaction(u).queue();
                             setPage(++currentPage);
                             current.editMessage(builder.build()).queue();
                             break;
-                        case StringUtils.EMOJI_REVERSE:
+                        case StringUtils.EMOTE_REVERSE:
                             if (event.getTextChannel() != null)
                                 event.getReaction().removeReaction(u).queue();
                             setPage(0);
@@ -104,8 +111,7 @@ public class ResponsePaginable {
                                 event.getReaction().removeReaction(u).queue();
                             break;
                     }
-                },
-                () -> {
+                }, () -> {
                     try {
                         current.clearReactions().queue();
                     } catch (Exception ignore) {}

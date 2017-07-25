@@ -11,6 +11,7 @@ import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
+import java.util.concurrent.CancellationException;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -47,11 +48,16 @@ public class Waiter {
         final AwaitListener<T> listener = new AwaitListener<>(clazz);
 
         Runnable task = () -> {
-            listener.cancel(true);
+            Logger.DEV.get().debug("TRIGGERED");
             if (onTimeout != null)
                 onTimeout.run();
+            listener.cancel(true);
         };
-        final ScheduledFuture future = ThreadManager.getTimerPool().schedule(task, timeout, TimeUnit.MILLISECONDS);
+        final ScheduledFuture future;
+        if (timeout > 0)
+            future = ThreadManager.getTimerPool().schedule(task, timeout, TimeUnit.MILLISECONDS);
+        else
+            future = null;
 
         listener.setOnTrigger(e -> {
             if (checker.test(e)) {
@@ -66,9 +72,6 @@ public class Waiter {
         });
 
         DeusVult.instance().getJDA().addEventListener(listener);
-
-        if (timeout > 0)
-            future.cancel(true);
     }
 
     public static <T extends Event> T getNextEvent(Class<T> clazz, Predicate<T> checker, Runnable onTimeout, long timeout) {
@@ -79,12 +82,17 @@ public class Waiter {
             if (onTimeout != null)
                 onTimeout.run();
         };
-        final ScheduledFuture timeoutFuture = ThreadManager.getTimerPool().schedule(timeoutTask, timeout, TimeUnit.MILLISECONDS);
+        final ScheduledFuture timeoutFuture;
+        if (timeout > 0)
+            timeoutFuture = ThreadManager.getTimerPool().schedule(timeoutTask, timeout, TimeUnit.MILLISECONDS);
+        else
+            timeoutFuture = null;
 
         listener.setOnTrigger(e -> {
             if (checker.test(e)) {
-                timeoutFuture.cancel(true);
-                ThreadManager.getTimerPool().execute(timeoutTask);
+                if (timeoutFuture != null)
+                    timeoutFuture.cancel(true);
+                listener.cancel(true);
 
                 return true;
             }
@@ -95,6 +103,8 @@ public class Waiter {
 
         try {
             return listener.get();
+        } catch (CancellationException ignore) {
+            return null;
         } catch (Exception e) {
             Logger.WAITER.get().trace(e);
             return null;

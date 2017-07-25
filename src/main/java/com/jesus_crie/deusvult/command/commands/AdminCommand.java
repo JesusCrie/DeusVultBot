@@ -3,7 +3,6 @@ package com.jesus_crie.deusvult.command.commands;
 import com.jesus_crie.deusvult.command.Command;
 import com.jesus_crie.deusvult.command.CommandPattern;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Role;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -14,7 +13,7 @@ public class AdminCommand extends Command {
 
     public AdminCommand() {
         super("admin",
-                S.COMMAND_ADMIN_HELP.get(),
+                "Commande reservée aux admins.",
                 null,
                 AccessLevel.ADMIN,
                 Context.calculate(Context.EVERYWHERE));

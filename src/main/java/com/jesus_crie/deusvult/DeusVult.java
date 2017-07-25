@@ -7,7 +7,6 @@ import com.jesus_crie.deusvult.logger.DiscordLogListener;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
 import com.jesus_crie.deusvult.manager.ThreadManager;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -19,6 +18,8 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
+
+import static com.jesus_crie.deusvult.utils.S.*;
 
 public class DeusVult {
 
@@ -87,7 +88,7 @@ public class DeusVult {
         Logger.START.get().info("Loading music components...");
 
         Logger.START.get().info("READY !");
-        jda.getPresence().setGame(Game.of(S.GENERAL_GAME_PATTERN.format(StringUtils.PREFIX, StringUtils.VERSION), "https://twitch.tv/discordapp"));
+        jda.getPresence().setGame(Game.of(S("%shelp - v%s", StringUtils.PREFIX, StringUtils.VERSION), "https://twitch.tv/discordapp"));
 
         Logger.SimpleLogger.addListener(new DiscordLogListener(jda.getTextChannelById(Config.getSetting("channelLogs"))));
         Logger.START.get().info("Discord logging set !");
@@ -101,8 +102,7 @@ public class DeusVult {
         // TODO music stop
         ThreadManager.cleanUp();
         Config.save();
-        jda.shutdown();
-        System.exit(0);
+        jda.shutdownNow();
     }
 
     // Shutdown as fast as it can

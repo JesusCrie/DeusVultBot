@@ -2,7 +2,6 @@ package com.jesus_crie.deusvult.manager;
 
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.utils.StringUtils;
-import com.sun.istack.internal.NotNull;
 
 import java.util.concurrent.*;
 
@@ -53,7 +52,7 @@ public class ThreadManager {
         }
 
         @Override
-        public Thread newThread(@NotNull Runnable r) {
+        public Thread newThread(Runnable r) {
             final Thread t = new Thread(r);
             t.setName("DeusVult-" + name + "#" + t.getId());
             t.setUncaughtExceptionHandler(handler);

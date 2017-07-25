@@ -1,5 +1,5 @@
 group 'DeusVultBot'
-version '0.0.1'
+version '0.0.2'
 
 apply plugin: 'java'
 
@@ -15,4 +15,23 @@ dependencies {
     compile 'com.sedmelluq:lavaplayer:1.2.42'
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.8.8'
     compile 'org.slf4j:slf4j-nop:1.7.21'
+}
+
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Main-Class': 'com.jesus_crie.deusvult.Main',
+                'Implementation-Version': version
+    }
+
+    from {
+        configurations.compile.collect {
+            dependency ->
+                if (dependency.directory) {
+                    return dependency
+                } else {
+                    return zipTree(dependency)
+                }
+        }
+    }
+    with jar
 }

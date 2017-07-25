@@ -8,7 +8,6 @@ import com.jesus_crie.deusvult.exception.CommandException;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
 import com.jesus_crie.deusvult.response.ResponseUtils;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -17,11 +16,13 @@ import java.net.URL;
 import java.util.List;
 import java.util.Random;
 
+import static com.jesus_crie.deusvult.utils.S.*;
+
 public class GifCommand extends Command {
 
     public GifCommand() {
         super("gif",
-                S.COMMAND_GIF_HELP.get(),
+                "Affiche un gif.",
                 null,
                 AccessLevel.EVERYONE,
                 Context.calculate(Context.EVERYWHERE));
@@ -42,12 +43,12 @@ public class GifCommand extends Command {
             String gif = node.get("data").get("image_original_url").asText();
 
             ResponseBuilder.create(event.getMessage())
-                    .setTitle(S.COMMAND_GIF_RANDOM.get())
+                    .setTitle("Gif aléatoire")
                     .setIcon(StringUtils.ICON_GIPHY)
                     .setImage(gif)
                     .send(event.getChannel()).queue();
         } catch (IOException e) {
-            ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.COMMAND_GIF_FAIL.get()))
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException("Impossible de récupérer des infos depuis Giphy."))
                     .send(event.getChannel()).queue();
             Logger.COMMAND.get().trace(e);
             return true;
@@ -66,12 +67,12 @@ public class GifCommand extends Command {
             String gif = node.get(new Random().nextInt(node.size())).get("images").get("original").get("url").asText();
 
             ResponseBuilder.create(event.getMessage())
-                    .setTitle(S.COMMAND_GIF_SEARCH.format(search))
+                    .setTitle(f("Résultat pour: %s", search))
                     .setIcon(StringUtils.ICON_GIPHY)
                     .setImage(gif)
                     .send(event.getChannel()).queue();
         } catch (IOException e) {
-            ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.COMMAND_GIF_FAIL.get()))
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException("Impossible de récupérer des infos depuis Giphy."))
                     .send(event.getChannel()).queue();
             Logger.COMMAND.get().trace(e);
             return true;

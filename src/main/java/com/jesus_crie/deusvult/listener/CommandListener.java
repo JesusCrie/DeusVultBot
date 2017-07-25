@@ -7,7 +7,6 @@ import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
 import com.jesus_crie.deusvult.manager.ThreadManager;
 import com.jesus_crie.deusvult.response.ResponseUtils;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.PermissionException;
@@ -15,10 +14,12 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.Arrays;
 
+import static com.jesus_crie.deusvult.utils.S.*;
+
 public class CommandListener extends ListenerAdapter {
 
-    public static final String CMD_PRIVATE = "[%user%] Executing: \"%content%```";
-    public static final String CMD_GUILD = "[%guild%] %user% triggered: \"%content%```";
+    public static final String CMD_PRIVATE = "[%user%] Executing: ¤¤%content%```";
+    public static final String CMD_GUILD = "[%guild%] %user% triggered: ¤¤%content%```";
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -34,15 +35,12 @@ public class CommandListener extends ListenerAdapter {
         Command command = CommandManager.getCommand(fullCmd[0]);
 
         // Check if command exist
-        if (command == null) {
-            ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_NOT_FOUND.get()))
-                    .send(event.getChannel()).queue();
+        if (command == null)
             return;
-        }
 
         // Check if context is allowed
         if ((command.getContext() & Command.Context.fromChannel(event.getChannel())) == 0) {
-            ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_WRONG_CONTEXT.get()))
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException("Cette commande n'est pas autorisée dans ce contexte."))
                     .send(event.getChannel()).queue();
             return;
         }
@@ -52,20 +50,20 @@ public class CommandListener extends ListenerAdapter {
             // Check context main guild
             if (!((command.getContext() & Command.Context.ALL_GUILD.b) == Command.Context.ALL_GUILD.b)
                     && event.getGuild().getIdLong() != DeusVult.instance().getMainGuild().getIdLong()) {
-                ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_GUILD_ONLY.get()))
+                ResponseUtils.errorMessage(event.getMessage(), new CommandException("Cette commande n'est pas disponible sur ce serveur."))
                         .send(event.getChannel()).queue();
             }
 
             // Check access level
             if (!command.getAccessLevel().superiorOrEqual(Command.AccessLevel.fromMember(event.getMember()))) {
-                ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_ACCESS_LEVEL.get()))
+                ResponseUtils.errorMessage(event.getMessage(), new CommandException("Vous n'avez pas les permissions requises pour cette commande."))
                         .send(event.getChannel()).queue();
                 return;
             }
 
             // Check guild only
             if (!command.isGuildAuthorized(event.getGuild())) {
-                ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_GUILD_ONLY.get()))
+                ResponseUtils.errorMessage(event.getMessage(), new CommandException("Cette commande n'est pas disponible sur ce serveur."))
                         .send(event.getChannel()).queue();
                 return;
             }
@@ -89,11 +87,11 @@ public class CommandListener extends ListenerAdapter {
                 }
             } catch (PermissionException e) {
                 Logger.COMMAND.get().trace(e);
-                ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_MISSING_PERMISSION.format(e.getPermission())))
+                ResponseUtils.errorMessage(event.getMessage(), new CommandException(f("Erreur: Il manque la permission %s", e.getPermission())))
                         .send(event.getChannel()).queue();
             } catch (Exception e) {
                 Logger.COMMAND.get().trace(e);
-                ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_UNKNOW.format(e)))
+                ResponseUtils.errorMessage(event.getMessage(), new CommandException(f("FATAL ERROR: %s", e)))
                         .send(event.getChannel()).queue();
             }
         });

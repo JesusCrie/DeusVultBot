@@ -6,18 +6,19 @@ import com.jesus_crie.deusvult.exception.CommandException;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
 import com.jesus_crie.deusvult.response.ResponseUtils;
-import com.jesus_crie.deusvult.utils.S;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.jesus_crie.deusvult.utils.S.*;
+
 public class QuoteCommand extends Command {
 
     public QuoteCommand() {
         super("quote",
-                S.COMMAND_QUOTE_HELP.get(),
+                "Cite le message de quelqu'un.",
                 null,
                 AccessLevel.EVERYONE,
                 Context.calculate(Context.EVERYWHERE));
@@ -50,7 +51,7 @@ public class QuoteCommand extends Command {
             loop++;
         }
 
-        ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.COMMAND_QUOTE_ERROR.get()))
+        ResponseUtils.errorMessage(event.getMessage(), new CommandException("Le message n'existe pas ou est trop vieux."))
                 .send(event.getChannel()).queue();
         return true;
     }
@@ -61,7 +62,7 @@ public class QuoteCommand extends Command {
             return quote(event, event.getChannel().getMessageById(id).complete());
         } catch (Exception e) {
             Logger.COMMAND.get().debug("error quote id");
-            ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.COMMAND_QUOTE_ERROR.get()))
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException("Le message n'existe pas ou est trop vieux."))
                     .send(event.getChannel()).queue();
             return true;
         }
@@ -69,7 +70,7 @@ public class QuoteCommand extends Command {
 
     private boolean quote(MessageReceivedEvent event, Message toQuote) {
         ResponseBuilder.create(event.getMessage())
-                .setTitle(S.COMMAND_QUOTE_TITLE.format(toQuote.getAuthor().getName(),
+                .setTitle(f("%s a écrit le %s à %s :", toQuote.getAuthor().getName(),
                         toQuote.getCreationTime().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                         toQuote.getCreationTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"))))
                 .setIcon(toQuote.getAuthor().getEffectiveAvatarUrl())

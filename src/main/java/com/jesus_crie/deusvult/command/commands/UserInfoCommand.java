@@ -3,7 +3,6 @@ package com.jesus_crie.deusvult.command.commands;
 import com.jesus_crie.deusvult.command.Command;
 import com.jesus_crie.deusvult.command.CommandPattern;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.Role;
@@ -13,11 +12,13 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static com.jesus_crie.deusvult.utils.S.*;
+
 public class UserInfoCommand extends Command {
 
     public UserInfoCommand() {
         super("userinfo",
-                S.COMMAND_USERINFO_HELP.get(),
+                "Donne des informations sur un utilisateur.",
                 null,
                 AccessLevel.EVERYONE,
                 Context.calculate(Context.ALL_GUILD));
@@ -41,7 +42,7 @@ public class UserInfoCommand extends Command {
 
     private boolean print(MessageReceivedEvent event, Member member) {
         ResponseBuilder.create(event.getMessage())
-                .setTitle(StringUtils.stringifyUser(member.getUser()) + (member.getNickname() == null ? "" : S.COMMAND_USERINFO_NICK.format(member.getNickname())))
+                .setTitle(StringUtils.stringifyUser(member.getUser()) + (member.getNickname() == null ? "" : f(" (%s)", member.getNickname())))
                 .setIcon(member.getUser().getEffectiveAvatarUrl())
                 .setThumbnail(member.getUser().getEffectiveAvatarUrl())
                 .setColor(member.getColor())

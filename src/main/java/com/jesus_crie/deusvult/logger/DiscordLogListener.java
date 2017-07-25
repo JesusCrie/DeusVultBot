@@ -5,7 +5,7 @@ import com.jesus_crie.deusvult.response.ResponseBuilder;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Date;
 
 public class DiscordLogListener implements Logger.Listener {
@@ -46,7 +46,7 @@ public class DiscordLogListener implements Logger.Listener {
                 .replace("%thread%", log.getThreadName())
                 .replace("%name%", logger.getName())
                 .replace("%content%", log.getContent().toString()
-                        .replace("\"", "```yaml\n"));
+                        .replace("¤¤", "```yaml\n"));
         builder.setDescription(out);
 
         channel.sendMessage(builder.build()).queue();
