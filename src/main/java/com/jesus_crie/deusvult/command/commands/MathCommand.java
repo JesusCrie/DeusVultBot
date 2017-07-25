@@ -15,7 +15,7 @@ import java.util.List;
 
 public class MathCommand extends Command {
 
-    private ScriptEngine engine = new ScriptEngineManager().getEngineByExtension("js");
+    private final ScriptEngine engine = new ScriptEngineManager().getEngineByExtension("js"); // TODO exclude classes
     private String math = "var Math = Java.type(java.lang.Math);";
 
     public MathCommand() {

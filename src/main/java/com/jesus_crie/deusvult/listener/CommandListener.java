@@ -5,8 +5,8 @@ import com.jesus_crie.deusvult.command.Command;
 import com.jesus_crie.deusvult.exception.CommandException;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
+import com.jesus_crie.deusvult.manager.ThreadManager;
 import com.jesus_crie.deusvult.response.ResponseUtils;
-import com.jesus_crie.deusvult.utils.F;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -16,6 +16,9 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 import java.util.Arrays;
 
 public class CommandListener extends ListenerAdapter {
+
+    public static final String CMD_PRIVATE = "[%user%] Executing: \"%content%```";
+    public static final String CMD_GUILD = "[%guild%] %user% triggered: \"%content%```";
 
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
@@ -68,12 +71,14 @@ public class CommandListener extends ListenerAdapter {
             }
         }
 
-        if (event.getGuild() == null)
-            Logger.COMMAND.get().info("[" + StringUtils.stringifyUser(event.getAuthor()) + "] Executing: " + F.codeBlock("yaml", event.getMessage().getRawContent()));
-        else
-            Logger.COMMAND.get().info(F.bold("[" + event.getGuild().getName() + "]") + " " + StringUtils.stringifyUser(event.getAuthor()) + " execute " + F.codeBlock("yaml", event.getMessage().getRawContent()));
-
-        new Thread(() -> {
+        ThreadManager.getCommandPool().execute(() -> {
+            if (event.getGuild() == null)
+                Logger.COMMAND.get().info(CMD_PRIVATE.replace("%user%", StringUtils.stringifyUser(event.getAuthor()))
+                        .replace("%content%", event.getMessage().getRawContent()));
+            else
+                Logger.COMMAND.get().info(CMD_GUILD.replace("%guild%", event.getGuild().getName() + " || " + event.getGuild().getIdLong())
+                        .replace("%user%", StringUtils.stringifyUser(event.getAuthor()))
+                        .replace("%content%", event.getMessage().getRawContent()));
             try {
                 try {
                     event.getMessage().delete().complete();
@@ -83,14 +88,14 @@ public class CommandListener extends ListenerAdapter {
                     command.execute(event, Arrays.copyOfRange(fullCmd, 1, fullCmd.length));
                 }
             } catch (PermissionException e) {
-                Logger.COMMAND.get().log(e);
+                Logger.COMMAND.get().trace(e);
                 ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_MISSING_PERMISSION.format(e.getPermission())))
                         .send(event.getChannel()).queue();
             } catch (Exception e) {
-                Logger.COMMAND.get().log(e);
+                Logger.COMMAND.get().trace(e);
                 ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_UNKNOW.format(e)))
                         .send(event.getChannel()).queue();
             }
-        }).start();
+        });
     }
 }

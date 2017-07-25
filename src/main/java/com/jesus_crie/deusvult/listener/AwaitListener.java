@@ -8,14 +8,18 @@ import java.util.function.Predicate;
 
 public class AwaitListener<T extends Event> extends ListenerAdapter {
 
-    private Class<T> clazz;
+    private final Class<T> clazz;
     private Predicate<T> onTrigger;
 
     private boolean active = true;
 
-    public AwaitListener(Predicate<T> onTrigger, Class<T> clazz) {
-        this.onTrigger = onTrigger;
+    public AwaitListener(Class<T> clazz) {
+        onTrigger = (e) -> false;
         this.clazz = clazz;
+    }
+
+    public void setOnTrigger(Predicate<T> onTrigger) {
+        this.onTrigger = onTrigger;
     }
 
     public void disable() {

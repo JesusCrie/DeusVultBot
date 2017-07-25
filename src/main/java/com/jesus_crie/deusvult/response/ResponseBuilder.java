@@ -10,16 +10,20 @@ import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.requests.RestAction;
 
 import java.awt.*;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ResponseBuilder {
 
+    public final static SimpleDateFormat TIME = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+
     private String title;
     private String icon;
-    private EmbedBuilder builder = new EmbedBuilder();
+    private final EmbedBuilder builder = new EmbedBuilder();
 
     public static ResponseBuilder create(User author, Instant timestamp) {
         return new ResponseBuilder(author, timestamp);
@@ -29,9 +33,8 @@ public class ResponseBuilder {
         return new ResponseBuilder(m.getAuthor(), m.getCreationTime().toInstant());
     }
 
-    protected ResponseBuilder(User author, Instant timestamp) {
-        builder.setFooter(S.RESPONSE_FOOTER.format(StringUtils.stringifyUser(author)), author.getEffectiveAvatarUrl());
-        builder.setTimestamp(timestamp);
+    private ResponseBuilder(User author, Instant timestamp) {
+        builder.setFooter(S.RESPONSE_FOOTER.format(StringUtils.stringifyUser(author), TIME.format(new Date())), author.getEffectiveAvatarUrl());
         builder.setColor(Color.WHITE);
     }
 
@@ -53,12 +56,12 @@ public class ResponseBuilder {
     }
 
     public ResponseBuilder setMainList(String title, String... content) {
-        return setMainList(title, Arrays.asList(content));
+        return setMainList(title, Arrays.asList(((Object[]) content)));
     }
 
     public ResponseBuilder setMainList(String title, List<Object> content) {
         builder.setTitle(title);
-        if (content != null || !content.isEmpty())
+        if (content != null && !content.isEmpty())
             builder.setDescription(StringUtils.EMOJI_DIAMOND_ORANGE + String.join("\n" + StringUtils.EMOJI_DIAMOND_ORANGE,
                 content.stream().map(Object::toString).collect(Collectors.toList())));
         return this;

@@ -73,7 +73,7 @@ public class ClearCommand extends Command {
         }
 
         ResponseBuilder.create(event.getMessage())
-                .setTitle(S.COMMAND_CLEAR_TITLE_USER.format((int) args.get(1), user.getName()))
+                .setTitle(S.COMMAND_CLEAR_TITLE_USER.format(args.get(1), user.getName()))
                 .setIcon(StringUtils.ICON_INFO)
                 .send(event.getChannel()).queue();
 

@@ -10,12 +10,15 @@ import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.requests.restaction.order.ChannelOrderAction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class TeamManager {
 
-    private static List<Team> teams = new ArrayList<>();
+    private static final List<Team> teams = new ArrayList<>();
 
     public static void registerTeam(Team team) {
         teams.add(team);
@@ -34,7 +37,7 @@ public class TeamManager {
             return teams.stream()
                     .filter(t -> t.getId() == id)
                     .findFirst()
-                    .get();
+                    .orElse(null);
         } catch (NullPointerException e) {
             return null;
         }

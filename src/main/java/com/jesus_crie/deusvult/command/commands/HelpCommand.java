@@ -15,6 +15,7 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class HelpCommand extends Command {
 
@@ -66,7 +67,7 @@ public class HelpCommand extends Command {
     private ResponsePaginable getHelp(Message m) {
         ResponsePaginable help = ResponsePaginable.create(m, S.COMMAND_HELP_TITLE.get())
                 .setIcon(StringUtils.ICON_HELP)
-                .setTimeout(T.calc(0, 1));
+                .setTimeout(T.calc(1, TimeUnit.MINUTES));
 
         ResponsePage index = new ResponsePage(S.COMMAND_HELP_COMMAND_LIST.get());
         List<String> cmds = new ArrayList<>();

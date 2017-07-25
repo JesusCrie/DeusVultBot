@@ -1,66 +1,54 @@
 package com.jesus_crie.deusvult.logger;
 
 import com.jesus_crie.deusvult.DeusVult;
-import com.jesus_crie.deusvult.utils.F;
-import com.jesus_crie.deusvult.utils.StringUtils;
+import com.jesus_crie.deusvult.response.ResponseBuilder;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.utils.SimpleLog;
 
 import java.awt.*;
 import java.util.Date;
 
-public class DiscordLogListener implements SimpleLog.LogListener {
+public class DiscordLogListener implements Logger.Listener {
 
-    private TextChannel channel;
+    private static final String FORMAT = "**[%level%] [%thread%] [%name%]** %content%";
+
+    private final TextChannel channel;
     public DiscordLogListener(TextChannel c) {
         channel = c;
     }
 
     @Override
-    public void onLog(SimpleLog log, SimpleLog.Level logLevel, Object message) {
-        if (!Logger.loggerRegistered(log.name))
-            return;
-
-        logToDiscord(F.bold("[" + log.name + "]") + " " + message, logLevel);
-    }
-
-    @Override
-    public void onError(SimpleLog log, Throwable err) {
-        logToDiscord(F.bold("[" + log.name + "]") + " " + err, SimpleLog.Level.FATAL);
-    }
-
-    public void logToDiscord(String message, SimpleLog.Level level) {
+    public void onLog(Logger.Log log, Logger.SimpleLogger logger) {
         if (!DeusVult.instance().isReady())
             return;
 
-        EmbedBuilder builder = new EmbedBuilder();
-        builder.setTimestamp(new Date().toInstant());
+        final EmbedBuilder builder = new EmbedBuilder();
+        builder.setFooter(ResponseBuilder.TIME.format(new Date()), null);
 
-        switch (level) {
-            case FATAL:
-                builder.setColor(Color.RED);
-                builder.setAuthor("FATAL", null, StringUtils.ICON_ERROR);
-                break;
-            case WARNING:
-                builder.setColor(Color.ORANGE);
-                builder.setAuthor("WARNING", null, StringUtils.ICON_ERROR);
+        switch (log.getLevel()) {
+            case INFO:
+                builder.setColor(Color.GREEN);
                 break;
             case DEBUG:
                 builder.setColor(Color.GRAY);
-                builder.setAuthor("Debug", null, StringUtils.ICON_TERMINAL);
                 break;
-            case TRACE:
-                builder.setColor(Color.RED);
+            case WARNING:
+                builder.setColor(Color.ORANGE);
                 break;
-            case INFO:
+            case FATAL:
+            case UNKNOW:
             default:
-                builder.setColor(Color.GREEN);
-                builder.setAuthor(level.name(), null, StringUtils.ICON_CHECK);
+                builder.setColor(Color.RED);
                 break;
         }
 
-        builder.setDescription(message);
+        String out = FORMAT.replace("%level%", log.getLevel().toString())
+                .replace("%thread%", log.getThreadName())
+                .replace("%name%", logger.getName())
+                .replace("%content%", log.getContent().toString()
+                        .replace("\"", "```yaml\n"));
+        builder.setDescription(out);
+
         channel.sendMessage(builder.build()).queue();
     }
 }

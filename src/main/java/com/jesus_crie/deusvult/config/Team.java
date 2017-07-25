@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.jesus_crie.deusvult.DeusVult;
+import com.sun.istack.internal.NotNull;
 import net.dv8tion.jda.core.entities.*;
 
 import java.io.IOException;
@@ -16,12 +17,12 @@ import java.util.stream.Collectors;
 @JsonSerialize(using = Team.TeamSerializer.class)
 public class Team implements Comparable<Team> {
 
-    private int id;
+    private final int id;
     private String name;
-    private Role role;
+    private final Role role;
     private User owner;
-    private TextChannel channelText;
-    private VoiceChannel channelVoice;
+    private final TextChannel channelText;
+    private final VoiceChannel channelVoice;
     private List<User> members;
 
     @JsonCreator
@@ -118,7 +119,7 @@ public class Team implements Comparable<Team> {
     }
 
     @Override
-    public int compareTo(Team o) {
+    public int compareTo(@NotNull Team o) {
         if (equals(o))
             return id > o.id ? 1 : -1;
         return members.size() > o.members.size() ? 1 : -1;

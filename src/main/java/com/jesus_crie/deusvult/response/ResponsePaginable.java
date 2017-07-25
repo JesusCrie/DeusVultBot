@@ -12,15 +12,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class ResponsePaginable {
 
-    private ResponseBuilder builder;
-    private String title;
-    private List<ResponsePage> pages = new ArrayList<>();
+    private final ResponseBuilder builder;
+    private final String title;
+    private final List<ResponsePage> pages = new ArrayList<>();
     private Message current;
     private int currentPage = 0;
-    private long timeout = T.calc(0, 1);
+    private long timeout = T.calc(1, TimeUnit.MINUTES);
 
     public static ResponsePaginable create(Message m, String t) {
         return new ResponsePaginable(m, t);
@@ -70,7 +71,7 @@ public class ResponsePaginable {
         return this;
     }
 
-    public ResponsePaginable send(MessageChannel channel, User u) {
+    public void send(MessageChannel channel, User u) {
         setPage(currentPage);
 
         current = channel.sendMessage(builder.build()).complete();
@@ -107,9 +108,7 @@ public class ResponsePaginable {
                 () -> {
                     try {
                         current.clearReactions().queue();
-                    } catch (Exception e) {}
+                    } catch (Exception ignore) {}
                 }, timeout);
-
-        return this;
     }
 }

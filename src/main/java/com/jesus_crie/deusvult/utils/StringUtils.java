@@ -3,10 +3,13 @@ package com.jesus_crie.deusvult.utils;
 import com.jesus_crie.deusvult.command.Command;
 import net.dv8tion.jda.core.entities.User;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public class StringUtils {
 
     public static final String PREFIX = ">";
-    public static final String VERSION = "ALPHA 0.0.1";
+    public static final String VERSION = "@version@";
 
     public static final String ICON_INFO = "https://cdn.discordapp.com/attachments/302785106802638848/302790538627776512/sign-info-icon.png";
     public static final String ICON_MUSIC = "https://cdn.discordapp.com/attachments/302785106802638848/318025666199027712/sound-3-icon.png";
@@ -58,5 +61,11 @@ public class StringUtils {
             return Command.Context.MAIN_GUILD.name();
         else
             return Command.Context.PRIVATE.name();
+    }
+
+    public static String collectStackTrace(Throwable e) {
+        return Arrays.stream(e.getStackTrace())
+                .map(StackTraceElement::toString)
+                .collect(Collectors.joining("\n"));
     }
 }

@@ -15,9 +15,9 @@ import java.util.regex.Pattern;
 
 public class CommandPattern {
 
-    private List<Argument> arguments;
-    private BiPredicate<MessageReceivedEvent, List<Object>> action;
-    private String notice;
+    private final List<Argument> arguments;
+    private final BiPredicate<MessageReceivedEvent, List<Object>> action;
+    private final String notice;
 
     public CommandPattern(Argument[] args, BiPredicate<MessageReceivedEvent, List<Object>> action, String notice) {
         if (args != null && args.length > 0)
@@ -140,8 +140,8 @@ public class CommandPattern {
             return new Argument(s, matcher -> s);
         }
 
-        private Pattern pattern;
-        private Function<Matcher, Object> mapper;
+        private final Pattern pattern;
+        private final Function<Matcher, Object> mapper;
         private boolean repeatable = false;
 
         public Argument(String pattern, Function<Matcher, Object> mapper) {
@@ -169,6 +169,7 @@ public class CommandPattern {
         /**
          * This supposed that {@link #match(String)} has returned True.
          */
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         public Object map(String match) {
             Matcher m = pattern.matcher(match);
             m.find();

@@ -14,15 +14,7 @@ import java.util.List;
 
 public class EvalCommand extends Command {
 
-    private ScriptEngine engine;
-    private String imports = "var imports = new JavaImporter(" +
-            "java.util," +
-            "java.lang," +
-            "com.jesus_crie.deusvult," +
-            "com.jesus_crie.deusvult.utils," +
-            "com.jesus_crie.deusvult.manager," +
-            "com.jesus_crie.deusvult.config," +
-            "com.jesus_crie.deusvult.response);";
+    private final ScriptEngine engine;
 
     public EvalCommand() {
         super("eval",
@@ -52,6 +44,14 @@ public class EvalCommand extends Command {
         Object result;
 
         try {
+            String imports = "var imports = new JavaImporter(" +
+                    "java.util," +
+                    "java.lang," +
+                    "com.jesus_crie.deusvult," +
+                    "com.jesus_crie.deusvult.utils," +
+                    "com.jesus_crie.deusvult.manager," +
+                    "com.jesus_crie.deusvult.config," +
+                    "com.jesus_crie.deusvult.response);";
             result = engine.eval(imports + "with (imports) {\n" + code + "\n}");
         } catch (Exception ee) {
             result = ee;

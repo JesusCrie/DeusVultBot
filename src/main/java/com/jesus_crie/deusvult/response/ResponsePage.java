@@ -9,10 +9,10 @@ import java.util.List;
 
 public class ResponsePage {
 
-    private String title;
+    private final String title;
     private String description;
     private Color color;
-    private List<MessageEmbed.Field> fields;
+    private final List<MessageEmbed.Field> fields;
 
     public ResponsePage(String title) {
         color = Color.WHITE;
@@ -59,8 +59,6 @@ public class ResponsePage {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ResponsePage))
-            return false;
-        return ((ResponsePage) obj).title.equals(title);
+        return obj instanceof ResponsePage && ((ResponsePage) obj).title.equals(title);
     }
 }

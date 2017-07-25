@@ -5,7 +5,7 @@ public enum S {
     GENERAL_GAME_PATTERN("%shelp - v%s"),
     GENERAL_UPTIME_PATTERN("%sd %sh %sm"),
 
-    RESPONSE_FOOTER("%s"),
+    RESPONSE_FOOTER("%s [%s]"),
     RESPONSE_PAGINABLE_TITLE("%s (%s/%s)"),
     RESPONSE_ERROR_COMMAND_EXCEPTION("Une erreur est survenue"),
     RESPONSE_ERROR_COMMAND_CRASH("La commande a crashée, veuillez réessayez plus tard."),
@@ -95,7 +95,7 @@ public enum S {
     COMMAND_TEAM_LIST_NONE("Aucune team n'a été trouver !"),
     COMMAND_TEAM_LIST_PATTERN("%s (%s)");
 
-    private String value;
+    private final String value;
     S(String value) {
         this.value = value;
     }

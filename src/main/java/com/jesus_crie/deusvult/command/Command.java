@@ -20,14 +20,14 @@ import java.util.List;
 
 public abstract class Command {
 
-    private String name;
-    private String description;
-    private List<Long> guildOnly;
-    private AccessLevel accessLevel;
-    private int context;
-    private List<CommandPattern> patterns;
+    private final String name;
+    private final String description;
+    private final List<Long> guildOnly;
+    private final AccessLevel accessLevel;
+    private final int context;
+    private final List<CommandPattern> patterns;
 
-    public Command(String name,
+    protected Command(String name,
                    String description,
                    List<Long> guildOnly,
                    AccessLevel accesLevel,
@@ -56,9 +56,7 @@ public abstract class Command {
     }
 
     public boolean isGuildAuthorized(Guild g) {
-        if (!isGuildOnly())
-            return true;
-        return guildOnly.contains(g.getIdLong());
+        return !isGuildOnly() || guildOnly.contains(g.getIdLong());
     }
 
     public AccessLevel getAccessLevel() {
@@ -104,7 +102,7 @@ public abstract class Command {
         ADMIN(1),
         CREATOR(2);
 
-        private int b;
+        private final int b;
         AccessLevel(int b) {
             this.b = b;
         }

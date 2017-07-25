@@ -6,7 +6,7 @@ import com.jesus_crie.deusvult.listener.CommandListener;
 import com.jesus_crie.deusvult.logger.DiscordLogListener;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
-import com.jesus_crie.deusvult.manager.TimerManager;
+import com.jesus_crie.deusvult.manager.ThreadManager;
 import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.AccountType;
@@ -17,21 +17,19 @@ import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
-import net.dv8tion.jda.core.utils.SimpleLog;
 
 import javax.security.auth.login.LoginException;
 
 public class DeusVult {
 
     private JDA jda;
-    private String secret;
+    private final String secret;
     private boolean ready = false;
     private Guild main;
-    private long start;
+    private final long start;
 
     public DeusVult(String token, String secret) {
         start = System.currentTimeMillis();
-        Thread.setDefaultUncaughtExceptionHandler((tread, exception) -> Logger.UNKNOW.get().log(exception));
 
         this.secret = secret;
         try {
@@ -91,7 +89,7 @@ public class DeusVult {
         Logger.START.get().info("READY !");
         jda.getPresence().setGame(Game.of(S.GENERAL_GAME_PATTERN.format(StringUtils.PREFIX, StringUtils.VERSION), "https://twitch.tv/discordapp"));
 
-        SimpleLog.addListener(new DiscordLogListener(jda.getTextChannelById(Config.getSetting("channelLogs"))));
+        Logger.SimpleLogger.addListener(new DiscordLogListener(jda.getTextChannelById(Config.getSetting("channelLogs"))));
         Logger.START.get().info("Discord logging set !");
 
         ready = true;
@@ -101,7 +99,7 @@ public class DeusVult {
         ready = false;
         Logger.START.get().info("Shutting down...");
         // TODO music stop
-        TimerManager.cleanUp();
+        ThreadManager.cleanUp();
         Config.save();
         jda.shutdown();
     }

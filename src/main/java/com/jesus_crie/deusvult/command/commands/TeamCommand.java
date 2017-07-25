@@ -37,7 +37,9 @@ public class TeamCommand extends Command {
         ResponseBuilder.create(event.getMessage())
                 .setTitle(S.COMMAND_TEAM_HELP_HELP.get())
                 .setIcon(StringUtils.ICON_CUP)
-                .setDescription(S.COMMAND_TEAM_HELP_DESC.get());
+                .setDescription(S.COMMAND_TEAM_HELP_DESC.get())
+                .addField(">team list", "Affiche les 10 plus grosses teams.", false)
+                .addField(">team create", "Initialise le créateur de team, les autres étape ce font en MP", false);
 
         return true;
     }

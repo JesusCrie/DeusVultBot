@@ -12,8 +12,8 @@ import java.util.List;
 
 public class WordReactCommand extends Command {
 
-    private HashMap<Character, String> emoteMain;
-    private HashMap<Character, String> emoteSecondary;
+    private final HashMap<Character, String> emoteMain;
+    private final HashMap<Character, String> emoteSecondary;
 
     public WordReactCommand() {
         super("wr",

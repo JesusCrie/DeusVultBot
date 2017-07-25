@@ -2,7 +2,7 @@ package com.jesus_crie.deusvult.exception;
 
 public abstract class BotException extends Exception {
 
-    public BotException(String message) {
+    BotException(String message) {
         super(message);
     }
 

@@ -13,8 +13,8 @@ import java.util.Random;
 
 public class EightBallCommand extends Command {
 
-    private Random random = new Random();
-    private List<String> answers = Arrays.asList(S.EIGHT_BALL_DATA.get().split("//"));
+    private final Random random = new Random();
+    private final List<String> answers = Arrays.asList(S.EIGHT_BALL_DATA.get().split("//"));
 
     public EightBallCommand() {
         super("8ball",

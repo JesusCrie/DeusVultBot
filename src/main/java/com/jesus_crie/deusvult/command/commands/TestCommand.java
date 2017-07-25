@@ -11,6 +11,7 @@ import com.jesus_crie.deusvult.utils.T;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class TestCommand extends Command {
 
@@ -48,7 +49,7 @@ public class TestCommand extends Command {
 
     private boolean onCommandTest(MessageReceivedEvent event) {
         ResponsePaginable.create(event.getMessage(), "Test Paginable")
-                .setTimeout(T.calc(30))
+                .setTimeout(T.calc(30, TimeUnit.SECONDS))
                 .setIcon(StringUtils.ICON_CUP)
                 .addPages(
                         new ResponsePage("Page 1").setDescription("Je suis une peche"),

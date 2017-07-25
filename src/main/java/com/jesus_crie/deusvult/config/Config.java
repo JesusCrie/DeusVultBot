@@ -34,7 +34,7 @@ public class Config {
             TeamManager.registerTeams(t);
             Logger.CONFIG.get().info("Config loaded !");
         } catch (IOException e) {
-            Logger.CONFIG.get().log(new ConfigException("Can't load config !"));
+            Logger.CONFIG.get().trace(new ConfigException("Can't load config !"));
         }
     }
 
@@ -71,7 +71,7 @@ public class Config {
                 return response;
             });
         } catch (IOException e) {
-            Logger.CONFIG.get().log(e);
+            Logger.CONFIG.get().trace(e);
         }
     }
 

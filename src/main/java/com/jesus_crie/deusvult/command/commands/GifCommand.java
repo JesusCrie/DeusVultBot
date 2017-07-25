@@ -49,7 +49,7 @@ public class GifCommand extends Command {
         } catch (IOException e) {
             ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.COMMAND_GIF_FAIL.get()))
                     .send(event.getChannel()).queue();
-            Logger.COMMAND.get().log(e);
+            Logger.COMMAND.get().trace(e);
             return true;
         }
 
@@ -73,7 +73,7 @@ public class GifCommand extends Command {
         } catch (IOException e) {
             ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.COMMAND_GIF_FAIL.get()))
                     .send(event.getChannel()).queue();
-            Logger.COMMAND.get().log(e);
+            Logger.COMMAND.get().trace(e);
             return true;
         }
 
