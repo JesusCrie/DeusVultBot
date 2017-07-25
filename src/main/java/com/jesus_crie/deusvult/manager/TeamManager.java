@@ -4,16 +4,21 @@ import com.jesus_crie.deusvult.DeusVult;
 import com.jesus_crie.deusvult.config.Config;
 import com.jesus_crie.deusvult.config.Team;
 import com.jesus_crie.deusvult.logger.Logger;
+import com.jesus_crie.deusvult.utils.S;
+import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.requests.restaction.order.ChannelOrderAction;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class TeamManager {
 
-    private static List<Team> teams = new ArrayList<>();
+    private static final List<Team> teams = new ArrayList<>();
 
     public static void registerTeam(Team team) {
         teams.add(team);
@@ -32,7 +37,7 @@ public class TeamManager {
             return teams.stream()
                     .filter(t -> t.getId() == id)
                     .findFirst()
-                    .get();
+                    .orElse(null);
         } catch (NullPointerException e) {
             return null;
         }
@@ -51,28 +56,28 @@ public class TeamManager {
     }
 
     public static Team createTeam(User owner, String name) {
-        Logger.info("[Team] Creating team " + name);
+        Logger.TEAM.get().info("Creating team " + name);
         Guild g = DeusVult.instance().getMainGuild();
 
         Role role = g.getController()
                 .createRole()
-                .setName("Team - " + name)
+                .setName(S.TEAM_ROLE_PATTERN.format(name))
                 .complete();
         g.getController().addRolesToMember(g.getMember(owner), role).complete();
 
         TextChannel chanT = (TextChannel) g.getController()
-                .createTextChannel("group-" + name.replaceAll(" ", "_"))
+                .createTextChannel(S.TEAM_CHANNEL_TEXT_NAME.format(name.replaceAll(" ", "_")))
                 .addPermissionOverride(g.getPublicRole(), new ArrayList<>(), Collections.singletonList(Permission.MESSAGE_READ))
                 .addPermissionOverride(role, Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
-                .addPermissionOverride(g.getRoleById("323952614892896261"), Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
-                .setTopic("Private channel for the team " + name)
+                .addPermissionOverride(g.getRoleById(StringUtils.ROLE_BOT), Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
+                .setTopic(S.TEAM_CHANNEL_TEXT_TOPIC.format(name))
                 .complete();
 
         VoiceChannel chanV = (VoiceChannel) g.getController()
-                .createVoiceChannel("\uD83C\uDF0F Groupe - " + name)
+                .createVoiceChannel(S.TEAM_CHANNEL_VOICE_NAME.format(name))
                 .addPermissionOverride(g.getPublicRole(), new ArrayList<>(), Collections.singletonList(Permission.VOICE_CONNECT))
                 .addPermissionOverride(role, Collections.singletonList(Permission.VOICE_CONNECT), new ArrayList<>())
-                .addPermissionOverride(g.getRoleById("323952614892896261"), Collections.singletonList(Permission.VOICE_CONNECT), new ArrayList<>())
+                .addPermissionOverride(g.getRoleById(StringUtils.ROLE_BOT), Collections.singletonList(Permission.VOICE_CONNECT), new ArrayList<>())
                 .setUserlimit(10)
                 .complete();
 
@@ -84,7 +89,7 @@ public class TeamManager {
     }
 
     public static void deleteTeam(Team team) {
-        Logger.info("[Team] Deleting team " + team.getName());
+        Logger.TEAM.get().info("Deleting team " + team.getName());
 
         team.delete();
 
@@ -127,6 +132,9 @@ public class TeamManager {
     }
 
     private static int getNextId() {
+        if (teams.isEmpty())
+            return 0;
+
         teams.sort((prev, next) -> prev.getId() > next.getId() ? 1 : -1);
 
         return teams.get(teams.size() - 1).getId() + 1;

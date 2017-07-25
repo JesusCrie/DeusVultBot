@@ -3,6 +3,7 @@ package com.jesus_crie.deusvult.config;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jesus_crie.deusvult.exception.ConfigException;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.TeamManager;
 import com.jesus_crie.deusvult.utils.StringUtils;
@@ -31,9 +32,9 @@ public class Config {
 
             List<Team> t = mapper.readValue(new URL(StringUtils.CONFIG_URL_TEAMS), new TypeReference<List<Team>>() {});
             TeamManager.registerTeams(t);
-            Logger.info("[Config] Config loaded !");
+            Logger.CONFIG.get().info("Config loaded !");
         } catch (IOException e) {
-            Logger.error("[Config] Can't load config !", e);
+            Logger.CONFIG.get().trace(new ConfigException("Can't load config !"));
         }
     }
 
@@ -63,14 +64,14 @@ public class Config {
                         throw new IOException("Missing datas !");
                     case 0:
                     default:
-                        Logger.info("[Config] Successfully saved !");
+                        Logger.CONFIG.get().info("Successfully saved !");
                         break;
                 }
 
                 return response;
             });
         } catch (IOException e) {
-            e.printStackTrace();
+            Logger.CONFIG.get().trace(e);
         }
     }
 

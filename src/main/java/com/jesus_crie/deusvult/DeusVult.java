@@ -1,13 +1,13 @@
 package com.jesus_crie.deusvult;
 
-import com.jesus_crie.deusvult.commands.*;
+import com.jesus_crie.deusvult.command.commands.*;
 import com.jesus_crie.deusvult.config.Config;
 import com.jesus_crie.deusvult.listener.CommandListener;
-import com.jesus_crie.deusvult.listener.TestListener;
-import com.jesus_crie.deusvult.logger.DiscordLog;
+import com.jesus_crie.deusvult.logger.DiscordLogListener;
 import com.jesus_crie.deusvult.logger.Logger;
 import com.jesus_crie.deusvult.manager.CommandManager;
-import com.jesus_crie.deusvult.manager.TimerManager;
+import com.jesus_crie.deusvult.manager.ThreadManager;
+import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -15,6 +15,7 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.OnlineStatus;
 import net.dv8tion.jda.core.entities.Game;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 
 import javax.security.auth.login.LoginException;
@@ -22,11 +23,14 @@ import javax.security.auth.login.LoginException;
 public class DeusVult {
 
     private JDA jda;
-    private String secret;
+    private final String secret;
     private boolean ready = false;
     private Guild main;
+    private final long start;
 
     public DeusVult(String token, String secret) {
+        start = System.currentTimeMillis();
+
         this.secret = secret;
         try {
             jda = new JDABuilder(AccountType.BOT)
@@ -42,47 +46,74 @@ public class DeusVult {
             // May never happened
             e.printStackTrace();
         }
-        Logger.info("[Start] JDA initialized !");
+        Logger.START.get().info("JDA initialized !");
     }
 
     void warmup() {
-        Logger.info("[Start] Registering listeners...");
+        Logger.START.get().info("Registering listeners...");
         jda.addEventListener(
-                new CommandListener(),
-                new TestListener()
+                new CommandListener()
         );
 
-        Logger.info("[Start] Loading config...");
+        Logger.START.get().info("Loading config...");
         new Config(secret);
 
-        Logger.info("[Start] Registering commands...");
+        Logger.START.get().info("Registering commands...");
         CommandManager.registerCommands(
-                new TestCommand(),
+                // Global
+                new HelpCommand(),
+                new PingCommand(),
+
+                // General
+                new QuoteCommand(),
+                new WordReactCommand(),
+                new EightBallCommand(),
+                new GifCommand(),
+                new MathCommand(),
+                new InfoCommand(),
+
+                // Moderation
+                new ClearCommand(),
                 new StopCommand(),
-                new DumpCommand(),
-                new TeamCommand(),
-                new EvalCommand()
+                new UserInfoCommand(),
+                new EvalCommand(),
+                new AdminCommand(),
+                new TestCommand(),
+
+                // Experimental
+                new TeamCommand()
         );
 
-        Logger.info("[Start] Loading music components...");
+        Logger.START.get().info("Loading music components...");
 
-        Logger.info("[Start] READY !");
-        jda.getPresence().setGame(Game.of(StringUtils.PREFIX + "help - " + StringUtils.VERSION, "https://twitch.tv/discordapp"));
+        Logger.START.get().info("READY !");
+        jda.getPresence().setGame(Game.of(S.GENERAL_GAME_PATTERN.format(StringUtils.PREFIX, StringUtils.VERSION), "https://twitch.tv/discordapp"));
 
-        DiscordLog.init(jda.getTextChannelById(Config.getSetting("channelLogs")));
+        Logger.SimpleLogger.addListener(new DiscordLogListener(jda.getTextChannelById(Config.getSetting("channelLogs"))));
+        Logger.START.get().info("Discord logging set !");
+
         ready = true;
     }
 
     public void shutdown() {
         ready = false;
-        Logger.info("[Start] Shutting down...");
+        Logger.START.get().info("Shutting down...");
         // TODO music stop
+        ThreadManager.cleanUp();
         Config.save();
-        TimerManager.cleanup();
-        jda.shutdown(true);
+        jda.shutdown();
+        System.exit(0);
     }
 
-    public JDA getJda() {
+    // Shutdown as fast as it can
+    public void forceShutdown() {
+        ready = false;
+        Logger.START.get().warning("Force shutting down !");
+        jda.shutdownNow();
+        System.exit(1);
+    }
+
+    public JDA getJDA() {
         return jda;
     }
 
@@ -94,6 +125,17 @@ public class DeusVult {
         if (main == null)
             main = jda.getGuildById(Config.getSetting("guildId"));
         return main;
+    }
+
+    public User getUserByNameDiscriminator(String name, String discriminator) {
+        return jda.getUsersByName(name, true).stream()
+                .filter(u -> u.getDiscriminator().equals(discriminator))
+                .findFirst()
+                .orElse(null);
+    }
+
+    public long getStart() {
+        return start;
     }
 
     public static DeusVult instance() {

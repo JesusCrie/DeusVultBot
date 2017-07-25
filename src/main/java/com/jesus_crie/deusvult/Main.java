@@ -5,6 +5,8 @@ public class Main {
     private static DeusVult bot;
 
     public static void main(String[] args) {
+        Thread.currentThread().setName("DeusVult-Main");
+
         if (args.length <= 1) {
             System.out.println("You need to provide a token and a secret !");
             return;

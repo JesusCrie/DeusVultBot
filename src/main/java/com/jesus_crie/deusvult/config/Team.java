@@ -3,14 +3,11 @@ package com.jesus_crie.deusvult.config;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.jesus_crie.deusvult.DeusVult;
-import com.jesus_crie.deusvult.utils.StringUtils;
-import jdk.nashorn.internal.objects.annotations.Getter;
-import jdk.nashorn.internal.objects.annotations.Setter;
+import com.sun.istack.internal.NotNull;
 import net.dv8tion.jda.core.entities.*;
 
 import java.io.IOException;
@@ -18,14 +15,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonSerialize(using = Team.TeamSerializer.class)
-public class Team {
+public class Team implements Comparable<Team> {
 
-    private int id;
+    private final int id;
     private String name;
-    private Role role;
+    private final Role role;
     private User owner;
-    private TextChannel channelText;
-    private VoiceChannel channelVoice;
+    private final TextChannel channelText;
+    private final VoiceChannel channelVoice;
     private List<User> members;
 
     @JsonCreator
@@ -37,10 +34,10 @@ public class Team {
                 @JsonProperty("channelVoiceId") String channelVoiceId) {
         this.id = id;
         this.name = name;
-        role = DeusVult.instance().getJda().getRoleById(roleId);
-        owner = DeusVult.instance().getJda().getUserById(ownerId);
-        channelText = DeusVult.instance().getJda().getTextChannelById(channelTextId);
-        channelVoice = DeusVult.instance().getJda().getVoiceChannelById(channelVoiceId);
+        role = DeusVult.instance().getJDA().getRoleById(roleId);
+        owner = DeusVult.instance().getJDA().getUserById(ownerId);
+        channelText = DeusVult.instance().getJDA().getTextChannelById(channelTextId);
+        channelVoice = DeusVult.instance().getJDA().getVoiceChannelById(channelVoiceId);
         members = role.getGuild().getMembersWithRoles(role).stream()
                 .map(Member::getUser)
                 .collect(Collectors.toList());
@@ -62,6 +59,22 @@ public class Team {
         channelText.delete().complete();
         channelVoice.delete().complete();
         role.delete().complete();
+    }
+
+    public void addMember(User u) {
+        if (isMember(u))
+            return;
+        members.add(u);
+        role.getGuild().getController()
+                .addRolesToMember(role.getGuild().getMember(u), role).complete();
+    }
+
+    public void removeMember(User u) {
+        if (!isMember(u))
+            return;
+        members.remove(u);
+        role.getGuild().getController()
+                .removeRolesFromMember(role.getGuild().getMember(u), role).complete();
     }
 
     public boolean isMember(User u) {
@@ -102,7 +115,14 @@ public class Team {
 
     @Override
     public boolean equals(Object obj) {
-        return ((Team) obj).getId() == id;
+        return (obj instanceof Team) && ((Team) obj).getId() == id;
+    }
+
+    @Override
+    public int compareTo(@NotNull Team o) {
+        if (equals(o))
+            return id > o.id ? 1 : -1;
+        return members.size() > o.members.size() ? 1 : -1;
     }
 
     public static class TeamSerializer extends StdSerializer<Team> {

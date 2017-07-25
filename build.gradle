@@ -11,8 +11,8 @@ repositories {
 }
 
 dependencies {
-    compile 'net.dv8tion:JDA:3.1.1_212'
-    compile 'com.sedmelluq:lavaplayer:1.2.39'
+    compile 'net.dv8tion:JDA:3.2.0_237' // Don't forget the info command plz
+    compile 'com.sedmelluq:lavaplayer:1.2.42'
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.8.8'
     compile 'org.slf4j:slf4j-nop:1.7.21'
 }

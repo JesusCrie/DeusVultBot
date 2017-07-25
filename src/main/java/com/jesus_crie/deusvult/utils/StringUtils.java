@@ -1,15 +1,15 @@
 package com.jesus_crie.deusvult.utils;
 
-import com.jesus_crie.deusvult.builder.EmbedMessageBuilder;
-import net.dv8tion.jda.core.entities.MessageEmbed;
+import com.jesus_crie.deusvult.command.Command;
 import net.dv8tion.jda.core.entities.User;
 
-import java.awt.*;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class StringUtils {
 
     public static final String PREFIX = ">";
-    public static final String VERSION = "ALPHA 0.0.1";
+    public static final String VERSION = "@version@";
 
     public static final String ICON_INFO = "https://cdn.discordapp.com/attachments/302785106802638848/302790538627776512/sign-info-icon.png";
     public static final String ICON_MUSIC = "https://cdn.discordapp.com/attachments/302785106802638848/318025666199027712/sound-3-icon.png";
@@ -21,14 +21,24 @@ public class StringUtils {
     public static final String ICON_DOOR = "https://cdn.discordapp.com/attachments/302785106802638848/317280450811002880/door-icon.png";
     public static final String ICON_GIPHY = "https://cdn.discordapp.com/attachments/302785106802638848/319467975080149003/giphy-logo-6611.png";
     public static final String ICON_CUP = "https://cdn.discordapp.com/attachments/302785106802638848/326739524975722496/cup-512.png";
+    public static final String ICON_BELL = "https://cdn.discordapp.com/attachments/302785106802638848/339090136799248385/bell-icon.png";
 
     public static final String EMOJI_DIAMOND_BLUE = "\uD83D\uDD39";
     public static final String EMOJI_DIAMOND_ORANGE = "\uD83D\uDD38";
     public static final String EMOJI_PREVIOUS = "\u23EA";
     public static final String EMOJI_NEXT = "\u23E9";
+    public static final String EMOJI_EXCLAMATION = "\u2754";
+    public static final String EMOJI_8BALL = "\uD83C\uDFB1";
+    public static final String EMOJI_REVERSE = "\uD83D\uDD04";
+    public static final String EMOJI_CACTUS = "\uD83C\uDF35";
 
-    public static final String USER_CREATOR = "182547138729869314";
-    public static final String ROLE_BOT = "323952614892896261";
+    public static final long USER_CREATOR = 182547138729869314L;
+    public static final long ROLE_BOT = 323952614892896261L;
+
+    public static final String GIPHY_KEY = "dc6zaTOxFJmzC";
+    public static final String GIPHY_BASE = "http://api.giphy.com/v1/gifs/";
+    public static final String GIPHY_RANDOM = GIPHY_BASE + "random";
+    public static final String GIPHY_SEARCH = GIPHY_BASE + "search";
 
     public static final String CONFIG_URL_GENERAL = "http://www.jesus-crie.com/discord/config.json";
     public static final String CONFIG_URL_TEAMS = "http://www.jesus-crie.com/discord/teams.json";
@@ -38,12 +48,24 @@ public class StringUtils {
         return u.getName() + "#" + u.getDiscriminator();
     }
 
-    public static MessageEmbed getErrorMessage(User author, String reason) {
-        EmbedMessageBuilder builder = new EmbedMessageBuilder(author);
-        builder.setColor(Color.RED);
-        builder.setAuthor("ERROR", null, ICON_ERROR);
-        builder.setDescription(reason);
+    public static String capitalize(String s) {
+        return s.substring(0, 1).toUpperCase() + s.substring(1);
+    }
 
-        return builder.build();
+    public static String stringifyContext(int context) {
+        if ((context & Command.Context.EVERYWHERE.b) == Command.Context.EVERYWHERE.b)
+            return Command.Context.EVERYWHERE.name();
+        else if ((context & Command.Context.ALL_GUILD.b) == Command.Context.ALL_GUILD.b)
+            return Command.Context.ALL_GUILD.name();
+        else if ((context & Command.Context.MAIN_GUILD.b) == Command.Context.MAIN_GUILD.b)
+            return Command.Context.MAIN_GUILD.name();
+        else
+            return Command.Context.PRIVATE.name();
+    }
+
+    public static String collectStackTrace(Throwable e) {
+        return Arrays.stream(e.getStackTrace())
+                .map(StackTraceElement::toString)
+                .collect(Collectors.joining("\n"));
     }
 }
