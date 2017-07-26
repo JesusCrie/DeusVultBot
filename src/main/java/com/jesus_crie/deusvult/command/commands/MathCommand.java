@@ -4,7 +4,6 @@ import com.jesus_crie.deusvult.command.Command;
 import com.jesus_crie.deusvult.command.CommandPattern;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
 import com.jesus_crie.deusvult.utils.F;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -20,7 +19,7 @@ public class MathCommand extends Command {
 
     public MathCommand() {
         super("math",
-                S.COMMAND_MATH_HELP.get(),
+                "Calcule le resultat d'un calcul donné.",
                 null,
                 AccessLevel.ADMIN,
                 Context.calculate(Context.EVERYWHERE));
@@ -52,10 +51,10 @@ public class MathCommand extends Command {
         }
 
         ResponseBuilder.create(event.getMessage())
-                .setTitle(S.COMMAND_MATH_TITLE.get())
+                .setTitle("Math")
                 .setIcon(StringUtils.ICON_TERMINAL)
-                .addField(S.COMMAND_MATH_EXPRESSION.get(), F.codeBlock("js", expression), false)
-                .addField(S.COMMAND_MATH_RESULT.get(), F.codeBlock(result.toString()), false)
+                .addField("Expression (math)", F.codeBlock("js", expression), false)
+                .addField("Résultat", F.codeBlock(result.toString()), false)
                 .send(event.getChannel()).queue();
 
         return true;

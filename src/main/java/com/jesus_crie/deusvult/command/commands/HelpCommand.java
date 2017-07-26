@@ -7,7 +7,6 @@ import com.jesus_crie.deusvult.response.ResponsePage;
 import com.jesus_crie.deusvult.response.ResponsePaginable;
 import com.jesus_crie.deusvult.response.ResponseUtils;
 import com.jesus_crie.deusvult.utils.F;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import com.jesus_crie.deusvult.utils.T;
 import net.dv8tion.jda.core.entities.Message;
@@ -17,11 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static com.jesus_crie.deusvult.utils.S.*;
+
 public class HelpCommand extends Command {
 
     public HelpCommand() {
         super("help",
-                S.COMMAND_HELP_HELP.get(),
+                "Affiche l'aide des commandes.",
                 null,
                 AccessLevel.EVERYONE,
                 Context.calculate(Context.EVERYWHERE));
@@ -65,11 +66,11 @@ public class HelpCommand extends Command {
     }
 
     private ResponsePaginable getHelp(Message m) {
-        ResponsePaginable help = ResponsePaginable.create(m, S.COMMAND_HELP_TITLE.get())
+        ResponsePaginable help = ResponsePaginable.create(m, "Aide")
                 .setIcon(StringUtils.ICON_HELP)
                 .setTimeout(T.calc(1, TimeUnit.MINUTES));
 
-        ResponsePage index = new ResponsePage(S.COMMAND_HELP_COMMAND_LIST.get());
+        ResponsePage index = new ResponsePage("List des commandes");
         List<String> cmds = new ArrayList<>();
         cmds.add("**1.** Index");
         for (int i = 0; i < CommandManager.getCommands().size(); i++)
@@ -79,11 +80,11 @@ public class HelpCommand extends Command {
         help.addPage(index);
 
         CommandManager.getCommands().forEach(c ->
-            help.addPage(new ResponsePage(S.COMMAND_HELP_COMMAND_TITLE.format(c.getName()))
+            help.addPage(new ResponsePage(f("Commande %s", c.getName()))
                     .setDescription(c.getDescription())
-                    .addField(S.COMMAND_HELP_ACCESS_LEVEL.get(), c.getAccessLevel().name(), true)
-                    .addField(S.COMMAND_HELP_CONTEXT.get(), StringUtils.stringifyContext(c.getContext()), true)
-                    .addField(S.COMMAND_HELP_USAGE.get(), F.codeBlock("yaml", String.join("\n", c.collectNotices())), false))
+                    .addField("Rang requis", c.getAccessLevel().name(), true)
+                    .addField("Contexte requis", StringUtils.stringifyContext(c.getContext()), true)
+                    .addField("Usage", F.codeBlock("yaml", String.join("\n", c.collectNotices())), false))
         );
 
         return help;

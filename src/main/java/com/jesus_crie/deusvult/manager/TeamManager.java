@@ -4,7 +4,7 @@ import com.jesus_crie.deusvult.DeusVult;
 import com.jesus_crie.deusvult.config.Config;
 import com.jesus_crie.deusvult.config.Team;
 import com.jesus_crie.deusvult.logger.Logger;
-import com.jesus_crie.deusvult.utils.S;
+import com.jesus_crie.deusvult.response.DialogBuilder;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.*;
@@ -15,6 +15,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.jesus_crie.deusvult.utils.S.*;
 
 public class TeamManager {
 
@@ -43,6 +45,12 @@ public class TeamManager {
         }
     }
 
+    public static List<Team> getTeamsByName(String name) {
+        return teams.stream()
+                .filter(t -> t.getName().equalsIgnoreCase(name))
+                .collect(Collectors.toList());
+    }
+
     public static List<Team> getTeamsForUser(User u) {
         return teams.stream()
                 .filter(t -> t.isMember(u) || t.isOwner(u))
@@ -61,20 +69,20 @@ public class TeamManager {
 
         Role role = g.getController()
                 .createRole()
-                .setName(S.TEAM_ROLE_PATTERN.format(name))
+                .setName(f("Team - %s", name))
                 .complete();
         g.getController().addRolesToMember(g.getMember(owner), role).complete();
 
         TextChannel chanT = (TextChannel) g.getController()
-                .createTextChannel(S.TEAM_CHANNEL_TEXT_NAME.format(name.replaceAll(" ", "_")))
+                .createTextChannel(f("team-%s", name.replaceAll(" ", "_")))
                 .addPermissionOverride(g.getPublicRole(), new ArrayList<>(), Collections.singletonList(Permission.MESSAGE_READ))
                 .addPermissionOverride(role, Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
                 .addPermissionOverride(g.getRoleById(StringUtils.ROLE_BOT), Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
-                .setTopic(S.TEAM_CHANNEL_TEXT_TOPIC.format(name))
+                .setTopic(f("Channel de la team %s", name))
                 .complete();
 
         VoiceChannel chanV = (VoiceChannel) g.getController()
-                .createVoiceChannel(S.TEAM_CHANNEL_VOICE_NAME.format(name))
+                .createVoiceChannel(f("\uD83C\uDF0F Team - %s", name))
                 .addPermissionOverride(g.getPublicRole(), new ArrayList<>(), Collections.singletonList(Permission.VOICE_CONNECT))
                 .addPermissionOverride(role, Collections.singletonList(Permission.VOICE_CONNECT), new ArrayList<>())
                 .addPermissionOverride(g.getRoleById(StringUtils.ROLE_BOT), Collections.singletonList(Permission.VOICE_CONNECT), new ArrayList<>())
@@ -94,6 +102,17 @@ public class TeamManager {
         team.delete();
 
         teams.remove(team);
+    }
+
+    public static void sendInvite(User toInvite, Team team) {
+        if (team.isMember(toInvite) || toInvite.isBot() || toInvite.isFake() || toInvite.equals(DeusVult.instance().getJDA().getSelfUser()))
+            return;
+
+        DialogBuilder dialog = new DialogBuilder(toInvite);
+        dialog.setContent("Vosu avez recu une invitation pour rejoindre \"" + team.getName() + "\""); // TODO Strings
+
+        if (dialog.send(toInvite.openPrivateChannel().complete()))
+            team.addMember(toInvite);
     }
 
     public static void sortChannels() {

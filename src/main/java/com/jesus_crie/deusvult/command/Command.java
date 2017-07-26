@@ -3,7 +3,6 @@ package com.jesus_crie.deusvult.command;
 import com.jesus_crie.deusvult.DeusVult;
 import com.jesus_crie.deusvult.exception.CommandException;
 import com.jesus_crie.deusvult.response.ResponseUtils;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.Permission;
 import net.dv8tion.jda.core.entities.Guild;
@@ -86,13 +85,13 @@ public abstract class Command {
         for (CommandPattern pattern : patterns) {
             if (pattern.matchArgs(args)) {
                 if (!pattern.execute(event, args)) {
-                    ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_CRASH.format()))
+                    ResponseUtils.errorMessage(event.getMessage(), new CommandException("La commande a crashée, veuillez réessayez plus tard."))
                             .send(event.getChannel()).queue();
                 }
                 return;
             }
         }
-        ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.RESPONSE_ERROR_COMMAND_SYNTAX.format()))
+        ResponseUtils.errorMessage(event.getMessage(), new CommandException("Erreur de syntaxe, aucun pattern ne correspond."))
                 .send(event.getChannel())
                 .queue();
     }

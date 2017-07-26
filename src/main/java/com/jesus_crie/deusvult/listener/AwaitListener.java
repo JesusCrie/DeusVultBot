@@ -35,6 +35,6 @@ public class AwaitListener<T extends Event> extends CompletableFuture<T> impleme
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
         DeusVult.instance().getJDA().removeEventListener(this);
-        return super.cancel(mayInterruptIfRunning);
+        return true;
     }
 }

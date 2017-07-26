@@ -4,7 +4,6 @@ import com.jesus_crie.deusvult.command.Command;
 import com.jesus_crie.deusvult.command.CommandPattern;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
 import com.jesus_crie.deusvult.utils.F;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -18,7 +17,7 @@ public class EvalCommand extends Command {
 
     public EvalCommand() {
         super("eval",
-                S.COMMAND_EVAL_HELP.get(),
+                "Execute du code en JS. Uniquement utilisable par le créateur.",
                 null,
                 AccessLevel.CREATOR,
                 Context.calculate(Context.EVERYWHERE));
@@ -58,10 +57,10 @@ public class EvalCommand extends Command {
         }
 
         ResponseBuilder.create(e.getMessage())
-                .setTitle(S.COMMAND_EVAL_TITLE.get())
+                .setTitle("Evaluation (JS / Nashorn)")
                 .setIcon(StringUtils.ICON_TERMINAL)
-                .addField(S.COMMAND_EVAL_TO_EVALUATE.get(), F.codeBlock("js", code), false)
-                .addField(S.COMMAND_EVAL_RESULT.get(), F.codeBlock("bash", result == null ? "null" : result.toString()), false)
+                .addField("Code à exécuter", F.codeBlock("js", code), false)
+                .addField("Resultat", F.codeBlock("bash", result == null ? "null" : result.toString()), false)
                 .send(e.getChannel()).queue();
 
         return true;

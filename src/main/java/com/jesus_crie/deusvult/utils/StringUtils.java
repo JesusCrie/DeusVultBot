@@ -1,15 +1,16 @@
 package com.jesus_crie.deusvult.utils;
 
+import com.jesus_crie.deusvult.Main;
 import com.jesus_crie.deusvult.command.Command;
 import net.dv8tion.jda.core.entities.User;
 
-import java.util.Arrays;
-import java.util.stream.Collectors;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class StringUtils {
 
     public static final String PREFIX = ">";
-    public static final String VERSION = "@version@";
+    public static final String VERSION = Main.class.getPackage().getImplementationVersion() == null ? "DEV" : Main.class.getPackage().getImplementationVersion();
 
     public static final String ICON_INFO = "https://cdn.discordapp.com/attachments/302785106802638848/302790538627776512/sign-info-icon.png";
     public static final String ICON_MUSIC = "https://cdn.discordapp.com/attachments/302785106802638848/318025666199027712/sound-3-icon.png";
@@ -23,14 +24,16 @@ public class StringUtils {
     public static final String ICON_CUP = "https://cdn.discordapp.com/attachments/302785106802638848/326739524975722496/cup-512.png";
     public static final String ICON_BELL = "https://cdn.discordapp.com/attachments/302785106802638848/339090136799248385/bell-icon.png";
 
-    public static final String EMOJI_DIAMOND_BLUE = "\uD83D\uDD39";
-    public static final String EMOJI_DIAMOND_ORANGE = "\uD83D\uDD38";
-    public static final String EMOJI_PREVIOUS = "\u23EA";
-    public static final String EMOJI_NEXT = "\u23E9";
-    public static final String EMOJI_EXCLAMATION = "\u2754";
-    public static final String EMOJI_8BALL = "\uD83C\uDFB1";
-    public static final String EMOJI_REVERSE = "\uD83D\uDD04";
-    public static final String EMOJI_CACTUS = "\uD83C\uDF35";
+    public static final String EMOTE_DIAMOND_BLUE = "\uD83D\uDD39";
+    public static final String EMOTE_DIAMOND_ORANGE = "\uD83D\uDD38";
+    public static final String EMOTE_PREVIOUS = "\u23EA";
+    public static final String EMOTE_NEXT = "\u23E9";
+    public static final String EMOTE_EXCLAMATION = "\u2754";
+    public static final String EMOTE_8BALL = "\uD83C\uDFB1";
+    public static final String EMOTE_REVERSE = "\uD83D\uDD04";
+    public static final String EMOTE_CACTUS = "\uD83C\uDF35";
+    public static final String EMOTE_CONFIRM = "\u2705";
+    public static final String EMOTE_DENY = "\u274E";
 
     public static final long USER_CREATOR = 182547138729869314L;
     public static final long ROLE_BOT = 323952614892896261L;
@@ -64,8 +67,8 @@ public class StringUtils {
     }
 
     public static String collectStackTrace(Throwable e) {
-        return Arrays.stream(e.getStackTrace())
-                .map(StackTraceElement::toString)
-                .collect(Collectors.joining("\n"));
+        final StringWriter sw = new StringWriter();
+        e.printStackTrace(new PrintWriter(sw, true));
+        return sw.getBuffer().toString();
     }
 }

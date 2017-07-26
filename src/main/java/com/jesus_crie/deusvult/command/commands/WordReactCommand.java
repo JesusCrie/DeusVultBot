@@ -2,7 +2,6 @@ package com.jesus_crie.deusvult.command.commands;
 
 import com.jesus_crie.deusvult.command.Command;
 import com.jesus_crie.deusvult.command.CommandPattern;
-import com.jesus_crie.deusvult.utils.S;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
@@ -17,7 +16,7 @@ public class WordReactCommand extends Command {
 
     public WordReactCommand() {
         super("wr",
-                S.COMMAND_WR_HELP.get(),
+                "Ecrit un mot avec des réactions sur le dernier message.",
                 null,
                 AccessLevel.EVERYONE,
                 Context.calculate(Context.EVERYWHERE));

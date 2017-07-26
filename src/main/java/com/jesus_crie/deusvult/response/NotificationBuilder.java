@@ -1,6 +1,5 @@
 package com.jesus_crie.deusvult.response;
 
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import com.jesus_crie.deusvult.utils.Waiter;
 import net.dv8tion.jda.core.EmbedBuilder;
@@ -18,8 +17,8 @@ public class NotificationBuilder {
 
     private NotificationBuilder(User u) {
         toSendTo = u;
-        builder.setAuthor(S.RESPONSE_NOTIFICATION_TITLE.get(), null, StringUtils.ICON_BELL);
-        builder.setFooter(S.RESPONSE_NOTIFICATION_FOOTER.get(), null);
+        builder.setAuthor("Notification", null, StringUtils.ICON_BELL);
+        builder.setFooter("Clique sur " + StringUtils.EMOTE_CACTUS + " pour effacer", null);
     }
 
     public NotificationBuilder setContent(String content) {
@@ -29,10 +28,10 @@ public class NotificationBuilder {
 
     public void send() {
         Message m = toSendTo.openPrivateChannel().complete().sendMessage(builder.build()).complete();
-        m.addReaction(StringUtils.EMOJI_CACTUS).complete();
+        m.addReaction(StringUtils.EMOTE_CACTUS).complete();
 
         Waiter.awaitReactionFromUser(m, toSendTo,
-                StringUtils.EMOJI_CACTUS,
+                StringUtils.EMOTE_CACTUS,
                 e -> m.delete().queue());
     }
 }

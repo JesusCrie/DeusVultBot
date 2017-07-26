@@ -64,19 +64,19 @@ public enum Logger {
             return name;
         }
 
-        public void info(String message) {
+        public void info(Object message) {
             log(new Log(Level.INFO, Thread.currentThread(), message));
         }
 
-        public void debug(String message) {
+        public void debug(Object message) {
             log(new Log(Level.DEBUG, Thread.currentThread(), message));
         }
 
-        public void warning(String message) {
+        public void warning(Object message) {
             log(new Log(Level.WARNING, Thread.currentThread(), message));
         }
 
-        public void fatal(String message) {
+        public void fatal(Object message) {
             log(new Log(Level.FATAL, Thread.currentThread(), message));
         }
 
@@ -93,7 +93,10 @@ public enum Logger {
 
             listeners.forEach(l -> l.onLog(log, this));
 
-            System.out.println(output);
+            if (log.level.isError)
+                System.err.println(output);
+            else
+                System.out.println(output);
         }
 
         @Override
@@ -132,17 +135,19 @@ public enum Logger {
     }
 
     public enum Level {
-        INFO("Info", 0),
-        DEBUG("Debug", 1),
-        WARNING("Warning", 2),
-        FATAL("Fatal", 3),
-        UNKNOW("UNKNOW", 4);
+        INFO("Info", 0, false),
+        DEBUG("Debug", 1, false),
+        WARNING("Warning", 2, false),
+        FATAL("Fatal", 3, true),
+        UNKNOW("UNKNOW", 4, true);
 
         private final String name;
         private final int priority;
-        Level(String name, int priority) {
+        private final boolean isError;
+        Level(String name, int priority, boolean isError) {
             this.name = name;
             this.priority = priority;
+            this.isError = isError;
         }
 
         public int getPriority() {

@@ -1,6 +1,5 @@
 package com.jesus_crie.deusvult.response;
 
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
 import net.dv8tion.jda.core.entities.Message;
@@ -9,13 +8,15 @@ import net.dv8tion.jda.core.entities.MessageEmbed;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.requests.RestAction;
 
-import java.awt.*;
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.jesus_crie.deusvult.utils.S.*;
 
 public class ResponseBuilder {
 
@@ -34,7 +35,7 @@ public class ResponseBuilder {
     }
 
     private ResponseBuilder(User author, Instant timestamp) {
-        builder.setFooter(S.RESPONSE_FOOTER.format(StringUtils.stringifyUser(author), TIME.format(new Date())), author.getEffectiveAvatarUrl());
+        builder.setFooter(f("%s [%s]", StringUtils.stringifyUser(author), TIME.format(new Date())), author.getEffectiveAvatarUrl());
         builder.setColor(Color.WHITE);
     }
 
@@ -62,7 +63,7 @@ public class ResponseBuilder {
     public ResponseBuilder setMainList(String title, List<Object> content) {
         builder.setTitle(title);
         if (content != null && !content.isEmpty())
-            builder.setDescription(StringUtils.EMOJI_DIAMOND_ORANGE + String.join("\n" + StringUtils.EMOJI_DIAMOND_ORANGE,
+            builder.setDescription(StringUtils.EMOTE_DIAMOND_ORANGE + String.join("\n" + StringUtils.EMOTE_DIAMOND_ORANGE,
                 content.stream().map(Object::toString).collect(Collectors.toList())));
         return this;
     }

@@ -5,7 +5,6 @@ import com.jesus_crie.deusvult.command.CommandPattern;
 import com.jesus_crie.deusvult.exception.CommandException;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
 import com.jesus_crie.deusvult.response.ResponseUtils;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
@@ -13,11 +12,13 @@ import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.List;
 
+import static com.jesus_crie.deusvult.utils.S.*;
+
 public class ClearCommand extends Command {
 
     public ClearCommand() {
         super("clear",
-                S.COMMAND_CLEAR_HELP.get(),
+                "Efface un certain nombre de messages dans le channel.",
                 null,
                 AccessLevel.ADMIN,
                 Context.calculate(Context.ALL_GUILD));
@@ -41,7 +42,7 @@ public class ClearCommand extends Command {
 
     private boolean onCommandGlobal(MessageReceivedEvent event, List<Object> args) {
         if ((int) args.get(0) <= 1) {
-            ResponseUtils.errorMessage(event.getMessage(), new CommandException(S.COMMAND_CLEAR_ERROR_NOT_ENOUGH.format(args.get(0))))
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException(f("%s n'est pas un nombre de message correct.", args.get(0))))
                     .send(event.getChannel()).queue();
             return true;
         }
@@ -52,7 +53,7 @@ public class ClearCommand extends Command {
         }
 
         ResponseBuilder.create(event.getMessage())
-                .setTitle(S.COMMAND_CLEAR_TITLE.format((int) args.get(0)))
+                .setTitle(f("%s messages ont été éffacés.", args.get(0)))
                 .setIcon(StringUtils.ICON_INFO)
                 .send(event.getChannel()).queue();
 
@@ -73,7 +74,7 @@ public class ClearCommand extends Command {
         }
 
         ResponseBuilder.create(event.getMessage())
-                .setTitle(S.COMMAND_CLEAR_TITLE_USER.format(args.get(1), user.getName()))
+                .setTitle(f("%s messages de %s sont en train d'être supprimés", args.get(1), user.getName()))
                 .setIcon(StringUtils.ICON_INFO)
                 .send(event.getChannel()).queue();
 
@@ -88,7 +89,7 @@ public class ClearCommand extends Command {
         }
 
         ResponseBuilder.create(event.getMessage())
-                .setTitle(S.COMMAND_CLEAR_TITLE.format((int) args.get(1)))
+                .setTitle(f("%s messages ont été éffacés.", args.get(1)))
                 .setIcon(StringUtils.ICON_INFO)
                 .send(event.getChannel()).queue();
 

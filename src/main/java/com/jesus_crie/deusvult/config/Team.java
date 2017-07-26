@@ -7,12 +7,14 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import com.jesus_crie.deusvult.DeusVult;
-import com.sun.istack.internal.NotNull;
+import com.jesus_crie.deusvult.manager.ThreadManager;
 import net.dv8tion.jda.core.entities.*;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.jesus_crie.deusvult.utils.S.*;
 
 @JsonSerialize(using = Team.TeamSerializer.class)
 public class Team implements Comparable<Team> {
@@ -38,9 +40,7 @@ public class Team implements Comparable<Team> {
         owner = DeusVult.instance().getJDA().getUserById(ownerId);
         channelText = DeusVult.instance().getJDA().getTextChannelById(channelTextId);
         channelVoice = DeusVult.instance().getJDA().getVoiceChannelById(channelVoiceId);
-        members = role.getGuild().getMembersWithRoles(role).stream()
-                .map(Member::getUser)
-                .collect(Collectors.toList());
+        ThreadManager.getGeneralPool().execute(this::update);
     }
 
     public Team(int id, String name, Role role, User owner, TextChannel channelText, VoiceChannel channelVoice) {
@@ -50,6 +50,14 @@ public class Team implements Comparable<Team> {
         this.owner = owner;
         this.channelText = channelText;
         this.channelVoice = channelVoice;
+        ThreadManager.getGeneralPool().execute(this::update);
+    }
+
+    public void update() {
+        role.getManager().setName(f("Team - %s", name)).complete();
+        channelText.getManagerUpdatable().getNameField().setValue(f("team-", name.replace(" ", "_")))
+                .getTopicField().setValue(f("Channel de la team %s", name)).update().complete();
+        channelVoice.getManager().setName(f("\uD83C\uDF0F Team - %s", name)).complete();
         members = role.getGuild().getMembersWithRoles(role).stream()
                 .map(Member::getUser)
                 .collect(Collectors.toList());
@@ -66,7 +74,7 @@ public class Team implements Comparable<Team> {
             return;
         members.add(u);
         role.getGuild().getController()
-                .addRolesToMember(role.getGuild().getMember(u), role).complete();
+                .addSingleRoleToMember(role.getGuild().getMember(u), role).complete();
     }
 
     public void removeMember(User u) {
@@ -74,7 +82,7 @@ public class Team implements Comparable<Team> {
             return;
         members.remove(u);
         role.getGuild().getController()
-                .removeRolesFromMember(role.getGuild().getMember(u), role).complete();
+                .removeSingleRoleFromMember(role.getGuild().getMember(u), role).complete();
     }
 
     public boolean isMember(User u) {
@@ -119,7 +127,7 @@ public class Team implements Comparable<Team> {
     }
 
     @Override
-    public int compareTo(@NotNull Team o) {
+    public int compareTo(Team o) {
         if (equals(o))
             return id > o.id ? 1 : -1;
         return members.size() > o.members.size() ? 1 : -1;

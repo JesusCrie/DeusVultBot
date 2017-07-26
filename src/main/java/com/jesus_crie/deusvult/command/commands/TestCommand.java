@@ -5,7 +5,6 @@ import com.jesus_crie.deusvult.command.CommandPattern;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
 import com.jesus_crie.deusvult.response.ResponsePage;
 import com.jesus_crie.deusvult.response.ResponsePaginable;
-import com.jesus_crie.deusvult.utils.S;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import com.jesus_crie.deusvult.utils.T;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
@@ -17,7 +16,7 @@ public class TestCommand extends Command {
 
     public TestCommand() {
         super("test",
-                S.COMMAND_TEST_HELP.get(),
+                "Une commande de test, aucune utilitée.",
                 null,
                 AccessLevel.ADMIN,
                 Context.calculate(Context.EVERYWHERE));

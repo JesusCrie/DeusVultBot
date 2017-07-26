@@ -4,6 +4,7 @@ public class Test {
 
     }
 
+
     private static void print(Object o) {
         System.out.println(o);
     }
