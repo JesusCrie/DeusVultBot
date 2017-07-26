@@ -9,7 +9,6 @@ import com.jesus_crie.deusvult.exception.TimeoutException;
 import com.jesus_crie.deusvult.manager.TeamManager;
 import com.jesus_crie.deusvult.manager.ThreadManager;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
-import com.jesus_crie.deusvult.response.ResponsePage;
 import com.jesus_crie.deusvult.response.ResponseUtils;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import com.jesus_crie.deusvult.utils.T;
@@ -17,6 +16,7 @@ import com.jesus_crie.deusvult.utils.Waiter;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
+import java.awt.Color;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -36,11 +36,11 @@ public class TeamCommand extends Command {
         registerPatterns(
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.forString("leave")
-                }, (e, a) -> onCommandLeave(e), "leave"),
+                }, this::onCommandLeave, "leave <nom de la team>"),
 
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.forString("edit")
-                }, (e, a) -> onCommandEdit(e), "edit"),
+                }, this::onCommandEdit, "edit <nom de la team>"),
 
                 new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.forString("create")
@@ -54,7 +54,7 @@ public class TeamCommand extends Command {
         );
     }
 
-    private boolean onCommandHelp(MessageReceivedEvent event) { //TODO clear Strings
+    private boolean onCommandHelp(MessageReceivedEvent event) {
         ResponseBuilder.create(event.getMessage())
                 .setTitle("Aide sur les teams")
                 .setIcon(StringUtils.ICON_CUP)
@@ -66,8 +66,8 @@ public class TeamCommand extends Command {
                 .addField(">team", "Affiche cette aide", false)
                 .addField(">team list", "Affiche les 10 plus grosses teams.", false)
                 .addField(">team create", "Initialise le créateur de team.", false)
-                .addField(">team edit", "Reservé au leader, permet d'éditer la team. (renommer, supprimer, inviter/renvoyer des personnes)", false)
-                .addField(">team leave", "Reservé aux membres. Permet de quitter une team. Quitter le serveur a pour effet de vous faire quitter toutes vos teams.", false)
+                .addField(">team edit <nom de la team>", "Reservé au leader, permet d'éditer la team. (renommer, supprimer, inviter/renvoyer des personnes)", false)
+                .addField(">team leave <nom de la team>", "Reservé aux membres. Permet de quitter une team. Quitter le serveur a pour effet de vous faire quitter toutes vos teams.", false)
                 .send(event.getChannel()).queue();
 
         return true;
@@ -116,6 +116,8 @@ public class TeamCommand extends Command {
             return true;
         }
 
+        eventName.getMessage().delete().queue();
+
         builder.setDescription("Mentionnez toutes les personnes que vous voulez inviter.")
                 .send(event.getChannel()).complete();
 
@@ -132,6 +134,8 @@ public class TeamCommand extends Command {
             return true;
         }
 
+        eventUsers.getMessage().delete().queue();
+
         Team team = TeamManager.createTeam(event.getAuthor(), eventName.getMessage().getRawContent());
 
         eventUsers.getMessage().getMentionedUsers().forEach(
@@ -139,6 +143,7 @@ public class TeamCommand extends Command {
 
         ResponseBuilder.create(event.getMessage())
                 .setTitle("La team \"" + team.getName() + "\" a bien été créé !")
+                .setColor(Color.GREEN)
                 .setIcon(StringUtils.ICON_TERMINAL)
                 .setDescription("Des invitations ont été envoyez aux membres.")
                 .send(event.getChannel()).queue();
@@ -146,15 +151,52 @@ public class TeamCommand extends Command {
         return true;
     }
 
-    private boolean onCommandEdit(MessageReceivedEvent event) {
+    private boolean onCommandEdit(MessageReceivedEvent event, List<Object> args) {
         return true;
     }
 
-    private boolean onCommandLeave(MessageReceivedEvent event) {
+    private boolean onCommandLeave(MessageReceivedEvent event, List<Object> args) {
+        String query = args.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(" "));
+        List<Team> result = generateTeamList(event.getAuthor(), false).stream()
+                .filter(t -> t.getName().equalsIgnoreCase(query))
+                .collect(Collectors.toList());
+
+        int indexResult = 0;
+
+        if (result.size() <= 0) {
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException("Vous n'êtes membre d'aucune team de ce nom."))
+                    .send(event.getChannel()).queue();
+            return true;
+        } else if (result.size() > 1) {
+            ResponseBuilder.create(event.getMessage())
+                    .setTitle("Vous avez plusieurs teams avec ce nom")
+                    .setMainList("Tapez le chiffre de la team que vous voulez quitter.", result.stream()
+                            .map(team -> result.indexOf(team) + ". " + team.getName())
+                            .collect(Collectors.toList()))
+                    .send(event.getChannel()).complete();
+
+            MessageReceivedEvent eventIndex = Waiter.getNextMessageFromUser(event.getChannel(), event.getAuthor(),
+                    () -> ResponseUtils.errorMessage(event.getMessage(), new TimeoutException(event.getAuthor().getAsMention() + ", vous avez mis trop longtemps à répondre.")),
+                    T.calc(30));
+
+            if (eventIndex == null)
+                return true;
+
+            try {
+                indexResult = Integer.parseInt(eventIndex.getMessage().getRawContent());
+            } catch (NumberFormatException e) {
+                ResponseUtils.errorMessage(eventIndex.getMessage(), new CommandException("Ce n'est pas un nombre !"))
+                        .send(eventIndex.getChannel()).queue();
+                return true;
+            }
+        }
+
         return true;
     }
 
-    private List<ResponsePage> generateTeamList(User u, boolean isOwner) {
+    private List<Team> generateTeamList(User u, boolean isOwner) {
         final List<Team> teams;
         if (isOwner)
             teams = TeamManager.getTeamsOwnedForUser(u);
@@ -164,12 +206,6 @@ public class TeamCommand extends Command {
                     .collect(Collectors.toList());
         }
 
-        return teams.stream()
-                .map(team ->
-                    new ResponsePage(null)
-                        .addFields(ResponseUtils.createList(team.getName(), false,
-                                "Owner: " + team.getOwner().getAsMention(),
-                                "Membres: " + team.getMembers().size())))
-                .collect(Collectors.toList());
+        return teams;
     }
 }

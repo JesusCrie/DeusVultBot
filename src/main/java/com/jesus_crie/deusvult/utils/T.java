@@ -50,6 +50,6 @@ public class T {
         String[] data = OffsetDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis() - DeusVult.instance().getStart()), ZoneId.of("+0"))
                 .format(DateTimeFormatter.ofPattern("DD/HH/mm")).split("/");
         data[0] = String.valueOf(Integer.parseInt(data[0]) - 1);
-        return f("%sd %sh %sm", data);
+        return f("%sd %sh %sm", (Object[]) data);
     }
 }

@@ -45,6 +45,12 @@ public class TeamManager {
         }
     }
 
+    public static List<Team> getTeamsByName(String name) {
+        return teams.stream()
+                .filter(t -> t.getName().equalsIgnoreCase(name))
+                .collect(Collectors.toList());
+    }
+
     public static List<Team> getTeamsForUser(User u) {
         return teams.stream()
                 .filter(t -> t.isMember(u) || t.isOwner(u))
