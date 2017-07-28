@@ -6,8 +6,6 @@ import com.jesus_crie.deusvult.response.ResponseBuilder;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
-import java.util.List;
-
 import static com.jesus_crie.deusvult.utils.S.*;
 
 public class PingCommand extends Command {
@@ -20,11 +18,11 @@ public class PingCommand extends Command {
                 Context.calculate(Context.EVERYWHERE));
 
         registerPatterns(
-                new CommandPattern(null, this::onCommand, "")
+                new CommandPattern(null, (e, a) -> onCommand(e), "")
         );
     }
 
-    private boolean onCommand(MessageReceivedEvent event, List<Object> args) {
+    private boolean onCommand(MessageReceivedEvent event) {
         ResponseBuilder.create(event.getMessage())
                 .setTitle("Calcul en cours...")
                 .setIcon(StringUtils.ICON_TERMINAL)

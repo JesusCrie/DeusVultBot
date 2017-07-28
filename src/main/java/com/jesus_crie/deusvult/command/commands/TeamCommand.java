@@ -35,11 +35,13 @@ public class TeamCommand extends Command {
 
         registerPatterns(
                 new CommandPattern(new CommandPattern.Argument[] {
-                        CommandPattern.Argument.forString("leave")
+                        CommandPattern.Argument.forString("leave"),
+                        CommandPattern.Argument.STRING.clone().setRepeatable(true)
                 }, this::onCommandLeave, "leave <nom de la team>"),
 
                 new CommandPattern(new CommandPattern.Argument[] {
-                        CommandPattern.Argument.forString("edit")
+                        CommandPattern.Argument.forString("edit"),
+                        CommandPattern.Argument.STRING.clone().setRepeatable(true)
                 }, this::onCommandEdit, "edit <nom de la team>"),
 
                 new CommandPattern(new CommandPattern.Argument[] {
@@ -156,6 +158,7 @@ public class TeamCommand extends Command {
     }
 
     private boolean onCommandLeave(MessageReceivedEvent event, List<Object> args) {
+        args.remove(0);
         String query = args.stream()
                 .map(Object::toString)
                 .collect(Collectors.joining(" "));
@@ -170,30 +173,48 @@ public class TeamCommand extends Command {
                     .send(event.getChannel()).queue();
             return true;
         } else if (result.size() > 1) {
-            ResponseBuilder.create(event.getMessage())
-                    .setTitle("Vous avez plusieurs teams avec ce nom")
-                    .setMainList("Tapez le chiffre de la team que vous voulez quitter.", result.stream()
-                            .map(team -> result.indexOf(team) + ". " + team.getName())
-                            .collect(Collectors.toList()))
-                    .send(event.getChannel()).complete();
+            indexResult = selectTeam(event, result);
 
-            MessageReceivedEvent eventIndex = Waiter.getNextMessageFromUser(event.getChannel(), event.getAuthor(),
-                    () -> ResponseUtils.errorMessage(event.getMessage(), new TimeoutException(event.getAuthor().getAsMention() + ", vous avez mis trop longtemps à répondre.")),
-                    T.calc(30));
-
-            if (eventIndex == null)
+            if (indexResult < 0)
                 return true;
-
-            try {
-                indexResult = Integer.parseInt(eventIndex.getMessage().getRawContent());
-            } catch (NumberFormatException e) {
-                ResponseUtils.errorMessage(eventIndex.getMessage(), new CommandException("Ce n'est pas un nombre !"))
-                        .send(eventIndex.getChannel()).queue();
-                return true;
-            }
         }
 
+        result.get(indexResult).removeMember(event.getAuthor());
+
+        ResponseBuilder.create(event.getMessage())
+                .setTitle(f("Vous avez bien quitter la team %s", result.get(indexResult).getName()))
+                .setIcon(StringUtils.ICON_CUP)
+                .send(event.getChannel()).queue();
+
         return true;
+    }
+
+    private int selectTeam(MessageReceivedEvent event, List<Team> teams) {
+        int resultIndex = -1;
+
+        ResponseBuilder.create(event.getMessage())
+                .setTitle("Vous avez plusieurs teams avec ce nom")
+                .setMainList("Tapez le numéro de la team.", teams.stream()
+                        .map(team -> teams.indexOf(team) + ". " + team.getName())
+                        .collect(Collectors.toList()))
+                .send(event.getChannel()).complete();
+
+        MessageReceivedEvent eventIndex = Waiter.getNextMessageFromUser(event.getChannel(), event.getAuthor(),
+                () -> ResponseUtils.errorMessage(event.getMessage(), new TimeoutException(event.getAuthor().getAsMention() + ", vous avez mis trop longtemps à répondre.")),
+                T.calc(30));
+
+        if (eventIndex == null)
+            return resultIndex;
+
+        try {
+            resultIndex = Integer.parseInt(eventIndex.getMessage().getRawContent());
+            return resultIndex;
+
+        } catch (NumberFormatException | IndexOutOfBoundsException e) {
+            ResponseUtils.errorMessage(eventIndex.getMessage(), new CommandException("Ce n'est pas un nombre valide !"))
+                    .send(eventIndex.getChannel()).queue();
+            return resultIndex;
+        }
     }
 
     private List<Team> generateTeamList(User u, boolean isOwner) {

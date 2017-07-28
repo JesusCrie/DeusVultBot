@@ -48,7 +48,6 @@ public class Waiter {
         final AwaitListener<T> listener = new AwaitListener<>(clazz);
 
         Runnable task = () -> {
-            Logger.DEV.get().debug("TRIGGERED");
             if (onTimeout != null)
                 onTimeout.run();
             listener.cancel(true);

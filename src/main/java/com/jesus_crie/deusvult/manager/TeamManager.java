@@ -105,7 +105,7 @@ public class TeamManager {
     }
 
     public static void sendInvite(User toInvite, Team team) {
-        if (team.isMember(toInvite) || toInvite.isBot() || toInvite.isFake() || toInvite.equals(DeusVult.instance().getJDA().getSelfUser()))
+        if (team.isMember(toInvite) || team.isOwner(toInvite) || toInvite.isBot() || toInvite.isFake() || toInvite.equals(DeusVult.instance().getJDA().getSelfUser()))
             return;
 
         DialogBuilder dialog = new DialogBuilder(toInvite);
