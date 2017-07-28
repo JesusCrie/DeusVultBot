@@ -18,7 +18,7 @@ public class DialogBuilder {
     public DialogBuilder(User target) {
         this.target = target;
         builder.setAuthor("Confirmation", null, StringUtils.ICON_HELP);
-        builder.setColor(Color.WHITE);
+        builder.setColor(Color.BLUE);
         builder.setFooter(StringUtils.stringifyUser(target), target.getEffectiveAvatarUrl());
     }
 

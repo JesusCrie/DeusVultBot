@@ -38,7 +38,7 @@ public class CommandPattern {
 
     public boolean matchArgs(String[] args) {
         if (!hasArgument())
-            return true;
+            return args.length <= 0;
 
         if (args.length < arguments.size())
             return false;

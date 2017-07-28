@@ -63,8 +63,10 @@ public class Config {
                     case 2:
                         throw new IOException("Missing datas !");
                     case 0:
-                    default:
                         Logger.CONFIG.get().info("Successfully saved !");
+                        break;
+                    default:
+                        Logger.CONFIG.get().warning("WTF ??");
                         break;
                 }
 

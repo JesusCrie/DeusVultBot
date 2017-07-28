@@ -11,6 +11,7 @@ import com.jesus_crie.deusvult.manager.ThreadManager;
 import net.dv8tion.jda.core.entities.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public class Team implements Comparable<Team> {
     private User owner;
     private final TextChannel channelText;
     private final VoiceChannel channelVoice;
-    private List<User> members;
+    private List<User> members = new ArrayList<>();
 
     @JsonCreator
     private Team(@JsonProperty("id") int id,
@@ -55,7 +56,7 @@ public class Team implements Comparable<Team> {
 
     public void update() {
         role.getManager().setName(f("Team - %s", name)).complete();
-        channelText.getManagerUpdatable().getNameField().setValue(f("team-", name.replace(" ", "_")))
+        channelText.getManagerUpdatable().getNameField().setValue(f("team-%s", name.replace(" ", "_")))
                 .getTopicField().setValue(f("Channel de la team %s", name)).update().complete();
         channelVoice.getManager().setName(f("\uD83C\uDF0F Team - %s", name)).complete();
         members = role.getGuild().getMembersWithRoles(role).stream()
@@ -78,7 +79,7 @@ public class Team implements Comparable<Team> {
     }
 
     public void removeMember(User u) {
-        if (!isMember(u))
+        if (!isMember(u) || isOwner(u))
             return;
         members.remove(u);
         role.getGuild().getController()

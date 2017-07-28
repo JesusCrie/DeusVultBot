@@ -88,7 +88,8 @@ public class DeusVult {
         Logger.START.get().info("Loading music components...");
 
         Logger.START.get().info("READY !");
-        jda.getPresence().setGame(Game.of(f("%shelp - v%s", StringUtils.PREFIX, StringUtils.VERSION), "https://twitch.tv/discordapp"));
+        jda.getPresence().setGame(Game.of(f("%shelp - v%s", StringUtils.PREFIX, StringUtils.VERSION)));
+        jda.getPresence().setStatus(OnlineStatus.ONLINE);
 
         Logger.SimpleLogger.addListener(new DiscordLogListener(jda.getTextChannelById(Config.getSetting("channelLogs"))));
         Logger.START.get().info("Discord logging set !");
