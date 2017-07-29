@@ -20,6 +20,8 @@ import static com.jesus_crie.deusvult.utils.S.*;
 @JsonSerialize(using = Team.TeamSerializer.class)
 public class Team implements Comparable<Team> {
 
+    public static final Team fake = new Team();
+
     private final int id;
     private String name;
     private final Role role;
@@ -27,6 +29,15 @@ public class Team implements Comparable<Team> {
     private final TextChannel channelText;
     private final VoiceChannel channelVoice;
     private List<User> members = new ArrayList<>();
+
+    private Team() {
+        id = -1;
+        name = "fake";
+        role = null;
+        owner = null;
+        channelText = null;
+        channelVoice = null;
+    }
 
     @JsonCreator
     private Team(@JsonProperty("id") int id,
@@ -84,6 +95,12 @@ public class Team implements Comparable<Team> {
         members.remove(u);
         role.getGuild().getController()
                 .removeSingleRoleFromMember(role.getGuild().getMember(u), role).complete();
+    }
+
+    public void transferOwnership(User u) {
+        if (!isMember(u) || isOwner(u))
+            return;
+        owner = u;
     }
 
     public boolean isMember(User u) {

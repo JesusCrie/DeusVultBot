@@ -13,8 +13,10 @@ import com.jesus_crie.deusvult.response.ResponseUtils;
 import com.jesus_crie.deusvult.utils.StringUtils;
 import com.jesus_crie.deusvult.utils.T;
 import com.jesus_crie.deusvult.utils.Waiter;
+import net.dv8tion.jda.core.entities.Message;
 import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.react.MessageReactionAddEvent;
 
 import java.awt.Color;
 import java.util.Collections;
@@ -67,7 +69,7 @@ public class TeamCommand extends Command {
                         "\nA cause du système de permissions de Discord les admins (uniquement) ont accès aux channels de team.")
                 .addField(">team", "Affiche cette aide", false)
                 .addField(">team list", "Affiche les 10 plus grosses teams.", false)
-                .addField(">team create", "Initialise le créateur de team.", false)
+                .addField(">team create", "Initialise le créateur de team.\n2 teams ne peuvent pas avoir le même non.", false)
                 .addField(">team edit <nom de la team>", "Reservé au leader, permet d'éditer la team. (renommer, supprimer, inviter/renvoyer des personnes)", false)
                 .addField(">team leave <nom de la team>", "Reservé aux membres. Permet de quitter une team. Quitter le serveur a pour effet de vous faire quitter toutes vos teams.", false)
                 .send(event.getChannel()).queue();
@@ -101,8 +103,10 @@ public class TeamCommand extends Command {
     private boolean onCommandCreate(MessageReceivedEvent event) {
         ResponseBuilder builder = ResponseBuilder.create(event.getMessage())
                 .setTitle("Création de Team")
-                .setIcon(StringUtils.ICON_TERMINAL)
-                .setDescription("Ecrivez le nom de la team.");
+                .setIcon(StringUtils.ICON_CUP)
+                .setDescription("Ecrivez le nom de la team. Le nom de doit être consitué uniquement de caractères alphanumériques (lettres sans accents + chiffres) et de _ et -." +
+                        "\nLes caractères ne respectant pas cela seront enlevés du nom.")
+                .addMention(event.getAuthor());
         builder.send(event.getChannel()).complete();
 
         MessageReceivedEvent eventName = Waiter.getNextMessageFromUser(event.getChannel(), event.getAuthor(),
@@ -139,6 +143,11 @@ public class TeamCommand extends Command {
         eventUsers.getMessage().delete().queue();
 
         Team team = TeamManager.createTeam(event.getAuthor(), eventName.getMessage().getRawContent());
+        if (team == null) {
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException("Une team du meme nom éxiste déjà !"))
+                    .send(event.getChannel()).queue();
+            return true;
+        }
 
         eventUsers.getMessage().getMentionedUsers().forEach(
                 u -> ThreadManager.getGeneralPool().execute(() -> TeamManager.sendInvite(u, team)));
@@ -154,6 +163,103 @@ public class TeamCommand extends Command {
     }
 
     private boolean onCommandEdit(MessageReceivedEvent event, List<Object> args) {
+        args.remove(0);
+        String query = args.stream()
+                .map(Object::toString)
+                .collect(Collectors.joining(" "));
+        Team result = generateTeamList(event.getAuthor(), true).stream()
+                .filter(t -> t.getName().equalsIgnoreCase(query))
+                .findAny()
+                .orElse(null);
+
+        if (result == null) {
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException("Vous n'êtes le propriétaire d'aucune team de ce nom."))
+                    .send(event.getChannel()).queue();
+            return true;
+        }
+
+        Message m = ResponseBuilder.create(event.getMessage())
+                .setTitle(f("Editeur de la team %s", result.getName()))
+                .setIcon(StringUtils.ICON_CUP)
+                .addField("Actions", StringUtils.EMOTE_INCOMING_MESSAGE + " Envoyer une invitation." +
+                        "\n" + StringUtils.EMOTE_MEMO + " Editer le nom." +
+                        "\n" + StringUtils.EMOTE_TRASH + " Suprrimer la team.", false)
+                .addMention(event.getAuthor())
+                .send(event.getChannel()).complete();
+        m.addReaction(StringUtils.EMOTE_INCOMING_MESSAGE).complete();
+        m.addReaction(StringUtils.EMOTE_MEMO).complete();
+        m.addReaction(StringUtils.EMOTE_TRASH).complete();
+
+        MessageReactionAddEvent eventEdit = Waiter.getNextEvent(MessageReactionAddEvent.class,
+                e -> e.getMessageIdLong() == m.getIdLong() && e.getUser().equals(event.getAuthor())
+                        && (e.getReactionEmote().getName().equals(StringUtils.EMOTE_INCOMING_MESSAGE)
+                            || e.getReactionEmote().getName().equals(StringUtils.EMOTE_MEMO)
+                            || e.getReactionEmote().getName().equals(StringUtils.EMOTE_TRASH)),
+                () -> {
+                    m.clearReactions().complete();
+                    ResponseUtils.errorMessage(event.getMessage(), new TimeoutException("Vous avez mis trop longtemps à répondre."))
+                            .send(event.getChannel()).complete();
+                }, T.calc(30));
+        if (eventEdit == null)
+            return true;
+
+        eventEdit.getReaction().removeReaction(event.getAuthor()).queue();
+
+        // TODO tests
+
+        switch (eventEdit.getReactionEmote().getName()) {
+            case StringUtils.EMOTE_INCOMING_MESSAGE:
+                return onEditInvite(eventEdit, result);
+            case StringUtils.EMOTE_MEMO:
+                return onEditRename(eventEdit, result);
+            case StringUtils.EMOTE_TRASH:
+                return onEditDelete(eventEdit, result);
+            default:
+                ResponseUtils.errorMessage(event.getMessage(), new CommandException("J'ai aucune idée de comment ceci vient d'arriver."))
+                        .send(event.getChannel());
+                break;
+        }
+        return true;
+    }
+
+    private boolean onEditInvite(MessageReactionAddEvent event, Team team) {
+        ResponseBuilder.create(event.getChannel().getMessageById(event.getMessageIdLong()).complete())
+                .setTitle(f("Editeur de la team %s", team.getName()))
+                .setDescription("Mentionnez les personnes que vous voulez inviter.")
+                .addMention(event.getUser())
+                .send(event.getChannel()).complete();
+
+        MessageReceivedEvent eventInvite = Waiter.getNextMessageFromUser(event.getChannel(), event.getUser(),
+                () -> ResponseUtils.errorMessage(event.getChannel().getMessageById(event.getMessageIdLong()).complete(),
+                            new TimeoutException("Vous avez mis trop de temps à répondre."))
+                            .send(event.getChannel()).complete(),
+                T.calc(1, TimeUnit.MINUTES));
+
+        if (eventInvite == null)
+            return true;
+
+        List<User> toInvite = eventInvite.getMessage().getMentionedUsers();
+        if (toInvite.size() <= 0) {
+            ResponseUtils.errorMessage(eventInvite.getMessage(), new CommandException("Vous n'avez mentionner personne !"))
+                    .send(eventInvite.getChannel()).complete();
+            return true;
+        }
+
+        toInvite.forEach(u -> ThreadManager.getGeneralPool().execute(() -> TeamManager.sendInvite(u, team)));
+
+        ResponseBuilder.create(eventInvite.getMessage())
+                .setTitle("Les invitations ont bien été envoyés !")
+                .setColor(Color.GREEN)
+                .addMention(eventInvite.getAuthor())
+                .send(event.getChannel()).complete();
+        return true;
+    }
+
+    private boolean onEditRename(MessageReactionAddEvent event, Team team) {
+        return true;
+    }
+
+    private boolean onEditDelete(MessageReactionAddEvent event, Team team) {
         return true;
     }
 
@@ -162,59 +268,25 @@ public class TeamCommand extends Command {
         String query = args.stream()
                 .map(Object::toString)
                 .collect(Collectors.joining(" "));
-        List<Team> result = generateTeamList(event.getAuthor(), false).stream()
+        Team result = generateTeamList(event.getAuthor(), false).stream()
                 .filter(t -> t.getName().equalsIgnoreCase(query))
-                .collect(Collectors.toList());
+                .findAny()
+                .orElse(null);
 
-        int indexResult = 0;
-
-        if (result.size() <= 0) {
+        if (result == null) {
             ResponseUtils.errorMessage(event.getMessage(), new CommandException("Vous n'êtes membre d'aucune team de ce nom."))
                     .send(event.getChannel()).queue();
             return true;
-        } else if (result.size() > 1) {
-            indexResult = selectTeam(event, result);
-
-            if (indexResult < 0)
-                return true;
         }
 
-        result.get(indexResult).removeMember(event.getAuthor());
+        result.removeMember(event.getAuthor());
 
         ResponseBuilder.create(event.getMessage())
-                .setTitle(f("Vous avez bien quitter la team %s", result.get(indexResult).getName()))
+                .setTitle(f("Vous avez bien quitter la team %s", result.getName()))
                 .setIcon(StringUtils.ICON_CUP)
                 .send(event.getChannel()).queue();
 
         return true;
-    }
-
-    private int selectTeam(MessageReceivedEvent event, List<Team> teams) {
-        int resultIndex = -1;
-
-        ResponseBuilder.create(event.getMessage())
-                .setTitle("Vous avez plusieurs teams avec ce nom")
-                .setMainList("Tapez le numéro de la team.", teams.stream()
-                        .map(team -> teams.indexOf(team) + ". " + team.getName())
-                        .collect(Collectors.toList()))
-                .send(event.getChannel()).complete();
-
-        MessageReceivedEvent eventIndex = Waiter.getNextMessageFromUser(event.getChannel(), event.getAuthor(),
-                () -> ResponseUtils.errorMessage(event.getMessage(), new TimeoutException(event.getAuthor().getAsMention() + ", vous avez mis trop longtemps à répondre.")),
-                T.calc(30));
-
-        if (eventIndex == null)
-            return resultIndex;
-
-        try {
-            resultIndex = Integer.parseInt(eventIndex.getMessage().getRawContent());
-            return resultIndex;
-
-        } catch (NumberFormatException | IndexOutOfBoundsException e) {
-            ResponseUtils.errorMessage(eventIndex.getMessage(), new CommandException("Ce n'est pas un nombre valide !"))
-                    .send(eventIndex.getChannel()).queue();
-            return resultIndex;
-        }
     }
 
     private List<Team> generateTeamList(User u, boolean isOwner) {

@@ -34,6 +34,9 @@ public class StringUtils {
     public static final String EMOTE_CACTUS = "\uD83C\uDF35";
     public static final String EMOTE_CONFIRM = "\u2705";
     public static final String EMOTE_DENY = "\u274E";
+    public static final String EMOTE_INCOMING_MESSAGE = "\uD83D\uDCE8";
+    public static final String EMOTE_MEMO = "\uD83D\uDCDD";
+    public static final String EMOTE_TRASH = "\uD83D\uDDD1";
 
     public static final long USER_CREATOR = 182547138729869314L;
     public static final long ROLE_BOT = 323952614892896261L;
