@@ -1,19 +1,12 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.regex.Pattern;
 
 public class Test {
 
     public static void main(String[] args) throws Exception {
-        List<Tester> t = new ArrayList<>();
-        t.add(new Tester(10));
-        t.add(new Tester(453));
-        t.add(new Tester(12));
-        t.add(new Tester(0));
-        t.add(new Tester(5));
+        Pattern p = Pattern.compile("fuck this shit");
+        String test = "Ilé bô l'bateau!";
 
-        t.sort(Tester::compareTo);
-
-        print(t);
+        print(test.split(p.pattern()));
     }
 
     public static class Tester implements Comparable<Tester> {
