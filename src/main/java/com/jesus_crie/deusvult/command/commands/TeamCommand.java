@@ -8,6 +8,7 @@ import com.jesus_crie.deusvult.exception.CommandException;
 import com.jesus_crie.deusvult.exception.TimeoutException;
 import com.jesus_crie.deusvult.manager.TeamManager;
 import com.jesus_crie.deusvult.manager.ThreadManager;
+import com.jesus_crie.deusvult.response.DialogBuilder;
 import com.jesus_crie.deusvult.response.ResponseBuilder;
 import com.jesus_crie.deusvult.response.ResponseUtils;
 import com.jesus_crie.deusvult.utils.StringUtils;
@@ -178,21 +179,24 @@ public class TeamCommand extends Command {
             return true;
         }
 
-        Message m = ResponseBuilder.create(event.getMessage())
+        ResponseBuilder editor = ResponseBuilder.create(event.getMessage())
                 .setTitle(f("Editeur de la team %s", result.getName()))
                 .setIcon(StringUtils.ICON_CUP)
                 .addField("Actions", StringUtils.EMOTE_INCOMING_MESSAGE + " Envoyer une invitation." +
-                        "\n" + StringUtils.EMOTE_MEMO + " Editer le nom." +
-                        "\n" + StringUtils.EMOTE_TRASH + " Suprrimer la team.", false)
-                .addMention(event.getAuthor())
-                .send(event.getChannel()).complete();
+                        "\n\n" + StringUtils.EMOTE_DOOR + " Virer quelqu'un." +
+                        "\n\n" + StringUtils.EMOTE_MEMO + " Editer le nom." +
+                        "\n\n" + StringUtils.EMOTE_TRASH + " Suprrimer la team.", false)
+                .addMention(event.getAuthor());
+        Message m = editor.send(event.getChannel()).complete();
         m.addReaction(StringUtils.EMOTE_INCOMING_MESSAGE).complete();
+        m.addReaction(StringUtils.EMOTE_DOOR).complete();
         m.addReaction(StringUtils.EMOTE_MEMO).complete();
         m.addReaction(StringUtils.EMOTE_TRASH).complete();
 
         MessageReactionAddEvent eventEdit = Waiter.getNextEvent(MessageReactionAddEvent.class,
                 e -> e.getMessageIdLong() == m.getIdLong() && e.getUser().equals(event.getAuthor())
                         && (e.getReactionEmote().getName().equals(StringUtils.EMOTE_INCOMING_MESSAGE)
+                            || e.getReactionEmote().getName().equals(StringUtils.EMOTE_DOOR)
                             || e.getReactionEmote().getName().equals(StringUtils.EMOTE_MEMO)
                             || e.getReactionEmote().getName().equals(StringUtils.EMOTE_TRASH)),
                 () -> {
@@ -203,17 +207,17 @@ public class TeamCommand extends Command {
         if (eventEdit == null)
             return true;
 
-        eventEdit.getReaction().removeReaction(event.getAuthor()).queue();
-
-        // TODO tests
+        m.clearReactions().queue();
 
         switch (eventEdit.getReactionEmote().getName()) {
             case StringUtils.EMOTE_INCOMING_MESSAGE:
-                return onEditInvite(eventEdit, result);
+                return onEditInvite(eventEdit, result, editor);
+            case StringUtils.EMOTE_DOOR:
+                return onEditFired(eventEdit, result, editor);
             case StringUtils.EMOTE_MEMO:
-                return onEditRename(eventEdit, result);
+                return onEditRename(eventEdit, result, editor);
             case StringUtils.EMOTE_TRASH:
-                return onEditDelete(eventEdit, result);
+                return onEditDelete(eventEdit, result, editor);
             default:
                 ResponseUtils.errorMessage(event.getMessage(), new CommandException("J'ai aucune idée de comment ceci vient d'arriver."))
                         .send(event.getChannel());
@@ -222,11 +226,9 @@ public class TeamCommand extends Command {
         return true;
     }
 
-    private boolean onEditInvite(MessageReactionAddEvent event, Team team) {
-        ResponseBuilder.create(event.getChannel().getMessageById(event.getMessageIdLong()).complete())
-                .setTitle(f("Editeur de la team %s", team.getName()))
-                .setDescription("Mentionnez les personnes que vous voulez inviter.")
-                .addMention(event.getUser())
+    private boolean onEditInvite(MessageReactionAddEvent event, Team team, ResponseBuilder editor) {
+        editor.setDescription("Mentionnez les personnes que vous voulez inviter.")
+                .clearLists()
                 .send(event.getChannel()).complete();
 
         MessageReceivedEvent eventInvite = Waiter.getNextMessageFromUser(event.getChannel(), event.getUser(),
@@ -249,17 +251,90 @@ public class TeamCommand extends Command {
 
         ResponseBuilder.create(eventInvite.getMessage())
                 .setTitle("Les invitations ont bien été envoyés !")
+                .setIcon(StringUtils.ICON_CUP)
                 .setColor(Color.GREEN)
                 .addMention(eventInvite.getAuthor())
                 .send(event.getChannel()).complete();
         return true;
     }
 
-    private boolean onEditRename(MessageReactionAddEvent event, Team team) {
+    private boolean onEditFired(MessageReactionAddEvent event, Team team, ResponseBuilder editor) {
+        editor.setDescription("Mentionnez les personnes que vous voulez virez.")
+                .clearLists()
+                .send(event.getChannel()).complete();
+
+        MessageReceivedEvent eventFire = Waiter.getNextMessageFromUser(event.getChannel(), event.getUser(),
+                () -> ResponseUtils.errorMessage(event.getChannel().getMessageById(event.getMessageIdLong()).complete(),
+                        new TimeoutException("Vous avez mis trop de temps à répondre."))
+                        .send(event.getChannel()).complete(),
+                T.calc(1, TimeUnit.MINUTES));
+
+        if (eventFire == null)
+            return true;
+
+        List<User> toFire = eventFire.getMessage().getMentionedUsers();
+        if (toFire.size() <= 0) {
+            ResponseUtils.errorMessage(eventFire.getMessage(), new CommandException("Vous n'avez mentionner personne !"))
+                    .send(eventFire.getChannel()).complete();
+            return true;
+        }
+
+        toFire.forEach(team::removeMember);
+
+        ResponseBuilder.create(eventFire.getMessage())
+                .setTitle("Les membres ont bien été virés !")
+                .setIcon(StringUtils.ICON_CUP)
+                .setColor(Color.GREEN)
+                .addMention(eventFire.getAuthor())
+                .send(event.getChannel()).complete();
         return true;
     }
 
-    private boolean onEditDelete(MessageReactionAddEvent event, Team team) {
+    private boolean onEditRename(MessageReactionAddEvent event, Team team, ResponseBuilder editor) {
+        editor.setDescription("Tapez le nouveau nom de votre team.")
+                .clearLists()
+                .send(event.getChannel()).complete();
+
+        MessageReceivedEvent eventName = Waiter.getNextMessageFromUser(event.getChannel(), event.getUser(),
+                () -> ResponseUtils.errorMessage(event.getChannel().getMessageById(event.getMessageIdLong()).complete(),
+                        new TimeoutException("Vous avez mis trop de temps à répondre."))
+                        .send(event.getChannel()).complete(),
+                T.calc(1, TimeUnit.MINUTES));
+
+        if (eventName == null)
+            return true;
+
+        String newName = eventName.getMessage().getRawContent();
+        if (TeamManager.getTeamByName(newName) != null) {
+            ResponseUtils.errorMessage(eventName.getMessage(), new CommandException("Une team du même nom existe déjà !"))
+                    .send(eventName.getChannel()).complete();
+            return true;
+        }
+
+        if (team.rename(newName))
+            ResponseBuilder.create(eventName.getMessage())
+                    .setTitle(f("La team \"%s\" à bien été rennomée !", team.getName()))
+                    .setIcon(StringUtils.ICON_CUP)
+                    .setColor(Color.GREEN)
+                    .send(eventName.getChannel()).complete();
+        else
+            ResponseUtils.errorMessage(eventName.getMessage(), new CommandException("Ce nom n'est pas un nom valide !"))
+                    .send(eventName.getChannel()).complete();
+
+        return true;
+    }
+
+    private boolean onEditDelete(MessageReactionAddEvent event, Team team, ResponseBuilder editor) {
+        boolean confirm = new DialogBuilder(team.getOwner())
+                .setContent("Etes vous sur de vouloir faire ceci ?")
+                .send(event.getChannel());
+
+        if (confirm) {
+            editor.clearLists()
+                    .setDescription("Team en cours de suppression...")
+                    .send(event.getChannel()).complete();
+            TeamManager.deleteTeam(team);
+        }
         return true;
     }
 

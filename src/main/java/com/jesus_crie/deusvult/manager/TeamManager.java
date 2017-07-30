@@ -65,7 +65,7 @@ public class TeamManager {
     }
 
     public static Team createTeam(User owner, String name) {
-        name = name.replaceAll("[^a-zA-Z0-9 _-]", "");
+        name = name.trim().replaceAll("[^a-zA-Z0-9 _-]", "");
 
         if (getTeamByName(name) != null) {
             Logger.TEAM.get().warning(f("Team %s already exist !", name));

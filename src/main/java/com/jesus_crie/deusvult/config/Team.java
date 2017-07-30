@@ -103,6 +103,15 @@ public class Team implements Comparable<Team> {
         owner = u;
     }
 
+    public boolean rename(String newName) {
+        newName = newName.replaceAll("[^a-zA-Z0-9 _-]", "").trim();
+        if (newName.isEmpty())
+            return false;
+        name = newName;
+        ThreadManager.getGeneralPool().execute(this::update);
+        return true;
+    }
+
     public boolean isMember(User u) {
         return members.contains(u);
     }

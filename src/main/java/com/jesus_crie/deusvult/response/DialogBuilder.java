@@ -18,7 +18,7 @@ public class DialogBuilder {
     public DialogBuilder(User target) {
         this.target = target;
         builder.setAuthor("Confirmation", null, StringUtils.ICON_HELP);
-        builder.setColor(Color.BLUE);
+        builder.setColor(Color.GREEN);
         builder.setFooter(StringUtils.stringifyUser(target), target.getEffectiveAvatarUrl());
     }
 
@@ -39,7 +39,8 @@ public class DialogBuilder {
                 () -> m.clearReactions().complete(),
                 -1);
         try {
-            m.clearReactions().queue();
+            m.clearReactions().complete();
+            m.delete().complete();
         } catch (Exception ignore) {}
 
         return event != null && !event.getReactionEmote().getName().equals(StringUtils.EMOTE_DENY) && event.getReactionEmote().getName().equals(StringUtils.EMOTE_CONFIRM);
