@@ -1,5 +1,5 @@
-group 'DeusVultBot'
-version '0.0.2'
+group 'SilverDragon'
+version '0.0.1'
 
 apply plugin: 'java'
 
@@ -19,8 +19,7 @@ dependencies {
 
 task fatJar(type: Jar) {
     manifest {
-        attributes 'Main-Class': 'com.jesus_crie.deusvult.Main',
-                'Implementation-Version': version
+        attributes 'Main-Class': 'com.jesus_crie.silverdragon.Main', 'Implementation-Version': version
     }
 
     from {
@@ -34,4 +33,13 @@ task fatJar(type: Jar) {
         }
     }
     with jar
+}
+
+task createRunFile() {
+    def paramFile = new File("${projectDir}/build/temp/p.txt")
+    String privateParam = paramFile.text
+    def runFile = new File("${projectDir}/build/libs/run-${version}.sh")
+    runFile.createNewFile()
+    runFile.text = """#!/usr/bin/env bash
+java -jar ${group}-${version}.jar ${privateParam}"""
 }
