@@ -4,6 +4,8 @@
     <bytecodeTargetLevel>
       <module name="DeusVultBot_main" target="1.8" />
       <module name="DeusVultBot_test" target="1.8" />
+      <module name="SilverDragonBot_main" target="1.8" />
+      <module name="SilverDragonBot_test" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

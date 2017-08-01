@@ -31,7 +31,7 @@ public class Config {
             config = mapper.readValue(new URL(StringUtils.CONFIG_URL_GENERAL), new TypeReference<HashMap<String, String>>() {});
 
             List<Lobby> t = mapper.readValue(new URL(StringUtils.CONFIG_URL_TEAMS), new TypeReference<List<Lobby>>() {});
-            LobbyManager.registerTeams(t);
+            LobbyManager.registerLobbies(t);
             Logger.CONFIG.get().info("Config loaded !");
         } catch (IOException e) {
             Logger.CONFIG.get().trace(new ConfigException("Can't load config !"));
@@ -43,7 +43,7 @@ public class Config {
 
         try {
             String outCfg = mapper.writeValueAsString(config);
-            String outTeam = mapper.writeValueAsString(LobbyManager.getTeams());
+            String outTeam = mapper.writeValueAsString(LobbyManager.getLobbies());
 
             // Send post request
             HttpClient client = HttpClientBuilder.create().build();

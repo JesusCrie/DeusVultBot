@@ -41,5 +41,5 @@ task createRunFile() {
     def runFile = new File("${projectDir}/build/libs/run-${version}.sh")
     runFile.createNewFile()
     runFile.text = """#!/usr/bin/env bash
-java -jar ${group}-${version}.jar ${privateParam}"""
+java -jar ${rootProject.name}-${version}.jar ${privateParam}"""
 }
