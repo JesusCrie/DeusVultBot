@@ -2,10 +2,8 @@ package com.jesus_crie.deusvult.response;
 
 import com.jesus_crie.deusvult.utils.StringUtils;
 import net.dv8tion.jda.core.EmbedBuilder;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.MessageChannel;
-import net.dv8tion.jda.core.entities.MessageEmbed;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.requests.RestAction;
 
 import java.awt.Color;
@@ -22,6 +20,7 @@ public class ResponseBuilder {
 
     public final static SimpleDateFormat TIME = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
+    private StringBuilder mentions = new StringBuilder();
     private String title;
     private String icon;
     private final EmbedBuilder builder = new EmbedBuilder();
@@ -78,6 +77,12 @@ public class ResponseBuilder {
         return this;
     }
 
+    public ResponseBuilder addMention(IMentionable mentionable) {
+        mentions.append(mentionable.getAsMention());
+        mentions.append(" ");
+        return this;
+    }
+
     public ResponseBuilder clearLists() {
         builder.clearFields();
         return this;
@@ -103,7 +108,13 @@ public class ResponseBuilder {
     }
 
     public RestAction<Message> send(MessageChannel channel) {
-        return channel.sendMessage(builder.build());
+        if (mentions.length() > 0) {
+            Message m = new MessageBuilder().setEmbed(builder.build())
+                    .append(mentions.toString())
+                    .build();
+            return channel.sendMessage(m);
+        } else
+            return channel.sendMessage(build());
     }
 
     public MessageEmbed build() {

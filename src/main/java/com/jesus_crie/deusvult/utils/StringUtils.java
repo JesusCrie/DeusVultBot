@@ -11,6 +11,7 @@ public class StringUtils {
 
     public static final String PREFIX = ">";
     public static final String VERSION = Main.class.getPackage().getImplementationVersion() == null ? "DEV" : Main.class.getPackage().getImplementationVersion();
+    public static final String MUSIC_DEFAULT_PLAYLIST = "https://www.youtube.com/playlist?list=PL_aqGRnZqeg5l8f8P61SboaCweuSapHEk";
 
     public static final String ICON_INFO = "https://cdn.discordapp.com/attachments/302785106802638848/302790538627776512/sign-info-icon.png";
     public static final String ICON_MUSIC = "https://cdn.discordapp.com/attachments/302785106802638848/318025666199027712/sound-3-icon.png";
@@ -34,6 +35,10 @@ public class StringUtils {
     public static final String EMOTE_CACTUS = "\uD83C\uDF35";
     public static final String EMOTE_CONFIRM = "\u2705";
     public static final String EMOTE_DENY = "\u274E";
+    public static final String EMOTE_INCOMING_MESSAGE = "\uD83D\uDCE8";
+    public static final String EMOTE_MEMO = "\uD83D\uDCDD";
+    public static final String EMOTE_TRASH = "\uD83D\uDDD1";
+    public static final String EMOTE_DOOR = "\uD83D\uDEAA";
 
     public static final long USER_CREATOR = 182547138729869314L;
     public static final long ROLE_BOT = 323952614892896261L;

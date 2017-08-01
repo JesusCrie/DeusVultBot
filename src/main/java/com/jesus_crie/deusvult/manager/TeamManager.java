@@ -45,10 +45,11 @@ public class TeamManager {
         }
     }
 
-    public static List<Team> getTeamsByName(String name) {
+    public static Team getTeamByName(String name) {
         return teams.stream()
                 .filter(t -> t.getName().equalsIgnoreCase(name))
-                .collect(Collectors.toList());
+                .findFirst()
+                .orElse(null);
     }
 
     public static List<Team> getTeamsForUser(User u) {
@@ -64,7 +65,14 @@ public class TeamManager {
     }
 
     public static Team createTeam(User owner, String name) {
-        Logger.TEAM.get().info("Creating team " + name);
+        name = name.trim().replaceAll("[^a-zA-Z0-9 _-]", "");
+
+        if (getTeamByName(name) != null) {
+            Logger.TEAM.get().warning(f("Team %s already exist !", name));
+            return null;
+        }
+
+        Logger.TEAM.get().info(f("Creating team %s", name));
         Guild g = DeusVult.instance().getMainGuild();
 
         Role role = g.getController()
@@ -109,7 +117,7 @@ public class TeamManager {
             return;
 
         DialogBuilder dialog = new DialogBuilder(toInvite);
-        dialog.setContent("Vosu avez recu une invitation pour rejoindre \"" + team.getName() + "\""); // TODO Strings
+        dialog.setContent("Vous avez recu une invitation pour rejoindre \"" + team.getName() + "\"");
 
         if (dialog.send(toInvite.openPrivateChannel().complete()))
             team.addMember(toInvite);
@@ -157,5 +165,19 @@ public class TeamManager {
         teams.sort((prev, next) -> prev.getId() > next.getId() ? 1 : -1);
 
         return teams.get(teams.size() - 1).getId() + 1;
+    }
+
+    public static void cleanupTeams() {
+        List<Team> clean = new ArrayList<>();
+
+        for (int i = 0; i < teams.size(); i++) {
+            Team t = teams.get(i);
+            if (t.getId() != i)
+                t = new Team(i, t.getName(), t.getRole(), t.getOwner(), t.getChannelText(), t.getChannelVoice());
+            clean.add(t);
+        }
+
+        teams.clear();
+        teams.addAll(clean);
     }
 }
