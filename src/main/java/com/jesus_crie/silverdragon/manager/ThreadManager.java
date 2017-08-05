@@ -16,7 +16,7 @@ public class ThreadManager {
                 (t, e) -> Logger.COMMAND.get().log(new Logger.Log(Logger.Level.FATAL, t, StringUtils.collectStackTrace(e)))));
         generalPool = Executors.newCachedThreadPool(new NamedThreadFactory("General",
                 (t, e) -> Logger.UNKNOWN.get().log(new Logger.Log(Logger.Level.FATAL, t, StringUtils.collectStackTrace(e)))));
-        timerPool = Executors.newScheduledThreadPool(10, new NamedThreadFactory("Timer",
+        timerPool = Executors.newScheduledThreadPool(2, new NamedThreadFactory("Timer",
                 (t, e) -> Logger.UNKNOWN.get().log(new Logger.Log(Logger.Level.FATAL, t, StringUtils.collectStackTrace(e)))));
     }
 

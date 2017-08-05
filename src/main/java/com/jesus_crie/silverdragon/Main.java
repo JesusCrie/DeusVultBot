@@ -9,7 +9,7 @@ public class Main {
         Thread.currentThread().setName("SilverDragon-Main#" + Thread.currentThread().getId());
 
         if (args.length <= 2) {
-            System.out.println("You need to provide a token and a secret !");
+            System.out.println("You need to provide a token, a secret and a Google API key !");
             return;
         }
 

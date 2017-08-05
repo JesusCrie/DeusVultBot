@@ -143,7 +143,7 @@ public class MusicCommand extends Command {
         }
 
         ResponseBuilder.create(event.getMessage())
-                .setTitle(f("Skipping %s", manager.getScheduler().getCurrent().getInfo().title))
+                .setTitle(f("Skipping %s", manager.getScheduler().getCurrent() == null ? "..." : manager.getScheduler().getCurrent().getInfo().title))
                 .setIcon(StringUtils.ICON_MUSIC)
                 .send(event.getChannel()).complete();
 

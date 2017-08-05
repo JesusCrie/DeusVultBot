@@ -6,6 +6,7 @@ import com.jesus_crie.silverdragon.listener.CommandListener;
 import com.jesus_crie.silverdragon.logger.DiscordLogListener;
 import com.jesus_crie.silverdragon.logger.Logger;
 import com.jesus_crie.silverdragon.manager.CommandManager;
+import com.jesus_crie.silverdragon.manager.MusicManager;
 import com.jesus_crie.silverdragon.manager.ThreadManager;
 import com.jesus_crie.silverdragon.utils.StringUtils;
 import net.dv8tion.jda.core.AccountType;
@@ -82,10 +83,13 @@ public class SilverDragon {
                 new TestCommand(),
 
                 // Experimental
-                new LobbyCommand()
+                new LobbyCommand(),
+                new MusicCommand()
         );
 
         Logger.START.get().info("Loading music components...");
+        new MusicManager();
+        jda.getGuilds().forEach(MusicManager::registerGuild);
 
         Logger.START.get().info("READY !");
         jda.getPresence().setGame(Game.of(f("%shelp - v%s", StringUtils.PREFIX, StringUtils.VERSION)));
@@ -100,7 +104,7 @@ public class SilverDragon {
     public void shutdown() {
         ready = false;
         Logger.START.get().info("Shutting down...");
-        // TODO music stop
+        MusicManager.getManagers().forEach((k, m) -> m.cleanup());
         ThreadManager.cleanUp();
         Config.save();
         jda.shutdownNow();

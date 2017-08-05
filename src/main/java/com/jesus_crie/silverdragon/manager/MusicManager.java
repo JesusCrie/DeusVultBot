@@ -1,5 +1,6 @@
 package com.jesus_crie.silverdragon.manager;
 
+import com.jesus_crie.silverdragon.logger.Logger;
 import com.jesus_crie.silverdragon.music.AutoPlaylist;
 import com.jesus_crie.silverdragon.music.GuildMusicManager;
 import com.jesus_crie.silverdragon.utils.StringUtils;
@@ -18,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.function.Consumer;
+
+import static com.jesus_crie.silverdragon.utils.S.f;
 
 public class MusicManager {
 
@@ -52,8 +55,8 @@ public class MusicManager {
         final AudioLoadResultHandler handler = createHandler(
                 out::add,
                 playlist -> out.addAll(playlist.getTracks()),
-                null,
-                null
+                () -> Logger.MUSIC.get().warning(f("Fail to load %s, no matches", identifier)),
+                e -> Logger.MUSIC.get().trace(e)
         );
 
         Future<Void> loader = globalManager.loadItem(identifier, handler);

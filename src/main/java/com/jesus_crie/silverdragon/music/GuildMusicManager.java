@@ -17,8 +17,11 @@ public class GuildMusicManager {
     }
 
     public void connectToChannel(VoiceChannel channel) {
-        if (!guild.getAudioManager().isAttemptingToConnect())
+        if (!guild.getAudioManager().isAttemptingToConnect()) {
             guild.getAudioManager().openAudioConnection(channel);
+            guild.getAudioManager().setSelfDeafened(true);
+            getScheduler().nextTrack();
+        }
     }
 
     public void disconnect() {
@@ -32,7 +35,9 @@ public class GuildMusicManager {
 
 
     public boolean isSameChannel(Member m) {
-        return !isConnected() && guild.getAudioManager().getConnectedChannel().getMembers().contains(m);
+        if (!isConnected())
+            return false;
+        return guild.getAudioManager().getConnectedChannel().getMembers().contains(m);
     }
 
     public void reload(final AutoPlaylist auto, final AudioPlayer player) {

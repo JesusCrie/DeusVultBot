@@ -12,7 +12,7 @@ public class StringUtils {
 
     public static final String PREFIX = ">";
     public static final String VERSION = Main.class.getPackage().getImplementationVersion() == null ? "DEV" : Main.class.getPackage().getImplementationVersion();
-    public static final String MUSIC_DEFAULT_PLAYLIST = "https://www.youtube.com/playlist?list=PL_aqGRnZqeg5l8f8P61SboaCweuSapHEk";
+    public static final String MUSIC_DEFAULT_PLAYLIST = "PL_aqGRnZqeg5l8f8P61SboaCweuSapHEk";
 
     public static final String ICON_INFO = "https://cdn.discordapp.com/attachments/302785106802638848/302790538627776512/sign-info-icon.png";
     public static final String ICON_MUSIC = "https://cdn.discordapp.com/attachments/302785106802638848/318025666199027712/sound-3-icon.png";

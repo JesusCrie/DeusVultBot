@@ -74,7 +74,13 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     @Override
+    public void onTrackStart(AudioPlayer player, AudioTrack track) {
+        Logger.MUSIC.get().debug(f("Track %s started on player %s", track.getInfo().title, player.hashCode()));
+    }
+
+    @Override
     public void onTrackEnd(final AudioPlayer player, final AudioTrack track, final AudioTrackEndReason endReason) {
+        Logger.MUSIC.get().debug(f("Track %s ended !", track.getInfo().title));
         if (endReason.mayStartNext)
             nextTrack();
     }
