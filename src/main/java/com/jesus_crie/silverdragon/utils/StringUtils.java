@@ -6,6 +6,7 @@ import net.dv8tion.jda.core.entities.User;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.Calendar;
 
 public class StringUtils {
 
@@ -52,6 +53,9 @@ public class StringUtils {
     public static final String CONFIG_URL_TEAMS = "http://www.jesus-crie.com/discord/teams.json";
     public static final String CONFIG_URL_SAVE = "http://www.jesus-crie.com/discord/update_config.php";
 
+    public static final String YOUTUBE_BASE_VIDEO = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=%s&key=" + Main.getGoogleKey();
+    public static final String YOUTUBE_BASE_CHANNEL = "https://www.googleapis.com/youtube/v3/channels?part=snippet&id=%s&key=" + Main.getGoogleKey();
+
     public static String stringifyUser(User u) {
         return u.getName() + "#" + u.getDiscriminator();
     }
@@ -75,5 +79,13 @@ public class StringUtils {
         final StringWriter sw = new StringWriter();
         e.printStackTrace(new PrintWriter(sw, true));
         return sw.getBuffer().toString();
+    }
+
+    public static String properTimestamp(long millis) {
+        Calendar c = Calendar.getInstance();
+        c.setTimeInMillis(millis - 3600000);
+        return (c.get(Calendar.HOUR) < 10 ? "0" + c.get(Calendar.HOUR) : String.valueOf(c.get(Calendar.HOUR))) + ":"
+                + (c.get(Calendar.MINUTE) < 10 ? "0" + c.get(Calendar.MINUTE) : String.valueOf(c.get(Calendar.MINUTE))) + ":"
+                + (c.get(Calendar.SECOND) < 10 ? "0" + c.get(Calendar.SECOND) : String.valueOf(c.get(Calendar.SECOND)));
     }
 }

@@ -2,6 +2,7 @@ package com.jesus_crie.silverdragon.music;
 
 import com.sedmelluq.discord.lavaplayer.player.AudioPlayer;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 import net.dv8tion.jda.core.entities.VoiceChannel;
 
 public class GuildMusicManager {
@@ -11,6 +12,7 @@ public class GuildMusicManager {
 
     public GuildMusicManager(final Guild guild, final AutoPlaylist auto, final AudioPlayer player) {
         this.guild = guild;
+        this.guild.getAudioManager().setSendingHandler(new JDAAudioSendHandler(player));
         scheduler = new TrackScheduler(auto, player);
     }
 
@@ -26,6 +28,11 @@ public class GuildMusicManager {
 
     public boolean isConnected() {
         return guild.getAudioManager().isConnected();
+    }
+
+
+    public boolean isSameChannel(Member m) {
+        return !isConnected() && guild.getAudioManager().getConnectedChannel().getMembers().contains(m);
     }
 
     public void reload(final AutoPlaylist auto, final AudioPlayer player) {

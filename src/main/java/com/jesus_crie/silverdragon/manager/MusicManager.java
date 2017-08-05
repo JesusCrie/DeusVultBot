@@ -11,6 +11,7 @@ import com.sedmelluq.discord.lavaplayer.tools.FriendlyException;
 import com.sedmelluq.discord.lavaplayer.track.AudioPlaylist;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -93,5 +94,9 @@ public class MusicManager {
                     onError.accept(exception);
             }
         };
+    }
+
+    public static boolean isConnected(Member m) {
+        return m.getVoiceState().inVoiceChannel();
     }
 }

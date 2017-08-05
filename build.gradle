@@ -1,5 +1,7 @@
+import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile
+
 group 'SilverDragon'
-version '0.0.1'
+version '0.0.3'
 
 apply plugin: 'java'
 
@@ -15,6 +17,10 @@ dependencies {
     compile 'com.sedmelluq:lavaplayer:1.2.42'
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.8.8'
     compile 'org.slf4j:slf4j-nop:1.7.21'
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
 }
 
 task fatJar(type: Jar) {
