@@ -20,6 +20,7 @@ public class GuildMusicManager {
         if (!guild.getAudioManager().isAttemptingToConnect()) {
             guild.getAudioManager().openAudioConnection(channel);
             guild.getAudioManager().setSelfDeafened(true);
+            getScheduler().setVolume(15);
             getScheduler().nextTrack();
         }
     }

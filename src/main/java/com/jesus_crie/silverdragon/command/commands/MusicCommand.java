@@ -78,7 +78,8 @@ public class MusicCommand extends Command {
     }
 
     private GuildMusicManager getManager(MessageReceivedEvent event) {
-        return MusicManager.getManagerForGuild(event.getGuild());
+        final GuildMusicManager manager = MusicManager.getManagerForGuild(event.getGuild());
+        return manager == null ? MusicManager.registerGuild(event.getGuild()) : manager;
     }
 
     private boolean onSummon(MessageReceivedEvent event, List<Object> args) {
@@ -143,7 +144,7 @@ public class MusicCommand extends Command {
         }
 
         ResponseBuilder.create(event.getMessage())
-                .setTitle(f("Skipping %s", manager.getScheduler().getCurrent() == null ? "..." : manager.getScheduler().getCurrent().getInfo().title))
+                .setTitle(f("Skipping \"%s\"", manager.getScheduler().getCurrent() == null ? "..." : manager.getScheduler().getCurrent().getInfo().title))
                 .setIcon(StringUtils.ICON_MUSIC)
                 .send(event.getChannel()).complete();
 
@@ -153,7 +154,7 @@ public class MusicCommand extends Command {
 
     private boolean onVolume(MessageReceivedEvent event, List<Object> args) {
         ResponseBuilder.create(event.getMessage())
-                .setTitle(f("Volume: %s%", getManager(event).getScheduler().getVolume()))
+                .setTitle(f("Volume: %s%%", getManager(event).getScheduler().getVolume()))
                 .setIcon(StringUtils.ICON_MUSIC)
                 .send(event.getChannel()).complete();
         return true;
@@ -171,7 +172,7 @@ public class MusicCommand extends Command {
         manager.getScheduler().setVolume(((Integer) args.get(1)));
 
         ResponseBuilder.create(event.getMessage())
-                .setTitle(f("Le volume a été mis à %s%", manager.getScheduler().getVolume()))
+                .setTitle(f("Le volume a été mis à %s%%", manager.getScheduler().getVolume()))
                 .setIcon(StringUtils.ICON_MUSIC)
                 .send(event.getChannel()).complete();
         return true;
@@ -223,7 +224,12 @@ public class MusicCommand extends Command {
     }
 
     private boolean onCurrent(MessageReceivedEvent event, List<Object> args) {
-        final AudioTrack track = getManager(event).getScheduler().getCurrent().makeClone();
+        final AudioTrack track = getManager(event).getScheduler().getCurrent();
+        if (track == null) {
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException("Aucune piste n'est en cours."))
+                    .send(event.getChannel()).complete();
+            return true;
+        }
 
         ResponseBuilder builder = ResponseBuilder.create(event.getMessage())
                 .setTitle("Piste en cours")
@@ -234,7 +240,6 @@ public class MusicCommand extends Command {
             try {
                 final ObjectMapper mapper = new ObjectMapper();
                 final JsonNode nodeV = mapper.readValue(new URL(f(StringUtils.YOUTUBE_BASE_VIDEO, track.getIdentifier())), JsonNode.class);
-                builder.setImage(nodeV.get("items").get(0).get("snippet").get("thumbnails").get("default").get("url").asText());
 
                 final JsonNode nodeC = mapper.readValue(new URL(
                         f(StringUtils.YOUTUBE_BASE_CHANNEL,

@@ -37,10 +37,11 @@ public class MusicManager {
     }
 
     public static GuildMusicManager getManagerForGuild(Guild g) {
-        return managers.getOrDefault(g.getIdLong(), registerGuild(g));
+        return managers.get(g.getIdLong());
     }
 
     public static GuildMusicManager registerGuild(Guild g) {
+        Logger.MUSIC.get().info(f("Registering guild %s/%s", g.getIdLong(), g.getName()));
         GuildMusicManager manager = new GuildMusicManager(g,
                 new AutoPlaylist(StringUtils.MUSIC_DEFAULT_PLAYLIST),
                 globalManager.createPlayer());
