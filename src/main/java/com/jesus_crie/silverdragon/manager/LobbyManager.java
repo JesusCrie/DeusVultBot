@@ -20,23 +20,23 @@ import static com.jesus_crie.silverdragon.utils.S.f;
 
 public class LobbyManager {
 
-    private static final List<Lobby> teams = new ArrayList<>();
+    private static final List<Lobby> lobbies = new ArrayList<>();
 
-    public static void registerTeam(Lobby lobby) {
-        teams.add(lobby);
+    public static void registerLobby(Lobby lobby) {
+        lobbies.add(lobby);
     }
 
-    public static void registerTeams(List<Lobby> lobbies) {
-        LobbyManager.teams.addAll(lobbies);
+    public static void registerLobbies(List<Lobby> lobbies) {
+        LobbyManager.lobbies.addAll(lobbies);
     }
 
-    public static List<Lobby> getTeams() {
-        return teams;
+    public static List<Lobby> getLobbies() {
+        return lobbies;
     }
 
-    public static Lobby getTeamById(int id) {
+    public static Lobby getLobbyById(int id) {
         try {
-            return teams.stream()
+            return lobbies.stream()
                     .filter(t -> t.getId() == id)
                     .findFirst()
                     .orElse(null);
@@ -45,34 +45,34 @@ public class LobbyManager {
         }
     }
 
-    public static Lobby getTeamByName(String name) {
-        return teams.stream()
+    public static Lobby getLobbyByName(String name) {
+        return lobbies.stream()
                 .filter(t -> t.getName().equalsIgnoreCase(name))
                 .findFirst()
                 .orElse(null);
     }
 
-    public static List<Lobby> getTeamsForUser(User u) {
-        return teams.stream()
+    public static List<Lobby> getLobbiesForUser(User u) {
+        return lobbies.stream()
                 .filter(t -> t.isMember(u) || t.isOwner(u))
                 .collect(Collectors.toList());
     }
 
-    public static List<Lobby> getTeamsOwnedForUser(User u) {
-        return teams.stream()
+    public static List<Lobby> getLobbiesOwnedForUser(User u) {
+        return lobbies.stream()
                 .filter(t -> t.isOwner(u))
                 .collect(Collectors.toList());
     }
 
-    public static Lobby createTeam(User owner, String name) {
+    public static Lobby createLobby(User owner, String name) {
         name = name.trim().replaceAll("[^a-zA-Z0-9 _-]", "");
 
-        if (getTeamByName(name) != null) {
-            Logger.TEAM.get().warning(f("Lobby %s already exist !", name));
+        if (getLobbyByName(name) != null) {
+            Logger.LOBBY.get().warning(f("Lobby %s already exist !", name));
             return null;
         }
 
-        Logger.TEAM.get().info(f("Creating lobby %s", name));
+        Logger.LOBBY.get().info(f("Creating lobby %s", name));
         Guild g = SilverDragon.instance().getMainGuild();
 
         Role role = g.getController()
@@ -86,7 +86,7 @@ public class LobbyManager {
                 .addPermissionOverride(g.getPublicRole(), new ArrayList<>(), Collections.singletonList(Permission.MESSAGE_READ))
                 .addPermissionOverride(role, Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
                 .addPermissionOverride(g.getRoleById(StringUtils.ROLE_BOT), Collections.singletonList(Permission.MESSAGE_READ), new ArrayList<>())
-                .setTopic(f("Channel de la lobby %s", name))
+                .setTopic(f("Channel du lobby %s", name))
                 .complete();
 
         VoiceChannel chanV = (VoiceChannel) g.getController()
@@ -98,18 +98,18 @@ public class LobbyManager {
                 .complete();
 
         Lobby lobby = new Lobby(getNextId(), name, role, owner, chanT, chanV);
-        registerTeam(lobby);
+        registerLobby(lobby);
         sortChannels();
 
         return lobby;
     }
 
-    public static void deleteTeam(Lobby lobby) {
-        Logger.TEAM.get().info("Deleting lobby " + lobby.getName());
+    public static void deleteLobby(Lobby lobby) {
+        Logger.LOBBY.get().info("Deleting lobby " + lobby.getName());
 
         lobby.delete();
 
-        teams.remove(lobby);
+        lobbies.remove(lobby);
     }
 
     public static void sendInvite(User toInvite, Lobby lobby) {
@@ -130,7 +130,7 @@ public class LobbyManager {
         ChannelOrderAction<TextChannel> reorderingT = g.getController().modifyTextChannelPositions();
         int offsetT = reorderingT.selectPosition(g.getTextChannelById(Config.getSetting("teamChannelTAfterId"))).getSelectedPosition();
 
-        List<TextChannel> teamChannelsT = LobbyManager.getTeams().stream()
+        List<TextChannel> teamChannelsT = LobbyManager.getLobbies().stream()
                 .map(Lobby::getChannelText)
                 .sorted(Comparator.comparing(Channel::getName))
                 .collect(Collectors.toList());
@@ -144,7 +144,7 @@ public class LobbyManager {
         ChannelOrderAction<VoiceChannel> reorderingV = g.getController().modifyVoiceChannelPositions();
         int offsetV = reorderingV.selectPosition(g.getVoiceChannelById(Config.getSetting("teamChannelVAfterId"))).getSelectedPosition();
 
-        List<VoiceChannel> teamChannelsV = LobbyManager.getTeams().stream()
+        List<VoiceChannel> teamChannelsV = LobbyManager.getLobbies().stream()
                 .map(Lobby::getChannelVoice)
                 .sorted(Comparator.comparing(Channel::getName))
                 .collect(Collectors.toList());
@@ -159,25 +159,25 @@ public class LobbyManager {
     }
 
     private static int getNextId() {
-        if (teams.isEmpty())
+        if (lobbies.isEmpty())
             return 0;
 
-        teams.sort((prev, next) -> prev.getId() > next.getId() ? 1 : -1);
+        lobbies.sort((prev, next) -> prev.getId() > next.getId() ? 1 : -1);
 
-        return teams.get(teams.size() - 1).getId() + 1;
+        return lobbies.get(lobbies.size() - 1).getId() + 1;
     }
 
-    public static void cleanupTeams() {
+    public static void cleanupLobbies() {
         List<Lobby> clean = new ArrayList<>();
 
-        for (int i = 0; i < teams.size(); i++) {
-            Lobby t = teams.get(i);
+        for (int i = 0; i < lobbies.size(); i++) {
+            Lobby t = lobbies.get(i);
             if (t.getId() != i)
                 t = new Lobby(i, t.getName(), t.getRole(), t.getOwner(), t.getChannelText(), t.getChannelVoice());
             clean.add(t);
         }
 
-        teams.clear();
-        teams.addAll(clean);
+        lobbies.clear();
+        lobbies.addAll(clean);
     }
 }

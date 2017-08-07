@@ -11,7 +11,7 @@ public enum Logger {
     COMMAND(SimpleLogger.getLog("Command")),
     MUSIC(SimpleLogger.getLog("Music")),
     CONFIG(SimpleLogger.getLog("Config")),
-    TEAM(SimpleLogger.getLog("Lobby")),
+    LOBBY(SimpleLogger.getLog("Lobby")),
     UNKNOWN(SimpleLogger.getLog("UNKNOWN")),
     DEV(SimpleLogger.getLog("DEV")),
     WAITER(SimpleLogger.getLog("Waiter"));

@@ -6,13 +6,13 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import static com.jesus_crie.silverdragon.utils.S.f;
 
 public class TrackScheduler extends AudioEventAdapter {
 
-    private final LinkedList<AudioTrack> queue = new LinkedList<>();
+    private final ProvidablePlaylist queue = new ProvidablePlaylist("Queue");
     private final AutoPlaylist auto;
     private final AudioPlayer player;
 
@@ -22,17 +22,29 @@ public class TrackScheduler extends AudioEventAdapter {
     }
 
     public void queue(AudioTrack track) {
-        queue.add(track);
+        queue.offer(track);
+    }
+
+    public void queue(List<AudioTrack> tracks) {
+        queue.offer(tracks);
+    }
+
+    public ProvidablePlaylist getQueue() {
+        return queue;
     }
 
     public void nextTrack() {
         if (queue.isEmpty())
-            queue.add(auto.pick());
-        player.playTrack(queue.pollFirst().makeClone());
+            queue.offer(auto.provideRandom());
+        player.playTrack(queue.provide().makeClone());
     }
 
     public void stop() {
         player.stopTrack();
+    }
+
+    public boolean isPaused() {
+        return player.isPaused();
     }
 
     public void setPaused(final boolean state) {
@@ -44,13 +56,31 @@ public class TrackScheduler extends AudioEventAdapter {
         queue.clear();
     }
 
+    public AudioTrack getCurrent() {
+        return player.getPlayingTrack();
+    }
+
+    public int getVolume() {
+        return player.getVolume();
+    }
+
+    public void setVolume(int v) {
+        player.setVolume(v);
+    }
+
     public void giveup() {
         clear();
         player.destroy();
     }
 
     @Override
+    public void onTrackStart(AudioPlayer player, AudioTrack track) {
+        Logger.MUSIC.get().debug(f("Track %s started on player %s", track.getInfo().title, player.hashCode()));
+    }
+
+    @Override
     public void onTrackEnd(final AudioPlayer player, final AudioTrack track, final AudioTrackEndReason endReason) {
+        Logger.MUSIC.get().debug(f("Track %s ended !", track.getInfo().title));
         if (endReason.mayStartNext)
             nextTrack();
     }

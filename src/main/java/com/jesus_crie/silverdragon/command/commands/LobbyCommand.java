@@ -75,7 +75,7 @@ public class LobbyCommand extends Command {
     }
 
     private boolean onCommandList(MessageReceivedEvent event) {
-        List<Lobby> lobbies = LobbyManager.getTeams().stream()
+        List<Lobby> lobbies = LobbyManager.getLobbies().stream()
                 .sorted((p, n) -> -p.compareTo(n))
                 .limit(10)
                 .collect(Collectors.toList());
@@ -139,7 +139,7 @@ public class LobbyCommand extends Command {
 
         eventUsers.getMessage().delete().queue();
 
-        Lobby lobby = LobbyManager.createTeam(event.getAuthor(), eventName.getMessage().getRawContent());
+        Lobby lobby = LobbyManager.createLobby(event.getAuthor(), eventName.getMessage().getRawContent());
         if (lobby == null) {
             ResponseUtils.errorMessage(event.getMessage(), new CommandException("Un lobby du meme nom éxiste déjà !"))
                     .send(event.getChannel()).queue();
@@ -301,7 +301,7 @@ public class LobbyCommand extends Command {
             return true;
 
         String newName = eventName.getMessage().getRawContent();
-        if (LobbyManager.getTeamByName(newName) != null) {
+        if (LobbyManager.getLobbyByName(newName) != null) {
             ResponseUtils.errorMessage(eventName.getMessage(), new CommandException("Un lobby du même nom existe déjà !"))
                     .send(eventName.getChannel()).complete();
             return true;
@@ -329,7 +329,7 @@ public class LobbyCommand extends Command {
             editor.clearLists()
                     .setDescription("Lobby en cours de suppression...")
                     .send(event.getChannel()).complete();
-            LobbyManager.deleteTeam(lobby);
+            LobbyManager.deleteLobby(lobby);
         }
         return true;
     }
@@ -363,9 +363,9 @@ public class LobbyCommand extends Command {
     private List<Lobby> generateTeamList(User u, boolean isOwner) {
         final List<Lobby> lobbies;
         if (isOwner)
-            lobbies = LobbyManager.getTeamsOwnedForUser(u);
+            lobbies = LobbyManager.getLobbiesOwnedForUser(u);
         else {
-            lobbies = LobbyManager.getTeamsForUser(u).stream()
+            lobbies = LobbyManager.getLobbiesForUser(u).stream()
                     .filter(t -> !t.isOwner(u))
                     .collect(Collectors.toList());
         }

@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -25,6 +26,15 @@ public class CommandPattern {
         else
             arguments = new ArrayList<>();
         this.action = action;
+        this.notice = notice;
+    }
+
+    public CommandPattern(Argument[] args, Predicate<MessageReceivedEvent> action, String notice) {
+        if (args != null && args.length > 0)
+            arguments = Arrays.asList(args);
+        else
+            arguments = new ArrayList<>();
+        this.action = (e, a) -> action.test(e);
         this.notice = notice;
     }
 
@@ -64,10 +74,10 @@ public class CommandPattern {
      * This supposed that {@link #matchArgs(String[])} has returned True.
      */
     private List<Object> collectArgs(String[] args) {
-        List<Object> out = new ArrayList<>();
-
         if (!hasArgument())
-            return out;
+            return null;
+
+        List<Object> out = new ArrayList<>();
 
         for (int i = 0; i < args.length; i++) {
             if (i >= arguments.size()) {
@@ -91,10 +101,10 @@ public class CommandPattern {
     public static class Argument implements Cloneable {
 
         // Static content
-        public static final Argument LONG = new Argument("(?<value>[0-9]{1,19})",
+        public static final Argument LONG = new Argument("(?<value>-?[0-9]{1,19})",
                 matcher -> Long.valueOf(matcher.group("value")));
 
-        public static final Argument INTEGER = new Argument("(?<value>[0-9]{1,9})",
+        public static final Argument INTEGER = new Argument("(?<value>-?[0-9]{1,9})",
                 matcher -> Integer.valueOf(matcher.group("value")));
 
         public static final Argument STRING = new Argument("(?<value>[\\S]+)",
