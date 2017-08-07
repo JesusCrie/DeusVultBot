@@ -3,6 +3,7 @@ package com.jesus_crie.silverdragon;
 import com.jesus_crie.silverdragon.command.commands.*;
 import com.jesus_crie.silverdragon.config.Config;
 import com.jesus_crie.silverdragon.listener.CommandListener;
+import com.jesus_crie.silverdragon.listener.MusicListener;
 import com.jesus_crie.silverdragon.logger.DiscordLogListener;
 import com.jesus_crie.silverdragon.logger.Logger;
 import com.jesus_crie.silverdragon.manager.CommandManager;
@@ -51,10 +52,11 @@ public class SilverDragon {
         Logger.START.get().info("JDA initialized !");
     }
 
-    void warmup() {
+    void wakeup() {
         Logger.START.get().info("Registering listeners...");
         jda.addEventListener(
-                new CommandListener()
+                new CommandListener(),
+                new MusicListener()
         );
 
         Logger.START.get().info("Loading config...");

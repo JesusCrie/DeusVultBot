@@ -26,7 +26,7 @@ public class GuildMusicManager {
     }
 
     public void disconnect() {
-        scheduler.setPaused(true);
+        scheduler.clear();
         guild.getAudioManager().closeAudioConnection();
     }
 
@@ -39,6 +39,10 @@ public class GuildMusicManager {
         if (!isConnected())
             return false;
         return guild.getAudioManager().getConnectedChannel().getMembers().contains(m);
+    }
+
+    public VoiceChannel getConnectedChannel() {
+        return guild.getAudioManager().getConnectedChannel();
     }
 
     public void reload(final AutoPlaylist auto, final AudioPlayer player) {

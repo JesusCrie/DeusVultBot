@@ -34,6 +34,10 @@ public class MusicCommand extends Command {
 
         registerPatterns(
                 new CommandPattern(new CommandPattern.Argument[] {
+                        CommandPattern.Argument.forString("stop")
+                }, this::onStop, "stop"),
+
+                new CommandPattern(new CommandPattern.Argument[] {
                         CommandPattern.Argument.forString("repeat")
                 }, this::onRepeat, "repeat"),
 
@@ -82,7 +86,7 @@ public class MusicCommand extends Command {
         return manager == null ? MusicManager.registerGuild(event.getGuild()) : manager;
     }
 
-    private boolean onSummon(MessageReceivedEvent event, List<Object> args) {
+    private boolean onSummon(MessageReceivedEvent event) {
         if (!AccessLevel.ADMIN.superiorOrEqual(AccessLevel.fromMember(event.getMember()))) {
             ResponseUtils.errorMessage(event.getMessage(), new CommandException("Vous n'avez pas la permission requise !"))
                     .send(event.getChannel()).complete();
@@ -134,7 +138,7 @@ public class MusicCommand extends Command {
         return true;
     }
 
-    private boolean onSkip(MessageReceivedEvent event, List<Object> args) {
+    private boolean onSkip(MessageReceivedEvent event) {
         final GuildMusicManager manager = getManager(event);
 
         if (!manager.isSameChannel(event.getMember())) {
@@ -152,7 +156,7 @@ public class MusicCommand extends Command {
         return true;
     }
 
-    private boolean onVolume(MessageReceivedEvent event, List<Object> args) {
+    private boolean onVolume(MessageReceivedEvent event) {
         ResponseBuilder.create(event.getMessage())
                 .setTitle(f("Volume: %s%%", getManager(event).getScheduler().getVolume()))
                 .setIcon(StringUtils.ICON_MUSIC)
@@ -178,7 +182,7 @@ public class MusicCommand extends Command {
         return true;
     }
 
-    private boolean onPause(MessageReceivedEvent event, List<Object> args) {
+    private boolean onPause(MessageReceivedEvent event) {
         final GuildMusicManager manager = getManager(event);
 
         if (!manager.isSameChannel(event.getMember())) {
@@ -197,7 +201,7 @@ public class MusicCommand extends Command {
         return true;
     }
 
-    private boolean onQueue(MessageReceivedEvent event, List<Object> args) {
+    private boolean onQueue(MessageReceivedEvent event) {
         final ProvidablePlaylist queue = getManager(event).getScheduler().getQueue();
 
         ResponseBuilder.create(event.getMessage())
@@ -213,7 +217,7 @@ public class MusicCommand extends Command {
         return true;
     }
 
-    private boolean onShuffle(MessageReceivedEvent event, List<Object> args) {
+    private boolean onShuffle(MessageReceivedEvent event) {
         ResponseBuilder.create(event.getMessage())
                 .setTitle("Mélange de la queue en cours...")
                 .setIcon(StringUtils.ICON_MUSIC)
@@ -223,7 +227,7 @@ public class MusicCommand extends Command {
         return true;
     }
 
-    private boolean onCurrent(MessageReceivedEvent event, List<Object> args) {
+    private boolean onCurrent(MessageReceivedEvent event) {
         final AudioTrack track = getManager(event).getScheduler().getCurrent();
         if (track == null) {
             ResponseUtils.errorMessage(event.getMessage(), new CommandException("Aucune piste n'est en cours."))
@@ -234,7 +238,10 @@ public class MusicCommand extends Command {
         ResponseBuilder builder = ResponseBuilder.create(event.getMessage())
                 .setTitle("Piste en cours")
                 .setIcon(StringUtils.ICON_MUSIC)
-                .setMainList(track.getInfo().title, f("Auteur: %s", F.bold(track.getInfo().author)), f("[Source]()", F.bold(track.getInfo().uri)));
+                .setMainList(track.getInfo().title,
+                        f("Auteur: %s", F.bold(track.getInfo().author)),
+                        f("Temps: " + F.code("%s/%s"), StringUtils.properTimestamp(track.getPosition()), StringUtils.properTimestamp(track.getDuration())),
+                        f("[" + F.bold("Source") + "](%s)", track.getInfo().uri));
 
         if (track instanceof YoutubeAudioTrack) {
             try {
@@ -270,5 +277,22 @@ public class MusicCommand extends Command {
 
         args.add(track.getIdentifier());
         return onPlay(event, args);
+    }
+
+    private boolean onStop(MessageReceivedEvent event) {
+        final GuildMusicManager manager = getManager(event);
+        if (!manager.isSameChannel(event.getMember())) {
+            ResponseUtils.errorMessage(event.getMessage(), new CommandException("Vous n'êtes pas dans mon channel !"))
+                    .send(event.getChannel()).complete();
+            return true;
+        }
+
+        ResponseBuilder.create(event.getMessage())
+                .setTitle("Deconnection...")
+                .setIcon(StringUtils.ICON_MUSIC)
+                .send(event.getChannel()).complete();
+
+        manager.disconnect();
+        return true;
     }
 }

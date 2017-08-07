@@ -17,7 +17,7 @@ public class Main {
         System.out.println("Token provided: " + args[0]);
         System.out.println("Starting...");
         bot = new SilverDragon(args[0], args[1]);
-        bot.warmup();
+        bot.wakeup();
     }
 
     static SilverDragon getBot() {
